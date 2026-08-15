@@ -369,6 +369,15 @@
                     aria-live="polite"
                 ></div>
 
+                <div class="load-more">
+    <button
+        id="load-more-button"
+        type="button"
+    >
+        Cargar más Pokémon
+    </button>
+</div>
+
 
                 <!-- Empty state -->
 
@@ -389,6 +398,29 @@
 
         </section>
 
+        <!-- Pokémon Detail -->
+<section
+    class="pokemon-detail hidden"
+    id="pokemon-detail"
+    aria-hidden="true"
+>
+    <div class="container">
+
+        <button
+            class="detail-back"
+            id="detail-back"
+            type="button"
+        >
+            ← Volver a la Pokédex
+        </button>
+
+        <div
+            class="detail-content"
+            id="detail-content"
+        ></div>
+
+    </div>
+</section>
 
         <!-- ========================================
              FAVORITES
@@ -449,9 +481,9 @@
 
 
     <script
-        type="module"
-        src="js/main.js"
-    ></script>
+    type="module"
+    src="js/state/main.js"
+></script>
 
 </body>
 </html>
