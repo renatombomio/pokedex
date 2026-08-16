@@ -14,24 +14,35 @@ const elements = {
  * Render the current Pokémon collection.
  */
 export function renderPokemon(pokemon) {
+
     hideAllStates();
 
-    elements.count.textContent = pokemon.length;
+    elements.count.textContent =
+        pokemon.length;
 
     if (pokemon.length === 0) {
-        elements.empty.classList.remove('hidden');
+
+        elements.empty.classList.remove(
+            'hidden'
+        );
+
         return;
     }
 
-    const fragment = document.createDocumentFragment();
+    const fragment =
+        document.createDocumentFragment();
 
     pokemon.forEach((entry) => {
+
         fragment.appendChild(
             createPokemonCard(entry)
         );
+
     });
 
-    elements.grid.replaceChildren(fragment);
+    elements.grid.replaceChildren(
+        fragment
+    );
 }
 
 
@@ -39,11 +50,14 @@ export function renderPokemon(pokemon) {
  * Show loading state.
  */
 export function showLoading() {
+
     elements.grid.replaceChildren();
 
     hideAllStates();
 
-    elements.loading.classList.remove('hidden');
+    elements.loading.classList.remove(
+        'hidden'
+    );
 }
 
 
@@ -51,11 +65,14 @@ export function showLoading() {
  * Show error state.
  */
 export function showError() {
+
     elements.grid.replaceChildren();
 
     hideAllStates();
 
-    elements.error.classList.remove('hidden');
+    elements.error.classList.remove(
+        'hidden'
+    );
 }
 
 
@@ -63,6 +80,7 @@ export function showError() {
  * Return the retry button.
  */
 export function getRetryButton() {
+
     return elements.retry;
 }
 
@@ -71,25 +89,36 @@ export function getRetryButton() {
  * Create a Pokémon card.
  */
 function createPokemonCard(pokemon) {
-    const article = document.createElement('article');
 
-    article.className = 'pokemon-card';
-    article.dataset.pokemonId = pokemon.id;
+    const article =
+        document.createElement('article');
 
-    const types = pokemon.types
-        .map(({ type }) => `
-            <span class="pokemon-type type-${type.name}">
-                ${translateType(type.name)}
-            </span>
-        `)
-        .join('');
+    article.className =
+        'pokemon-card';
+
+    article.dataset.pokemonId =
+        pokemon.id;
+
+
+    const types =
+        pokemon.types
+            .map(({ type }) => `
+                <span class="pokemon-type type-${type.name}">
+                    ${translateType(type.name)}
+                </span>
+            `)
+            .join('');
+
 
     article.innerHTML = `
+
         <button
             class="pokemon-card-button"
             type="button"
             data-pokemon-id="${pokemon.id}"
-            aria-label="Ver ${capitalize(pokemon.name)}"
+            aria-label="Ver ${capitalize(
+                pokemon.name
+            )}"
         >
 
             <div class="pokemon-card-image">
@@ -100,16 +129,21 @@ function createPokemonCard(pokemon) {
 
                 <img
                     src="${getPokemonImage(pokemon)}"
-                    alt="${capitalize(pokemon.name)}"
+                    alt="${capitalize(
+                        pokemon.name
+                    )}"
                     loading="lazy"
                 >
 
             </div>
 
+
             <div class="pokemon-card-content">
 
                 <h3>
-                    ${capitalize(pokemon.name)}
+                    ${capitalize(
+                        pokemon.name
+                    )}
                 </h3>
 
                 <div class="pokemon-types">
@@ -121,6 +155,7 @@ function createPokemonCard(pokemon) {
         </button>
     `;
 
+
     return article;
 }
 
@@ -129,9 +164,15 @@ function createPokemonCard(pokemon) {
  * Get the best available Pokémon artwork.
  */
 function getPokemonImage(pokemon) {
+
     return (
-        pokemon.sprites?.other?.['official-artwork']?.front_default ??
-        pokemon.sprites?.front_default ??
+        pokemon.sprites
+            ?.other
+            ?.['official-artwork']
+            ?.front_default
+        ??
+        pokemon.sprites?.front_default
+        ??
         ''
     );
 }
@@ -141,7 +182,9 @@ function getPokemonImage(pokemon) {
  * Translate PokéAPI type names.
  */
 function translateType(type) {
+
     const translations = {
+
         normal: 'Normal',
         fire: 'Fuego',
         water: 'Agua',
@@ -160,9 +203,14 @@ function translateType(type) {
         dark: 'Siniestro',
         steel: 'Acero',
         fairy: 'Hada'
+
     };
 
-    return translations[type] ?? capitalize(type);
+    return (
+        translations[type]
+        ??
+        capitalize(type)
+    );
 }
 
 
@@ -170,7 +218,12 @@ function translateType(type) {
  * Capitalize Pokémon names.
  */
 function capitalize(value) {
-    return value.charAt(0).toUpperCase() + value.slice(1);
+
+    return (
+        value.charAt(0).toUpperCase()
+        +
+        value.slice(1)
+    );
 }
 
 
@@ -178,7 +231,9 @@ function capitalize(value) {
  * Format Pokédex number.
  */
 function formatId(id) {
-    return String(id).padStart(3, '0');
+
+    return String(id)
+        .padStart(3, '0');
 }
 
 
@@ -186,9 +241,18 @@ function formatId(id) {
  * Hide every application state.
  */
 function hideAllStates() {
-    elements.loading.classList.add('hidden');
-    elements.error.classList.add('hidden');
-    elements.empty.classList.add('hidden');
+
+    elements.loading.classList.add(
+        'hidden'
+    );
+
+    elements.error.classList.add(
+        'hidden'
+    );
+
+    elements.empty.classList.add(
+        'hidden'
+    );
 }
 
 
@@ -216,62 +280,99 @@ export function renderPokemonDetails(details) {
     const favoritesSection =
         document.querySelector('#favorites');
 
+
     const {
         pokemon,
-        species
+        species,
+        evolution
     } = details;
 
+
     const primaryType =
-        pokemon.types[0]?.type.name ?? 'normal';
-
-    const types = pokemon.types
-        .map(({ type }) => `
-            <span class="pokemon-type type-${type.name}">
-                ${translateType(type.name)}
-            </span>
-        `)
-        .join('');
+        pokemon.types[0]?.type.name
+        ??
+        'normal';
 
 
-    const stats = pokemon.stats
-        .map(({ stat, base_stat }) => `
-            <div class="stat-row">
+    const types =
+        pokemon.types
+            .map(({ type }) => `
+                <span class="pokemon-type type-${type.name}">
+                    ${translateType(type.name)}
+                </span>
+            `)
+            .join('');
 
-                <div class="stat-header">
 
-                    <span>
-                        ${translateStat(stat.name)}
-                    </span>
+    const stats =
+        pokemon.stats
+            .map(({ stat, base_stat }) => `
 
-                    <strong>
-                        ${base_stat}
-                    </strong>
+                <div class="stat-row">
+
+                    <div class="stat-header">
+
+                        <span>
+                            ${translateStat(
+                                stat.name
+                            )}
+                        </span>
+
+                        <strong>
+                            ${base_stat}
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        class="stat-bar type-${primaryType}"
+                    >
+
+                        <span
+                            style="width: ${Math.min(
+                                base_stat,
+                                100
+                            )}%"
+                        ></span>
+
+                    </div>
 
                 </div>
 
-                <div class="stat-bar type-${primaryType}">
-                    <span
-                        style="width: ${Math.min(
-                            base_stat,
-                            100
-                        )}%"
-                    ></span>
-                </div>
-
-            </div>
-        `)
-        .join('');
+            `)
+            .join('');
 
 
-    const abilities = pokemon.abilities
-        .map(({ ability }) => `
-            <span class="ability">
-                ${translateAbility(
-                    ability.name
-                )}
-            </span>
-        `)
-        .join('');
+    const abilities =
+        pokemon.abilities
+            .map(({ ability }) => `
+
+                <span class="ability">
+                    ${translateAbility(
+                        ability.name
+                    )}
+                </span>
+
+            `)
+            .join('');
+
+
+    /*
+     * Build evolution section.
+     */
+    const evolutionList =
+        getEvolutionList(
+            evolution
+        );
+
+
+    const evolutionSection =
+        evolutionList.length > 1
+            ? createEvolutionSection(
+                evolutionList
+            )
+            : '';
 
 
     detailContent.innerHTML = `
@@ -286,6 +387,7 @@ export function renderPokemonDetails(details) {
                 #${formatId(pokemon.id)}
             </div>
 
+
             <div class="detail-heading">
 
                 <span class="detail-eyebrow">
@@ -294,9 +396,13 @@ export function renderPokemonDetails(details) {
                     )}
                 </span>
 
+
                 <h1>
-                    ${capitalize(pokemon.name)}
+                    ${capitalize(
+                        pokemon.name
+                    )}
                 </h1>
+
 
                 <div class="pokemon-types">
                     ${types}
@@ -304,10 +410,13 @@ export function renderPokemonDetails(details) {
 
             </div>
 
+
             <div class="detail-image">
 
                 <img
-                    src="${getPokemonImage(pokemon)}"
+                    src="${getPokemonImage(
+                        pokemon
+                    )}"
                     alt="${capitalize(
                         pokemon.name
                     )}"
@@ -324,6 +433,7 @@ export function renderPokemonDetails(details) {
 
         <div class="detail-grid">
 
+
             <!-- INFORMATION -->
 
             <section class="detail-panel">
@@ -332,33 +442,47 @@ export function renderPokemonDetails(details) {
                     Información
                 </span>
 
+
                 <h2>
-                    ${capitalize(pokemon.name)}
+                    ${capitalize(
+                        pokemon.name
+                    )}
                 </h2>
+
 
                 <div class="physical-data">
 
                     <div>
-                        <span>Altura</span>
+
+                        <span>
+                            Altura
+                        </span>
 
                         <strong>
                             ${formatHeight(
                                 pokemon.height
                             )}
                         </strong>
+
                     </div>
 
+
                     <div>
-                        <span>Peso</span>
+
+                        <span>
+                            Peso
+                        </span>
 
                         <strong>
                             ${formatWeight(
                                 pokemon.weight
                             )}
                         </strong>
+
                     </div>
 
                 </div>
+
 
                 <p class="pokemon-description">
                     ${getDescription(
@@ -377,9 +501,11 @@ export function renderPokemonDetails(details) {
                     Habilidades
                 </span>
 
+
                 <h2>
                     Habilidades
                 </h2>
+
 
                 <div class="abilities">
                     ${abilities}
@@ -396,9 +522,11 @@ export function renderPokemonDetails(details) {
                     Estadísticas
                 </span>
 
+
                 <h2>
                     Estadísticas base
                 </h2>
+
 
                 <div class="stats">
                     ${stats}
@@ -407,6 +535,10 @@ export function renderPokemonDetails(details) {
             </section>
 
         </div>
+
+
+        ${evolutionSection}
+
     `;
 
 
@@ -415,11 +547,17 @@ export function renderPokemonDetails(details) {
      * the selected Pokémon detail.
      */
 
-    heroSection?.classList.add('hidden');
+    heroSection?.classList.add(
+        'hidden'
+    );
 
-    pokedexSection?.classList.add('hidden');
+    pokedexSection?.classList.add(
+        'hidden'
+    );
 
-    favoritesSection?.classList.add('hidden');
+    favoritesSection?.classList.add(
+        'hidden'
+    );
 
 
     detailSection.classList.remove(
@@ -433,9 +571,237 @@ export function renderPokemonDetails(details) {
 
 
     window.scrollTo({
+
         top: 0,
+
         behavior: 'smooth'
+
     });
+}
+
+
+/**
+ * Build the evolution section.
+ */
+function createEvolutionSection(
+    evolutionList
+) {
+
+    const cards =
+        evolutionList
+            .map(
+                (evolution, index) => {
+
+                    const image =
+                        getEvolutionImage(
+                            evolution.id
+                        );
+
+
+                    const arrow =
+                        index <
+                        evolutionList.length - 1
+                            ? `
+                                <span
+                                    class="evolution-arrow"
+                                    aria-hidden="true"
+                                >
+                                    →
+                                </span>
+                              `
+                            : '';
+
+
+                    return `
+
+                        <article
+                            class="evolution-card pokemon-card"
+                            data-pokemon-id="${evolution.id}"
+                        >
+
+                            <button
+                                class="evolution-card-button"
+                                type="button"
+                                data-pokemon-id="${evolution.id}"
+                                aria-label="Ver ${capitalize(
+                                    evolution.name
+                                )}"
+                            >
+
+                                <span
+                                    class="evolution-number"
+                                >
+                                    #${formatId(
+                                        evolution.id
+                                    )}
+                                </span>
+
+
+                                <img
+                                    src="${image}"
+                                    alt="${capitalize(
+                                        evolution.name
+                                    )}"
+                                    loading="lazy"
+                                >
+
+
+                                <strong>
+                                    ${capitalize(
+                                        evolution.name
+                                    )}
+                                </strong>
+
+                            </button>
+
+                        </article>
+
+                        ${arrow}
+
+                    `;
+                }
+            )
+            .join('');
+
+
+    return `
+
+        <section class="evolution-section">
+
+            <span class="panel-eyebrow">
+                Evoluciones
+            </span>
+
+
+            <h2>
+                Cadena evolutiva
+            </h2>
+
+
+            <div class="evolution-chain">
+
+                ${cards}
+
+            </div>
+
+        </section>
+
+    `;
+}
+
+
+/**
+ * Flatten the recursive PokéAPI
+ * evolution chain.
+ */
+function getEvolutionList(
+    evolution
+) {
+
+    if (
+        !evolution ||
+        !evolution.chain
+    ) {
+        return [];
+    }
+
+
+    const list = [];
+
+
+    function walk(chain) {
+
+        if (!chain) {
+            return;
+        }
+
+
+        if (chain.species) {
+
+            const id =
+                getIdFromUrl(
+                    chain.species.url
+                );
+
+
+            list.push({
+
+                id,
+
+                name:
+                    chain.species.name,
+
+                url:
+                    chain.species.url
+
+            });
+        }
+
+
+        if (
+            chain.evolves_to &&
+            chain.evolves_to.length
+        ) {
+
+            chain.evolves_to.forEach(
+                (next) => {
+
+                    walk(next);
+
+                }
+            );
+        }
+    }
+
+
+    walk(
+        evolution.chain
+    );
+
+
+    return list;
+}
+
+
+/**
+ * Extract a Pokédex ID from
+ * a PokéAPI resource URL.
+ */
+function getIdFromUrl(url) {
+
+    if (!url) {
+        return null;
+    }
+
+
+    const parts =
+        url
+            .split('/')
+            .filter(Boolean);
+
+
+    return Number(
+        parts[parts.length - 1]
+    );
+}
+
+
+/**
+ * Get official artwork for
+ * an evolution Pokémon.
+ */
+function getEvolutionImage(id) {
+
+    if (!id) {
+        return '';
+    }
+
+
+    return `
+        https://raw.githubusercontent.com/
+        PokeAPI/sprites/master/sprites/pokemon/
+        other/official-artwork/${id}.png
+    `.replace(/\s+/g, '');
 }
 
 
@@ -483,65 +849,137 @@ export function hidePokemonDetails() {
 
 
     window.scrollTo({
+
         top: 0,
+
         behavior: 'smooth'
+
     });
 }
 
 
+/**
+ * Translate stat names.
+ */
 function translateStat(stat) {
 
     const translations = {
+
         hp: 'PS',
+
         attack: 'Ataque',
+
         defense: 'Defensa',
-        'special-attack': 'At. Especial',
-        'special-defense': 'Def. Especial',
+
+        'special-attack':
+            'At. Especial',
+
+        'special-defense':
+            'Def. Especial',
+
         speed: 'Velocidad'
+
     };
 
-    return translations[stat]
-        ?? capitalize(stat);
+
+    return (
+        translations[stat]
+        ??
+        capitalize(stat)
+    );
 }
 
 
-function translateAbility(ability) {
+/**
+ * Translate ability names.
+ */
+function translateAbility(
+    ability
+) {
 
     const translations = {
+
         overgrow: 'Espesura',
+
         blaze: 'Mar Llamas',
+
         torrent: 'Torrente',
-        shield_dust: 'Polvo Escudo',
-        static: 'Electricidad Estática'
+
+        shield_dust:
+            'Polvo Escudo',
+
+        static:
+            'Electricidad Estática'
+
     };
 
-    return translations[ability]
-        ?? capitalize(
-            ability.replace('-', ' ')
-        );
+
+    return (
+        translations[ability]
+        ??
+        capitalize(
+            ability.replace(
+                '-',
+                ' '
+            )
+        )
+    );
 }
 
 
-function translateGeneration(generation) {
+/**
+ * Translate generation names.
+ */
+function translateGeneration(
+    generation
+) {
 
     const generations = {
-        'generation-i': 'Kanto',
-        'generation-ii': 'Johto',
-        'generation-iii': 'Hoenn',
-        'generation-iv': 'Sinnoh',
-        'generation-v': 'Teselia',
-        'generation-vi': 'Kalos',
-        'generation-vii': 'Alola',
-        'generation-viii': 'Galar',
-        'generation-ix': 'Paldea'
+
+        'generation-i':
+            'Kanto',
+
+        'generation-ii':
+            'Johto',
+
+        'generation-iii':
+            'Hoenn',
+
+        'generation-iv':
+            'Sinnoh',
+
+        'generation-v':
+            'Teselia',
+
+        'generation-vi':
+            'Kalos',
+
+        'generation-vii':
+            'Alola',
+
+        'generation-viii':
+            'Galar',
+
+        'generation-ix':
+            'Paldea'
+
     };
 
-    return generations[generation]
-        ?? capitalize(generation);
+
+    return (
+        generations[generation]
+        ??
+        capitalize(generation)
+    );
 }
 
 
-function getDescription(species) {
+/**
+ * Get Spanish Pokémon description.
+ */
+function getDescription(
+    species
+) {
 
     const entry =
         species.flavor_text_entries.find(
@@ -549,9 +987,14 @@ function getDescription(species) {
                 language.name === 'es'
         );
 
+
     if (!entry) {
-        return 'No hay descripción disponible.';
+
+        return (
+            'No hay descripción disponible.'
+        );
     }
+
 
     return entry.flavor_text
         .replace(/\f/g, ' ')
@@ -559,11 +1002,23 @@ function getDescription(species) {
 }
 
 
+/**
+ * Format height.
+ */
 function formatHeight(height) {
-    return `${(height / 10).toFixed(1)} m`;
+
+    return `${
+        (height / 10).toFixed(1)
+    } m`;
 }
 
 
+/**
+ * Format weight.
+ */
 function formatWeight(weight) {
-    return `${(weight / 10).toFixed(1)} kg`;
+
+    return `${
+        (weight / 10).toFixed(1)
+    } kg`;
 }

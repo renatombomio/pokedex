@@ -19,20 +19,26 @@ import {
 } from './ui.js';
 
 
-const searchForm = document.querySelector('#search-form');
-const searchInput = document.querySelector('#search-input');
+const searchForm =
+    document.querySelector('#search-form');
 
-const filterButtons = document.querySelectorAll(
-    '.filter-button'
-);
+const searchInput =
+    document.querySelector('#search-input');
 
-const loadMoreButton = document.querySelector(
-    '#load-more-button'
-);
+const filterButtons =
+    document.querySelectorAll(
+        '.filter-button'
+    );
 
-const pokemonGrid = document.querySelector(
-    '#pokemon-grid'
-);
+const loadMoreButton =
+    document.querySelector(
+        '#load-more-button'
+    );
+
+const pokemonGrid =
+    document.querySelector(
+        '#pokemon-grid'
+    );
 
 const detailBackButton =
     document.querySelector(
@@ -44,16 +50,20 @@ const detailBackButton =
  * Start the application.
  */
 async function start() {
+
     showLoading();
 
     try {
-        const state = await initializeApp();
+
+        const state =
+            await initializeApp();
 
         renderPokemon(
             state.filteredPokemon
         );
 
     } catch (error) {
+
         console.error(
             'Failed to start Pokédex:',
             error
@@ -69,16 +79,32 @@ async function start() {
  */
 searchForm.addEventListener(
     'submit',
-    (event) => {
+    async (event) => {
+
         event.preventDefault();
 
-        const state = searchPokemon(
-            searchInput.value
-        );
+        try {
 
-        renderPokemon(
-            state.filteredPokemon
-        );
+            showLoading();
+
+            const state =
+                await searchPokemon(
+                    searchInput.value
+                );
+
+            renderPokemon(
+                state.filteredPokemon
+            );
+
+        } catch (error) {
+
+            console.error(
+                'Failed to search Pokémon:',
+                error
+            );
+
+            showError();
+        }
     }
 );
 
@@ -91,29 +117,48 @@ filterButtons.forEach(
 
         button.addEventListener(
             'click',
-            () => {
+            async () => {
 
                 filterButtons.forEach(
                     (item) => {
+
                         item.classList.remove(
                             'active'
                         );
                     }
                 );
 
-                button.classList.add('active');
-
-                const state = filterByType(
-                    button.dataset.type
+                button.classList.add(
+                    'active'
                 );
 
-                renderPokemon(
-                    state.filteredPokemon
-                );
+                try {
+
+                    showLoading();
+
+                    const state =
+                        await filterByType(
+                            button.dataset.type
+                        );
+
+                    renderPokemon(
+                        state.filteredPokemon
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        'Failed to filter Pokémon:',
+                        error
+                    );
+
+                    showError();
+                }
             }
         );
     }
 );
+
 
 /**
  * Open Pokémon details.
@@ -122,9 +167,10 @@ pokemonGrid.addEventListener(
     'click',
     async (event) => {
 
-        const card = event.target.closest(
-            '.pokemon-card'
-        );
+        const card =
+            event.target.closest(
+                '.pokemon-card'
+            );
 
         if (!card) {
             return;
@@ -164,9 +210,14 @@ pokemonGrid.addEventListener(
     }
 );
 
+
+/**
+ * Back to Pokédex.
+ */
 detailBackButton.addEventListener(
     'click',
     () => {
+
         hidePokemonDetails();
     }
 );
@@ -181,7 +232,8 @@ if (loadMoreButton) {
         'click',
         async () => {
 
-            loadMoreButton.disabled = true;
+            loadMoreButton.disabled =
+                true;
 
             loadMoreButton.textContent =
                 'Cargando...';
@@ -204,7 +256,8 @@ if (loadMoreButton) {
 
             } finally {
 
-                loadMoreButton.disabled = false;
+                loadMoreButton.disabled =
+                    false;
 
                 loadMoreButton.textContent =
                     'Cargar más Pokémon';
@@ -223,4 +276,7 @@ getRetryButton().addEventListener(
 );
 
 
+/**
+ * Initialize application.
+ */
 start();

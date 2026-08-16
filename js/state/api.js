@@ -1,14 +1,12 @@
 import {
     getPokemon,
-    getPokemonList
+    getPokemonList,
+    getPokemonByType
 } from '../api/pokemon.js';
 
 
 /**
  * Load a collection of Pokémon with their complete data.
- *
- * PokéAPI first returns a list of references, so we then
- * resolve each Pokémon individually.
  */
 export async function loadPokemonCollection({
     limit = 24,
@@ -31,7 +29,96 @@ export async function loadPokemonCollection({
 
 
 /**
- * Load a single Pokémon by name or Pokédex number.
+ * Load all Pokémon belonging to a specific type.
+ */
+export async function loadPokemonByType(type) {
+
+    const response =
+        await getPokemonByType(type);
+
+    const pokemon = await Promise.all(
+        response.pokemon.map(
+            ({ pokemon }) =>
+                getPokemon(pokemon.name)
+        )
+    );
+
+    return pokemon;
+}
+
+
+/**
+ * Search Pokémon globally.
+ *
+ * This searches the complete PokéAPI list,
+ * so Pokémon variants are also found.
+ */
+export async function searchPokemonList(query) {
+
+    const searchQuery =
+        query
+            .trim()
+            .toLowerCase();
+
+
+    if (!searchQuery) {
+        return [];
+    }
+
+
+    const response =
+        await getPokemonList(
+            2000,
+            0
+        );
+
+
+    const matches =
+        response.results.filter(
+            ({ name, url }) => {
+
+                const id =
+                    url
+                        .split('/')
+                        .filter(Boolean)
+                        .pop();
+
+                const nameMatches =
+                    name
+                        .toLowerCase()
+                        .includes(
+                            searchQuery
+                        );
+
+                const idMatches =
+                    String(id)
+                        .includes(
+                            searchQuery
+                        );
+
+                return (
+                    nameMatches ||
+                    idMatches
+                );
+            }
+        );
+
+
+    const pokemon =
+        await Promise.all(
+            matches.map(
+                ({ name }) =>
+                    getPokemon(name)
+            )
+        );
+
+
+    return pokemon;
+}
+
+
+/**
+ * Load a single Pokémon.
  */
 export async function loadPokemonDetails(
     nameOrId

@@ -1,12 +1,18 @@
-const API_BASE_URL = 'https://pokeapi.co/api/v2';
+const API_BASE_URL =
+    'https://pokeapi.co/api/v2';
 
 
+/**
+ * Base API request.
+ */
 async function request(endpoint) {
+
     const response = await fetch(
         `${API_BASE_URL}${endpoint}`
     );
 
     if (!response.ok) {
+
         throw new Error(
             `PokéAPI request failed: ${response.status} ${response.statusText}`
         );
@@ -17,20 +23,37 @@ async function request(endpoint) {
 
 
 /**
- * Fetch a Pokémon by name or Pokédex number.
+ * Load a Pokémon by name or ID.
  */
 export async function getPokemon(nameOrId) {
 
     if (!nameOrId) {
+
         throw new Error(
             'A Pokémon name or ID is required.'
         );
     }
 
+    const value =
+        String(nameOrId).trim();
+
+    if (value.startsWith('http')) {
+
+        const response =
+            await fetch(value);
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Pokémon request failed: ${response.status} ${response.statusText}`
+            );
+        }
+
+        return response.json();
+    }
+
     const identifier =
-        String(nameOrId)
-            .trim()
-            .toLowerCase();
+        value.toLowerCase();
 
     return request(
         `/pokemon/${identifier}`
@@ -39,7 +62,7 @@ export async function getPokemon(nameOrId) {
 
 
 /**
- * Fetch the complete Pokémon list.
+ * Load a paginated Pokémon list.
  */
 export async function getPokemonList(
     limit = 24,
@@ -53,68 +76,121 @@ export async function getPokemonList(
 
 
 /**
- * Fetch Pokémon species information.
- *
- * Species data contains information that is not
- * available through the standard Pokémon endpoint,
- * such as evolution chains, generation and
- * legendary/mythical classification.
+ * Load Pokémon belonging to a specific type.
  */
-export async function getPokemonSpecies(
-    urlOrId
-) {
+export async function getPokemonByType(type) {
 
-    if (!urlOrId) {
+    if (!type) {
+
         throw new Error(
-            'A Pokémon species URL or ID is required.'
+            'A Pokémon type is required.'
         );
     }
 
-    /*
-     * PokéAPI gives us the species URL directly
-     * through pokemon.species.url.
-     */
-    if (String(urlOrId).startsWith('http')) {
+    const identifier =
+        String(type)
+            .trim()
+            .toLowerCase();
 
-        const response = await fetch(
-            urlOrId
+    return request(
+        `/type/${identifier}`
+    );
+}
+
+
+/**
+ * Load Pokémon species information.
+ */
+export async function getPokemonSpecies(
+    nameOrId
+) {
+
+    if (!nameOrId) {
+
+        throw new Error(
+            'A Pokémon species name, ID or URL is required.'
         );
+    }
+
+    const value =
+        String(nameOrId).trim();
+
+    /*
+     * PokéAPI sometimes gives us the complete
+     * species URL directly.
+     */
+    if (value.startsWith('http')) {
+
+        const response =
+            await fetch(value);
 
         if (!response.ok) {
+
             throw new Error(
-                `PokéAPI species request failed: ${response.status} ${response.statusText}`
+                `Species request failed: ${response.status} ${response.statusText}`
             );
         }
 
         return response.json();
     }
 
+    const identifier =
+        value.toLowerCase();
+
     return request(
-        `/pokemon-species/${urlOrId}`
+        `/pokemon-species/${identifier}`
     );
 }
 
 
 /**
- * Fetch a Pokémon evolution chain.
+ * Load an evolution chain.
  */
 export async function getEvolutionChain(
-    url
+    idOrUrl
 ) {
 
-    if (!url) {
+    if (!idOrUrl) {
+
         throw new Error(
-            'An evolution chain URL is required.'
+            'An evolution chain ID or URL is required.'
         );
     }
 
-    const response = await fetch(url);
+    const value =
+        String(idOrUrl).trim();
 
-    if (!response.ok) {
-        throw new Error(
-            `PokéAPI evolution request failed: ${response.status} ${response.statusText}`
-        );
+    /*
+     * Evolution chain URL.
+     */
+    if (value.startsWith('http')) {
+
+        const response =
+            await fetch(value);
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Evolution chain request failed: ${response.status} ${response.statusText}`
+            );
+        }
+
+        return response.json();
     }
 
-    return response.json();
+    const identifier =
+        value
+            .toLowerCase()
+            .replace(
+                '/evolution-chain/',
+                ''
+            )
+            .replace(
+                /\//g,
+                ''
+            );
+
+    return request(
+        `/evolution-chain/${identifier}`
+    );
 }

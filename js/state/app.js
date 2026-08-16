@@ -1,5 +1,7 @@
 import {
-    loadPokemonCollection
+    loadPokemonCollection,
+    loadPokemonByType,
+    searchPokemonList
 } from './api.js';
 
 
@@ -12,7 +14,6 @@ const state = {
     filteredPokemon: [],
 
     selectedType: 'all',
-    searchQuery: '',
 
     loading: false,
     error: null,
@@ -22,25 +23,33 @@ const state = {
 };
 
 
+/**
+ * Initialize the application.
+ */
 export async function initializeApp() {
+
     setState({
         loading: true,
         error: null,
-        offset: 0
+        offset: 0,
+        selectedType: 'all'
     });
 
     try {
-        const pokemon = await loadPokemonCollection({
-            limit: PAGE_SIZE,
-            offset: 0
-        });
+
+        const pokemon =
+            await loadPokemonCollection({
+                limit: INITIAL_LIMIT,
+                offset: 0
+            });
 
         setState({
             pokemon,
             filteredPokemon: pokemon,
             loading: false,
             error: null,
-            offset: PAGE_SIZE
+            offset: INITIAL_LIMIT,
+            hasMore: true
         });
 
         return getState();
@@ -61,11 +70,16 @@ export async function initializeApp() {
     }
 }
 
+
+/**
+ * Load the next Pokémon batch.
+ */
 export async function loadMorePokemon() {
 
     if (
         state.loading ||
-        !state.hasMore
+        !state.hasMore ||
+        state.selectedType !== 'all'
     ) {
         return getState();
     }
@@ -99,6 +113,9 @@ export async function loadMorePokemon() {
 
         state.offset += PAGE_SIZE;
 
+        /*
+         * Render the complete loaded collection.
+         */
         state.filteredPokemon = [
             ...state.pokemon
         ];
@@ -125,11 +142,185 @@ export async function loadMorePokemon() {
     }
 }
 
+
+/**
+ * Filter Pokémon by type.
+ *
+ * The type filter is completely independent
+ * from the search field.
+ */
+export async function filterByType(type) {
+
+    state.selectedType = type;
+
+
+    /*
+     * "All" shows the Pokémon already loaded.
+     */
+    if (type === 'all') {
+
+        state.filteredPokemon = [
+            ...state.pokemon
+        ];
+
+        return getState();
+    }
+
+
+    setState({
+        loading: true,
+        error: null
+    });
+
+
+    try {
+
+        /*
+         * Get all Pokémon belonging to this type
+         * directly from PokéAPI.
+         */
+        const pokemon =
+            await loadPokemonByType(type);
+
+
+        /*
+         * The search field is completely ignored.
+         */
+        state.filteredPokemon = [
+            ...pokemon
+        ];
+
+
+        setState({
+            loading: false,
+            error: null
+        });
+
+
+        return getState();
+
+    } catch (error) {
+
+        console.error(
+            `Failed to filter Pokémon by type "${type}":`,
+            error
+        );
+
+        setState({
+            loading: false,
+            error
+        });
+
+        throw error;
+    }
+}
+
+
+/**
+ * Search Pokémon.
+ *
+ * This is a one-time action.
+ *
+ * The search query is NOT stored in state,
+ * so it cannot affect future filters.
+ */
+export async function searchPokemon(query) {
+
+    const searchQuery =
+        query
+            .trim()
+            .toLowerCase();
+
+
+    /*
+     * Empty search.
+     */
+    if (!searchQuery) {
+
+        if (
+            state.selectedType === 'all'
+        ) {
+
+            state.filteredPokemon = [
+                ...state.pokemon
+            ];
+
+            return getState();
+        }
+
+
+        return filterByType(
+            state.selectedType
+        );
+    }
+
+
+    setState({
+        loading: true,
+        error: null
+    });
+
+
+    try {
+
+        /*
+         * Search the complete PokéAPI collection.
+         *
+         * This can return Pokémon variants,
+         * such as the different Pikachu forms.
+         */
+        const results =
+            await searchPokemonList(
+                searchQuery
+            );
+
+
+        /*
+         * Display search results directly.
+         *
+         * The selected type is NOT applied.
+         */
+        state.filteredPokemon = [
+            ...results
+        ];
+
+
+        setState({
+            loading: false,
+            error: null
+        });
+
+
+        return getState();
+
+    } catch (error) {
+
+        console.error(
+            'Failed to search Pokémon:',
+            error
+        );
+
+        setState({
+            loading: false,
+            error
+        });
+
+        throw error;
+    }
+}
+
+
+/**
+ * Get a safe copy of the application state.
+ */
 export function getState() {
+
     return {
         ...state,
 
-        pokemon: [...state.pokemon],
+        pokemon: [
+            ...state.pokemon
+        ],
 
         filteredPokemon: [
             ...state.filteredPokemon
@@ -138,65 +329,11 @@ export function getState() {
 }
 
 
-export function filterByType(type) {
-    state.selectedType = type;
-
-    applyFilters();
-
-    return getState();
-}
-
-
-export function searchPokemon(query) {
-    state.searchQuery = query
-        .trim()
-        .toLowerCase();
-
-    applyFilters();
-
-    return getState();
-}
-
-
-function applyFilters() {
-    let results = [...state.pokemon];
-
-
-    if (state.selectedType !== 'all') {
-        results = results.filter(
-            (pokemon) =>
-                pokemon.types.some(
-                    ({ type }) =>
-                        type.name === state.selectedType
-                )
-        );
-    }
-
-
-    if (state.searchQuery) {
-        results = results.filter(
-            (pokemon) => {
-
-                const nameMatches =
-                    pokemon.name
-                        .toLowerCase()
-                        .includes(state.searchQuery);
-
-                const idMatches =
-                    String(pokemon.id)
-                        .includes(state.searchQuery);
-
-                return nameMatches || idMatches;
-            }
-        );
-    }
-
-
-    state.filteredPokemon = results;
-}
-
-
+/**
+ * Update application state.
+ */
 function setState(updates) {
+
     Object.assign(
         state,
         updates
