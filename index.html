@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="css/search-modal.css">
     <link rel="stylesheet" href="css/detail-hero.css">
     <link rel="stylesheet" href="css/detail-stats.css">
+    <link rel="stylesheet" href="css/evolution.css">
 </head>
-
 <body>
     <header class="site-header">
         <div class="container header-content">
@@ -32,9 +32,7 @@
 
     <main>
         <section class="hero">
-            <div class="hero-background" aria-hidden="true">
-                <img src="assets/images/hero-pokemon.png" alt="">
-            </div>
+            <div class="hero-background" aria-hidden="true"><img src="assets/images/hero-pokemon.png" alt=""></div>
             <div class="hero-overlay" aria-hidden="true"></div>
             <div class="container hero-content">
                 <div class="hero-copy">
@@ -59,24 +57,7 @@
                 </header>
                 <div class="filters" id="types" aria-label="Filtrar por tipo">
                     <button class="filter-button active" type="button" data-type="all">Todos</button>
-                    <button class="filter-button" type="button" data-type="normal">Normal</button>
-                    <button class="filter-button" type="button" data-type="fire">Fuego</button>
-                    <button class="filter-button" type="button" data-type="water">Agua</button>
-                    <button class="filter-button" type="button" data-type="electric">Eléctrico</button>
-                    <button class="filter-button" type="button" data-type="grass">Planta</button>
-                    <button class="filter-button" type="button" data-type="ice">Hielo</button>
-                    <button class="filter-button" type="button" data-type="fighting">Lucha</button>
-                    <button class="filter-button" type="button" data-type="poison">Veneno</button>
-                    <button class="filter-button" type="button" data-type="ground">Tierra</button>
-                    <button class="filter-button" type="button" data-type="flying">Volador</button>
-                    <button class="filter-button" type="button" data-type="psychic">Psíquico</button>
-                    <button class="filter-button" type="button" data-type="bug">Bicho</button>
-                    <button class="filter-button" type="button" data-type="rock">Roca</button>
-                    <button class="filter-button" type="button" data-type="ghost">Fantasma</button>
-                    <button class="filter-button" type="button" data-type="dragon">Dragón</button>
-                    <button class="filter-button" type="button" data-type="dark">Siniestro</button>
-                    <button class="filter-button" type="button" data-type="steel">Acero</button>
-                    <button class="filter-button" type="button" data-type="fairy">Hada</button>
+                    <button class="filter-button" type="button" data-type="normal">Normal</button><button class="filter-button" type="button" data-type="fire">Fuego</button><button class="filter-button" type="button" data-type="water">Agua</button><button class="filter-button" type="button" data-type="electric">Eléctrico</button><button class="filter-button" type="button" data-type="grass">Planta</button><button class="filter-button" type="button" data-type="ice">Hielo</button><button class="filter-button" type="button" data-type="fighting">Lucha</button><button class="filter-button" type="button" data-type="poison">Veneno</button><button class="filter-button" type="button" data-type="ground">Tierra</button><button class="filter-button" type="button" data-type="flying">Volador</button><button class="filter-button" type="button" data-type="psychic">Psíquico</button><button class="filter-button" type="button" data-type="bug">Bicho</button><button class="filter-button" type="button" data-type="rock">Roca</button><button class="filter-button" type="button" data-type="ghost">Fantasma</button><button class="filter-button" type="button" data-type="dragon">Dragón</button><button class="filter-button" type="button" data-type="dark">Siniestro</button><button class="filter-button" type="button" data-type="steel">Acero</button><button class="filter-button" type="button" data-type="fairy">Hada</button>
                 </div>
                 <div class="loading-state" id="loading-state"><div class="loader" aria-hidden="true"></div><p>Cargando Pokémon...</p></div>
                 <div class="error-state hidden" id="error-state" role="alert"><h3>Algo salió mal.</h3><p>No pudimos cargar los Pokémon. Inténtalo de nuevo.</p><button id="retry-button" type="button">Intentar otra vez</button></div>
@@ -94,20 +75,11 @@
         </section>
 
         <section class="favorites-section" id="favorites">
-            <div class="container">
-                <p class="eyebrow">Tu colección</p>
-                <h2>Favoritos</h2>
-                <p class="favorites-description">Guarda tus Pokémon favoritos y encuéntralos rápidamente.</p>
-            </div>
+            <div class="container"><p class="eyebrow">Tu colección</p><h2>Favoritos</h2><p class="favorites-description">Guarda tus Pokémon favoritos y encuéntralos rápidamente.</p></div>
         </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="container footer-content">
-            <div class="footer-brand"><strong>Pokédex</strong><span>Explora. Descubre. Colecciona.</span></div>
-            <p class="footer-credit">Pokémon Encyclopedia Web App</p>
-        </div>
-    </footer>
+    <footer class="site-footer"><div class="container footer-content"><div class="footer-brand"><strong>Pokédex</strong><span>Explora. Descubre. Colecciona.</span></div><p class="footer-credit">Pokémon Encyclopedia Web App</p></div></footer>
 
     <script type="module" src="js/state/main.js"></script>
     <script type="module" src="js/state/search-carousel.js"></script>
