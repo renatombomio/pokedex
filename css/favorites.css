@@ -1,0 +1,151 @@
+/* ========================================
+   FAVORITES — COLLECTION UI
+======================================== */
+
+.favorites-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.favorites-section::before {
+    content: "";
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    right: -220px;
+    top: -280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(239,63,34,.1), transparent 68%);
+    pointer-events: none;
+}
+
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+    margin-top: 38px;
+}
+
+.favorites-grid .pokemon-card {
+    animation: favorite-card-in .4s var(--ease) both;
+}
+
+.favorites-empty {
+    position: relative;
+    margin-top: 34px;
+    padding: 54px 24px;
+    border: 1px dashed #303030;
+    border-radius: 26px;
+    background: #101010;
+    text-align: center;
+}
+
+.favorites-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 18px;
+    border: 1px solid #303030;
+    border-radius: 50%;
+    background: #171717;
+    color: #666;
+    font-size: 25px;
+}
+
+.favorites-empty strong {
+    display: block;
+    color: #fff;
+    font-size: 20px;
+    letter-spacing: -.03em;
+}
+
+.favorites-empty p {
+    max-width: 420px;
+    margin: 8px auto 0;
+    color: #777;
+    font-size: 13px;
+}
+
+.favorite-toggle {
+    position: absolute;
+    z-index: 8;
+    top: 14px;
+    left: 14px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 50%;
+    background: rgba(7,7,7,.72);
+    color: #8f8f8f;
+    font-size: 20px;
+    line-height: 1;
+    backdrop-filter: blur(8px);
+    transition: transform .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
+}
+
+.favorite-toggle:hover {
+    transform: scale(1.08);
+    color: #fff;
+    border-color: rgba(255,255,255,.35);
+    background: rgba(20,20,20,.92);
+}
+
+.favorite-toggle.is-favorite {
+    color: #ff6548;
+    border-color: rgba(255,101,72,.55);
+    background: rgba(74,20,13,.82);
+    box-shadow: 0 0 22px rgba(255,91,61,.14);
+}
+
+.favorite-toggle.is-favorite:hover {
+    color: #ff846e;
+}
+
+.favorite-toggle:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+.detail-hero .favorite-toggle {
+    top: 24px;
+    left: 28px;
+    width: 46px;
+    height: 46px;
+    font-size: 23px;
+}
+
+@keyframes favorite-card-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1050px) {
+    .favorites-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .favorites-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .favorites-empty {
+        padding: 44px 20px;
+    }
+
+    .detail-hero .favorite-toggle {
+        top: 18px;
+        left: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .favorites-grid .pokemon-card {
+        animation: none;
+    }
+}
