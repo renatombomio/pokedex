@@ -1,0 +1,120 @@
+/* ========================================
+   SEARCH MODAL — DARK UX
+======================================== */
+
+.search-modal-panel {
+    background: #101010 !important;
+    border-color: rgba(255,255,255,.12) !important;
+    box-shadow: 0 40px 120px rgba(0,0,0,.62) !important;
+}
+
+.search-modal-eyebrow {
+    color: #ff4b2a !important;
+}
+
+.search-modal-header h2 {
+    color: #f7f7f5 !important;
+}
+
+.search-modal-query {
+    color: #777 !important;
+}
+
+.search-modal-close {
+    border-color: #292929 !important;
+    background: #171717 !important;
+    color: #fff !important;
+}
+
+.search-modal-close:hover {
+    background: #222 !important;
+}
+
+.search-modal-results {
+    scrollbar-color: #3a3a3a transparent;
+}
+
+.search-result-button {
+    border-width: 1px !important;
+    background: #171717 !important;
+    color: #fff !important;
+    box-shadow: 0 16px 36px rgba(0,0,0,.28) !important;
+}
+
+.search-result-button:hover {
+    box-shadow: 0 24px 48px rgba(0,0,0,.42) !important;
+}
+
+.search-result-number {
+    color: rgba(255,255,255,.35) !important;
+}
+
+.search-result-content {
+    background: rgba(7,7,7,.84) !important;
+    border-top-color: rgba(255,255,255,.08) !important;
+}
+
+.search-result-content strong {
+    color: #fff !important;
+}
+
+.search-modal-empty {
+    min-height: 260px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    padding: 40px;
+    border: 1px dashed #333;
+    border-radius: 20px;
+    background: #151515;
+    color: #fff;
+    text-align: center;
+}
+
+.search-modal-empty span {
+    color: #777;
+    font-size: 14px;
+}
+
+.search-result-button:focus-visible,
+.search-modal-close:focus-visible {
+    outline: 2px solid #ff4b2a;
+    outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+    .search-modal {
+        padding: 14px !important;
+    }
+
+    .search-modal-panel {
+        width: 100% !important;
+        max-height: calc(100vh - 28px) !important;
+        padding: 20px !important;
+        border-radius: 22px !important;
+    }
+
+    .search-modal-header {
+        margin-bottom: 18px !important;
+    }
+
+    .search-modal-results {
+        grid-auto-columns: minmax(82vw, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .search-result-button {
+        min-height: 360px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .search-modal,
+    .search-modal-panel,
+    .search-result-button,
+    .search-result-image img,
+    .search-modal-close {
+        transition: none !important;
+    }
+}
