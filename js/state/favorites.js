@@ -1,4 +1,6 @@
 import { getPokemon } from '../api/pokemon.js';
+import { loadPokemonDetails } from './details.js';
+import { renderPokemonDetails } from './ui.js';
 
 const STORAGE_KEY = 'pokedex-favorites';
 const pokemonCache = new Map();
@@ -126,7 +128,6 @@ const typeTranslations = {
 
 function createCard(pokemon) {
     const article = document.createElement('article');
-    const primaryType = pokemon.types?.[0]?.type?.name || 'normal';
 
     article.className = 'pokemon-card';
     article.dataset.pokemonId = pokemon.id;
@@ -148,7 +149,6 @@ function createCard(pokemon) {
         </button>
     `;
 
-    article.style.setProperty('--favorite-type', primaryType);
     return article;
 }
 
@@ -158,6 +158,15 @@ async function getFavoritePokemon(id) {
     }
 
     return pokemonCache.get(id);
+}
+
+async function openFavoriteDetail(id) {
+    try {
+        const details = await loadPokemonDetails(id);
+        renderPokemonDetails(details);
+    } catch (error) {
+        console.error('Could not load favorite details:', error);
+    }
 }
 
 async function renderFavorites() {
@@ -204,6 +213,18 @@ async function renderFavorites() {
     empty.hidden = validPokemon.length > 0;
     favoritesSection.classList.toggle('has-favorites', validPokemon.length > 0);
     injectFavoriteButtons(grid);
+}
+
+if (favoritesSection) {
+    favoritesSection.addEventListener('click', (event) => {
+        const card = event.target.closest('.favorites-grid .pokemon-card');
+
+        if (!card || event.target.closest('.favorite-toggle')) {
+            return;
+        }
+
+        openFavoriteDetail(card.dataset.pokemonId);
+    });
 }
 
 if (pokemonGrid) {
