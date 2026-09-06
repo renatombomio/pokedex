@@ -1,0 +1,179 @@
+/* ========================================
+   DETAIL HERO — FEATURED POKÉMON
+======================================== */
+
+.detail-hero {
+    isolation: isolate;
+    min-height: 500px;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    border-color: color-mix(in srgb, var(--detail-accent, #ef5335) 78%, #fff 4%);
+    background:
+        radial-gradient(circle at 72% 48%, var(--detail-glow, rgba(239,63,34,.22)), transparent 34%),
+        radial-gradient(circle at 88% 100%, rgba(255,255,255,.05), transparent 34%),
+        #18100e;
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.38),
+        inset 0 1px rgba(255,255,255,.07);
+}
+
+.detail-hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 420px;
+    height: 420px;
+    right: 8%;
+    top: 50%;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    background: var(--detail-glow, rgba(239,63,34,.16));
+    filter: blur(34px);
+    opacity: .8;
+}
+
+.detail-hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background:
+        linear-gradient(115deg, rgba(255,255,255,.045), transparent 35%),
+        linear-gradient(180deg, transparent 65%, rgba(0,0,0,.18));
+    pointer-events: none;
+}
+
+/* All 18 type atmospheres */
+.detail-hero:has(.type-normal)  { --detail-accent:#aaa; --detail-glow:rgba(190,190,190,.16); background-color:#202020; }
+.detail-hero:has(.type-fire)    { --detail-accent:#ff5b32; --detail-glow:rgba(255,78,38,.27); background-color:#321512; }
+.detail-hero:has(.type-water)   { --detail-accent:#55a8ff; --detail-glow:rgba(69,157,255,.27); background-color:#101d2b; }
+.detail-hero:has(.type-electric){ --detail-accent:#f1cf35; --detail-glow:rgba(241,207,53,.24); background-color:#262108; }
+.detail-hero:has(.type-grass)   { --detail-accent:#69cf73; --detail-glow:rgba(72,205,91,.24); background-color:#102116; }
+.detail-hero:has(.type-ice)     { --detail-accent:#55d2df; --detail-glow:rgba(73,207,222,.24); background-color:#0f272b; }
+.detail-hero:has(.type-fighting){ --detail-accent:#e96a4e; --detail-glow:rgba(232,92,67,.24); background-color:#321b17; }
+.detail-hero:has(.type-poison)  { --detail-accent:#bc70df; --detail-glow:rgba(180,91,220,.24); background-color:#26132e; }
+.detail-hero:has(.type-ground)  { --detail-accent:#d49a55; --detail-glow:rgba(212,154,85,.24); background-color:#302316; }
+.detail-hero:has(.type-flying)  { --detail-accent:#8e91ed; --detail-glow:rgba(125,129,226,.24); background-color:#1d1d38; }
+.detail-hero:has(.type-psychic) { --detail-accent:#ec71a6; --detail-glow:rgba(231,100,155,.24); background-color:#301520; }
+.detail-hero:has(.type-bug)     { --detail-accent:#9ecb4c; --detail-glow:rgba(150,196,63,.24); background-color:#26300e; }
+.detail-hero:has(.type-rock)    { --detail-accent:#b89565; --detail-glow:rgba(174,137,87,.24); background-color:#292016; }
+.detail-hero:has(.type-ghost)   { --detail-accent:#a37ad7; --detail-glow:rgba(145,105,205,.24); background-color:#21182e; }
+.detail-hero:has(.type-dragon)  { --detail-accent:#747be0; --detail-glow:rgba(95,103,218,.24); background-color:#17182f; }
+.detail-hero:has(.type-dark)    { --detail-accent:#888; --detail-glow:rgba(255,255,255,.11); background-color:#202020; }
+.detail-hero:has(.type-steel)   { --detail-accent:#93a5b1; --detail-glow:rgba(145,166,178,.2); background-color:#20272c; }
+.detail-hero:has(.type-fairy)   { --detail-accent:#e58bb4; --detail-glow:rgba(221,116,164,.24); background-color:#301827; }
+
+.detail-heading {
+    padding: 68px 0 68px 64px;
+}
+
+.detail-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 2px;
+    border-radius: 99px;
+    background: currentColor;
+    box-shadow: 0 0 14px currentColor;
+}
+
+.detail-heading h1 {
+    max-width: 560px;
+    margin-bottom: 22px;
+    font-size: clamp(58px, 7vw, 104px);
+    font-weight: 950;
+    text-wrap: balance;
+    text-shadow: 0 12px 40px rgba(0,0,0,.22);
+}
+
+.detail-heading .pokemon-types {
+    gap: 8px;
+}
+
+.detail-heading .pokemon-type {
+    padding: 7px 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+
+.detail-image {
+    position: relative;
+    min-height: 450px;
+}
+
+.detail-image::before {
+    content: "";
+    position: absolute;
+    width: min(70%, 360px);
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--detail-accent, #ef5335) 30%, transparent);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 28px color-mix(in srgb, var(--detail-accent, #ef5335) 5%, transparent),
+        0 0 70px var(--detail-glow, rgba(239,63,34,.16));
+    opacity: .8;
+}
+
+.detail-image img {
+    position: relative;
+    z-index: 2;
+    width: min(92%, 430px);
+    height: 430px;
+    filter:
+        drop-shadow(0 30px 26px rgba(0,0,0,.5))
+        drop-shadow(0 0 26px var(--detail-glow, rgba(239,63,34,.14)));
+    animation: detail-hero-in .7s var(--ease) both;
+}
+
+@keyframes detail-hero-in {
+    from {
+        opacity: 0;
+        transform: scale(.84) translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@media (max-width: 760px) {
+    .detail-hero {
+        min-height: 690px;
+        grid-template-columns: 1fr;
+    }
+
+    .detail-heading {
+        padding: 54px 28px 0;
+    }
+
+    .detail-heading h1 {
+        font-size: clamp(54px, 15vw, 78px);
+    }
+
+    .detail-number {
+        font-size: 58px;
+    }
+
+    .detail-image {
+        min-height: 390px;
+    }
+
+    .detail-image::before {
+        width: min(72vw, 310px);
+    }
+
+    .detail-image img {
+        width: min(84vw, 360px);
+        height: min(84vw, 360px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .detail-image img {
+        animation: none;
+    }
+}
