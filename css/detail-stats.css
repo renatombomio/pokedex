@@ -1,0 +1,139 @@
+/* ========================================
+   DETAIL STATS — DATA VISUALIZATION
+======================================== */
+
+.detail-grid .detail-panel:last-child {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(255,255,255,.045), transparent 34%),
+        #101010;
+}
+
+.detail-grid .detail-panel:last-child::after {
+    content: "BASE DATA";
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    color: rgba(255,255,255,.08);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .16em;
+}
+
+.stats {
+    display: grid;
+    gap: 18px;
+}
+
+.stat-row {
+    margin: 0;
+}
+
+.stat-header {
+    align-items: baseline;
+    margin-bottom: 8px;
+    color: #888;
+    font-size: 11px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+}
+
+.stat-header strong {
+    min-width: 34px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 900;
+    text-align: right;
+    letter-spacing: -.02em;
+}
+
+.stat-bar {
+    position: relative;
+    height: 9px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 999px;
+    background: #222;
+    overflow: hidden;
+}
+
+.stat-bar::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,.04) 0,
+        rgba(255,255,255,.04) 1px,
+        transparent 1px,
+        transparent 20%
+    );
+    pointer-events: none;
+}
+
+.stat-bar span {
+    position: relative;
+    z-index: 1;
+    display: block;
+    height: 100%;
+    min-width: 4px;
+    border-radius: inherit;
+    background: var(--stat-color, #ef3f22);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--stat-color, #ef3f22) 48%, transparent);
+    transform-origin: left center;
+    animation: stat-fill .65s var(--ease) both;
+}
+
+/* All 18 Pokémon type colors */
+.stat-bar.type-normal   { --stat-color:#aaa; }
+.stat-bar.type-fire     { --stat-color:#ff5b32; }
+.stat-bar.type-water    { --stat-color:#55a8ff; }
+.stat-bar.type-electric { --stat-color:#f1cf35; }
+.stat-bar.type-grass    { --stat-color:#69cf73; }
+.stat-bar.type-ice      { --stat-color:#55d2df; }
+.stat-bar.type-fighting { --stat-color:#e96a4e; }
+.stat-bar.type-poison   { --stat-color:#bc70df; }
+.stat-bar.type-ground   { --stat-color:#d49a55; }
+.stat-bar.type-flying   { --stat-color:#8e91ed; }
+.stat-bar.type-psychic  { --stat-color:#ec71a6; }
+.stat-bar.type-bug      { --stat-color:#9ecb4c; }
+.stat-bar.type-rock     { --stat-color:#b89565; }
+.stat-bar.type-ghost    { --stat-color:#a37ad7; }
+.stat-bar.type-dragon   { --stat-color:#747be0; }
+.stat-bar.type-dark     { --stat-color:#888; }
+.stat-bar.type-steel    { --stat-color:#93a5b1; }
+.stat-bar.type-fairy    { --stat-color:#e58bb4; }
+
+@keyframes stat-fill {
+    from {
+        opacity: .4;
+        transform: scaleX(0);
+    }
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@media (max-width: 760px) {
+    .detail-grid .detail-panel:last-child::after {
+        top: 22px;
+        right: 22px;
+    }
+
+    .stats {
+        gap: 16px;
+    }
+
+    .stat-header {
+        font-size: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stat-bar span {
+        animation: none;
+    }
+}
