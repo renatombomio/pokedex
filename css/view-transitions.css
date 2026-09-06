@@ -1,0 +1,85 @@
+/* ========================================
+   VIEW TRANSITIONS — NAVIGATION BETWEEN VIEWS
+======================================== */
+
+.pokemon-detail:not(.hidden) .detail-back {
+    animation: view-back-in .42s var(--ease) both;
+}
+
+.pokemon-detail:not(.hidden) .detail-hero {
+    animation: detail-view-in .56s var(--ease) both;
+}
+
+.pokemon-detail:not(.hidden) .detail-grid > .detail-panel {
+    animation: detail-panel-in .5s var(--ease) both;
+}
+
+.pokemon-detail:not(.hidden) .detail-grid > .detail-panel:nth-child(2) {
+    animation-delay: .06s;
+}
+
+.pokemon-detail:not(.hidden) .detail-grid > .detail-panel:nth-child(3) {
+    animation-delay: .12s;
+}
+
+.pokemon-detail:not(.hidden) .evolution-section {
+    animation: detail-panel-in .5s var(--ease) .18s both;
+}
+
+.pokedex-section:not(.hidden) .pokemon-grid {
+    animation: collection-view-in .42s var(--ease) both;
+}
+
+@keyframes view-back-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes detail-view-in {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes detail-panel-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes collection-view-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pokemon-detail:not(.hidden) .detail-back,
+    .pokemon-detail:not(.hidden) .detail-hero,
+    .pokemon-detail:not(.hidden) .detail-grid > .detail-panel,
+    .pokemon-detail:not(.hidden) .evolution-section,
+    .pokedex-section:not(.hidden) .pokemon-grid {
+        animation: none;
+    }
+}
