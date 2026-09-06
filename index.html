@@ -2,116 +2,49 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="description"
-        content="Explora el mundo Pokémon. Descubre Pokémon de todas las regiones, sus estadísticas, habilidades, movimientos y evoluciones."
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explora el mundo Pokémon. Descubre Pokémon de todas las regiones, sus estadísticas, habilidades, movimientos y evoluciones.">
     <title>Pokédex — Explora el mundo Pokémon</title>
-
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/search-modal.css">
     <link rel="stylesheet" href="css/detail-hero.css">
+    <link rel="stylesheet" href="css/detail-stats.css">
 </head>
 
 <body>
-
-    <!-- ========================================
-         HEADER
-    ========================================= -->
-
     <header class="site-header">
         <div class="container header-content">
-
-            <a
-                href="/"
-                class="logo"
-                aria-label="Volver a la Pokédex"
-            >
-                <img
-                    src="assets/images/pokemon-logo.png"
-                    alt=""
-                    class="pokemon-logo"
-                >
-
-                <span
-                    class="logo-divider"
-                    aria-hidden="true"
-                ></span>
-
-                <span class="pokedex-wordmark">
-                    Pokédex
-                </span>
+            <a href="/" class="logo" aria-label="Volver a la Pokédex">
+                <img src="assets/images/pokemon-logo.png" alt="" class="pokemon-logo">
+                <span class="logo-divider" aria-hidden="true"></span>
+                <span class="pokedex-wordmark">Pokédex</span>
             </a>
-
-            <nav
-                class="main-nav"
-                aria-label="Navegación principal"
-            >
+            <nav class="main-nav" aria-label="Navegación principal">
                 <a href="#pokedex">Pokédex</a>
                 <a href="#types">Tipos</a>
                 <a href="#favorites">Favoritos</a>
             </nav>
-
-            <button
-                class="menu-toggle"
-                type="button"
-                aria-label="Abrir menú"
-                aria-expanded="false"
-                aria-controls="main-navigation"
-            >
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-navigation">
+                <span></span><span></span><span></span>
             </button>
-
         </div>
     </header>
 
     <main>
-
         <section class="hero">
             <div class="hero-background" aria-hidden="true">
                 <img src="assets/images/hero-pokemon.png" alt="">
             </div>
-
             <div class="hero-overlay" aria-hidden="true"></div>
-
             <div class="container hero-content">
                 <div class="hero-copy">
                     <p class="eyebrow">Pokémon Encyclopedia</p>
-
-                    <h1>
-                        Explora el
-                        <span>mundo Pokémon.</span>
-                    </h1>
-
-                    <p class="hero-description">
-                        Descubre Pokémon de todas las regiones,
-                        sus estadísticas, habilidades, movimientos
-                        y evoluciones.
-                    </p>
-
+                    <h1>Explora el <span>mundo Pokémon.</span></h1>
+                    <p class="hero-description">Descubre Pokémon de todas las regiones, sus estadísticas, habilidades, movimientos y evoluciones.</p>
                     <form class="search-form" id="search-form">
-                        <label for="search-input" class="sr-only">
-                            Buscar Pokémon
-                        </label>
-
+                        <label for="search-input" class="sr-only">Buscar Pokémon</label>
                         <span class="search-icon" aria-hidden="true">⌕</span>
-
-                        <input
-                            type="search"
-                            id="search-input"
-                            name="pokemon"
-                            placeholder="Buscar por nombre o número..."
-                            autocomplete="off"
-                        >
-
+                        <input type="search" id="search-input" name="pokemon" placeholder="Buscar por nombre o número..." autocomplete="off">
                         <button type="submit">Buscar</button>
                     </form>
                 </div>
@@ -121,22 +54,10 @@
         <section class="pokedex-section" id="pokedex">
             <div class="container">
                 <header class="section-header">
-                    <div>
-                        <p class="eyebrow">Pokédex</p>
-                        <h2>Descubre Pokémon</h2>
-                    </div>
-
-                    <p class="pokemon-count">
-                        <strong id="pokemon-count">0</strong>
-                        Pokémon
-                    </p>
+                    <div><p class="eyebrow">Pokédex</p><h2>Descubre Pokémon</h2></div>
+                    <p class="pokemon-count"><strong id="pokemon-count">0</strong> Pokémon</p>
                 </header>
-
-                <div
-                    class="filters"
-                    id="types"
-                    aria-label="Filtrar por tipo"
-                >
+                <div class="filters" id="types" aria-label="Filtrar por tipo">
                     <button class="filter-button active" type="button" data-type="all">Todos</button>
                     <button class="filter-button" type="button" data-type="normal">Normal</button>
                     <button class="filter-button" type="button" data-type="fire">Fuego</button>
@@ -157,43 +78,17 @@
                     <button class="filter-button" type="button" data-type="steel">Acero</button>
                     <button class="filter-button" type="button" data-type="fairy">Hada</button>
                 </div>
-
-                <div class="loading-state" id="loading-state">
-                    <div class="loader" aria-hidden="true"></div>
-                    <p>Cargando Pokémon...</p>
-                </div>
-
-                <div class="error-state hidden" id="error-state" role="alert">
-                    <h3>Algo salió mal.</h3>
-                    <p>No pudimos cargar los Pokémon. Inténtalo de nuevo.</p>
-                    <button id="retry-button" type="button">Intentar otra vez</button>
-                </div>
-
+                <div class="loading-state" id="loading-state"><div class="loader" aria-hidden="true"></div><p>Cargando Pokémon...</p></div>
+                <div class="error-state hidden" id="error-state" role="alert"><h3>Algo salió mal.</h3><p>No pudimos cargar los Pokémon. Inténtalo de nuevo.</p><button id="retry-button" type="button">Intentar otra vez</button></div>
                 <div class="pokemon-grid" id="pokemon-grid" aria-live="polite"></div>
-
-                <div class="load-more">
-                    <button id="load-more-button" type="button">
-                        Cargar más Pokémon
-                    </button>
-                </div>
-
-                <div class="empty-state hidden" id="empty-state">
-                    <h3>No encontramos ningún Pokémon.</h3>
-                    <p>Prueba con otro nombre o cambia el filtro.</p>
-                </div>
+                <div class="load-more"><button id="load-more-button" type="button">Cargar más Pokémon</button></div>
+                <div class="empty-state hidden" id="empty-state"><h3>No encontramos ningún Pokémon.</h3><p>Prueba con otro nombre o cambia el filtro.</p></div>
             </div>
         </section>
 
-        <section
-            class="pokemon-detail hidden"
-            id="pokemon-detail"
-            aria-hidden="true"
-        >
+        <section class="pokemon-detail hidden" id="pokemon-detail" aria-hidden="true">
             <div class="container">
-                <button class="detail-back" id="detail-back" type="button">
-                    ← Volver a la Pokédex
-                </button>
-
+                <button class="detail-back" id="detail-back" type="button">← Volver a la Pokédex</button>
                 <div class="detail-content" id="detail-content"></div>
             </div>
         </section>
@@ -202,26 +97,19 @@
             <div class="container">
                 <p class="eyebrow">Tu colección</p>
                 <h2>Favoritos</h2>
-                <p class="favorites-description">
-                    Guarda tus Pokémon favoritos y encuéntralos rápidamente.
-                </p>
+                <p class="favorites-description">Guarda tus Pokémon favoritos y encuéntralos rápidamente.</p>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
         <div class="container footer-content">
-            <div class="footer-brand">
-                <strong>Pokédex</strong>
-                <span>Explora. Descubre. Colecciona.</span>
-            </div>
-
+            <div class="footer-brand"><strong>Pokédex</strong><span>Explora. Descubre. Colecciona.</span></div>
             <p class="footer-credit">Pokémon Encyclopedia Web App</p>
         </div>
     </footer>
 
     <script type="module" src="js/state/main.js"></script>
     <script type="module" src="js/state/search-carousel.js"></script>
-
 </body>
 </html>
