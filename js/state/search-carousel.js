@@ -1,7 +1,33 @@
-const modal = document.querySelector('.search-modal');
+const observer = new MutationObserver(() => {
+    const modal = document.querySelector(
+        '.search-modal'
+    );
 
-if (modal) {
+    if (!modal) {
+        return;
+    }
+
+    if (
+        modal.dataset.carouselInitialized ===
+        'true'
+    ) {
+        return;
+    }
+
     initializeSearchCarousel(modal);
+});
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+const existingModal = document.querySelector(
+    '.search-modal'
+);
+
+if (existingModal) {
+    initializeSearchCarousel(existingModal);
 }
 
 function initializeSearchCarousel(searchModal) {
@@ -16,6 +42,9 @@ function initializeSearchCarousel(searchModal) {
     if (!header || !results) {
         return;
     }
+
+    searchModal.dataset.carouselInitialized =
+        'true';
 
     const controls = document.createElement('div');
     controls.className = 'search-carousel-controls';
@@ -67,10 +96,16 @@ function initializeSearchCarousel(searchModal) {
             return 0;
         }
 
-        const styles = window.getComputedStyle(results);
-        const gap = parseFloat(styles.columnGap) || 0;
+        const styles = window.getComputedStyle(
+            results
+        );
+        const gap =
+            parseFloat(styles.columnGap) || 0;
 
-        return card.getBoundingClientRect().width + gap;
+        return (
+            card.getBoundingClientRect().width +
+            gap
+        );
     }
 
     function getVisibleCards() {
@@ -82,7 +117,15 @@ function initializeSearchCarousel(searchModal) {
 
         return Math.max(
             1,
-            Math.round(results.clientWidth / step)
+            Math.floor(
+                (results.clientWidth +
+                    parseFloat(
+                        window.getComputedStyle(
+                            results
+                        ).columnGap
+                    ) || 0) /
+                    step
+            )
         );
     }
 
@@ -176,18 +219,19 @@ function initializeSearchCarousel(searchModal) {
         updateCarousel
     );
 
-    const observer = new MutationObserver(() => {
-        results.scrollTo({
-            left: 0,
-            behavior: 'auto'
+    const resultsObserver =
+        new MutationObserver(() => {
+            results.scrollTo({
+                left: 0,
+                behavior: 'auto'
+            });
+
+            requestAnimationFrame(
+                updateCarousel
+            );
         });
 
-        requestAnimationFrame(
-            updateCarousel
-        );
-    });
-
-    observer.observe(results, {
+    resultsObserver.observe(results, {
         childList: true
     });
 
