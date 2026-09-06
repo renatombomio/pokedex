@@ -12,6 +12,13 @@
     color: #ff4b2a !important;
 }
 
+.search-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+}
+
 .search-modal-header h2 {
     color: #f7f7f5 !important;
 }
@@ -78,9 +85,70 @@
 }
 
 .search-result-button:focus-visible,
-.search-modal-close:focus-visible {
+.search-modal-close:focus-visible,
+.search-carousel-button:focus-visible {
     outline: 2px solid #ff4b2a;
     outline-offset: 3px;
+}
+
+/* ========================================
+   SEARCH RESULTS CAROUSEL
+======================================== */
+
+.search-carousel-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+.search-carousel-position {
+    min-width: 72px;
+    color: #777;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.search-carousel-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.search-carousel-button {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #292929;
+    border-radius: 50%;
+    background: #171717;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        opacity .2s ease,
+        transform .2s ease;
+}
+
+.search-carousel-button:hover:not(:disabled) {
+    border-color: #444;
+    background: #222;
+    transform: translateY(-1px);
+}
+
+.search-carousel-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.search-carousel-button:disabled {
+    opacity: .3;
+    cursor: not-allowed;
 }
 
 @media (max-width: 700px) {
@@ -97,6 +165,21 @@
 
     .search-modal-header {
         margin-bottom: 18px !important;
+        gap: 14px;
+    }
+
+    .search-carousel-controls {
+        gap: 8px;
+        align-self: flex-end;
+    }
+
+    .search-carousel-position {
+        display: none;
+    }
+
+    .search-carousel-button {
+        width: 38px;
+        height: 38px;
     }
 
     .search-modal-results {
@@ -114,7 +197,8 @@
     .search-modal-panel,
     .search-result-button,
     .search-result-image img,
-    .search-modal-close {
+    .search-modal-close,
+    .search-carousel-button {
         transition: none !important;
     }
 }
