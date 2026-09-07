@@ -25,6 +25,7 @@ function buildGamedexCard() {
 
     const physical = [...grid.querySelectorAll('.physical-data > div')];
     const ability = grid.querySelector('.abilities .ability')?.textContent.trim() || '—';
+    const description = grid.querySelector('.pokemon-description')?.textContent.trim() || '';
     const statRows = [...grid.querySelectorAll('.stats .stat-row')];
 
     const typeClass =
@@ -65,8 +66,19 @@ function buildGamedexCard() {
         </div>
     `;
 
+    const info = document.createElement('section');
+    info.className = 'pokemon-about';
+    info.innerHTML = `
+        <div class="pokemon-about-header">
+            <span>Pokédex</span>
+            <h2>Sobre ${escapeHtml(name)}</h2>
+        </div>
+        <p>${escapeHtml(description)}</p>
+    `;
+
     hero.replaceWith(card);
     grid.remove();
+    detailContent.insertBefore(info, detailContent.querySelector('.evolution-section'));
 }
 
 function createMetaItem(element, fallbackLabel) {
