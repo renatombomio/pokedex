@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/evolution.css">
     <link rel="stylesheet" href="css/view-transitions.css">
     <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/skeleton.css">
 </head>
 <body>
     <header class="site-header">
@@ -61,7 +62,17 @@
                     <button class="filter-button active" type="button" data-type="all">Todos</button>
                     <button class="filter-button" type="button" data-type="normal">Normal</button><button class="filter-button" type="button" data-type="fire">Fuego</button><button class="filter-button" type="button" data-type="water">Agua</button><button class="filter-button" type="button" data-type="electric">Eléctrico</button><button class="filter-button" type="button" data-type="grass">Planta</button><button class="filter-button" type="button" data-type="ice">Hielo</button><button class="filter-button" type="button" data-type="fighting">Lucha</button><button class="filter-button" type="button" data-type="poison">Veneno</button><button class="filter-button" type="button" data-type="ground">Tierra</button><button class="filter-button" type="button" data-type="flying">Volador</button><button class="filter-button" type="button" data-type="psychic">Psíquico</button><button class="filter-button" type="button" data-type="bug">Bicho</button><button class="filter-button" type="button" data-type="rock">Roca</button><button class="filter-button" type="button" data-type="ghost">Fantasma</button><button class="filter-button" type="button" data-type="dragon">Dragón</button><button class="filter-button" type="button" data-type="dark">Siniestro</button><button class="filter-button" type="button" data-type="steel">Acero</button><button class="filter-button" type="button" data-type="fairy">Hada</button>
                 </div>
-                <div class="loading-state" id="loading-state"><div class="loader" aria-hidden="true"></div><p>Cargando Pokémon...</p></div>
+                <div class="loading-state" id="loading-state" aria-live="polite">
+                    <p>Cargando Pokémon...</p>
+                    <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
+                    <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
+                    <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
+                    <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
+                    <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
+                    <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
+                    <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
+                    <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
+                </div>
                 <div class="error-state hidden" id="error-state" role="alert"><h3>Algo salió mal.</h3><p>No pudimos cargar los Pokémon. Inténtalo de nuevo.</p><button id="retry-button" type="button">Intentar otra vez</button></div>
                 <div class="pokemon-grid" id="pokemon-grid" aria-live="polite"></div>
                 <div class="load-more"><button id="load-more-button" type="button">Cargar más Pokémon</button></div>
