@@ -1,0 +1,73 @@
+@media (max-width: 760px) {
+    #detail-content {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: auto 224px auto auto auto auto auto;
+    }
+
+    #detail-content::before {
+        height: 548px;
+    }
+
+    #detail-content:has(.type-normal) { --detail-accent:#aaa; --detail-glow:rgba(190,190,190,.16); }
+    #detail-content:has(.type-fire) { --detail-accent:#ff5b32; --detail-glow:rgba(255,78,38,.27); }
+    #detail-content:has(.type-water) { --detail-accent:#55a8ff; --detail-glow:rgba(69,157,255,.27); }
+    #detail-content:has(.type-electric) { --detail-accent:#f1cf35; --detail-glow:rgba(241,207,53,.24); }
+    #detail-content:has(.type-grass) { --detail-accent:#69cf73; --detail-glow:rgba(72,205,91,.24); }
+    #detail-content:has(.type-ice) { --detail-accent:#55d2df; --detail-glow:rgba(73,207,222,.24); }
+    #detail-content:has(.type-fighting) { --detail-accent:#e96a4e; --detail-glow:rgba(232,92,67,.24); }
+    #detail-content:has(.type-poison) { --detail-accent:#bc70df; --detail-glow:rgba(180,91,220,.24); }
+    #detail-content:has(.type-ground) { --detail-accent:#d49a55; --detail-glow:rgba(212,154,85,.24); }
+    #detail-content:has(.type-flying) { --detail-accent:#8e91ed; --detail-glow:rgba(125,129,226,.24); }
+    #detail-content:has(.type-psychic) { --detail-accent:#ec71a6; --detail-glow:rgba(231,100,155,.24); }
+    #detail-content:has(.type-bug) { --detail-accent:#9ecb4c; --detail-glow:rgba(150,196,63,.24); }
+    #detail-content:has(.type-rock) { --detail-accent:#b89565; --detail-glow:rgba(174,137,87,.24); }
+    #detail-content:has(.type-ghost) { --detail-accent:#a37ad7; --detail-glow:rgba(145,105,205,.24); }
+    #detail-content:has(.type-dragon) { --detail-accent:#747be0; --detail-glow:rgba(95,103,218,.24); }
+    #detail-content:has(.type-dark) { --detail-accent:#888; --detail-glow:rgba(255,255,255,.11); }
+    #detail-content:has(.type-steel) { --detail-accent:#93a5b1; --detail-glow:rgba(145,166,178,.2); }
+    #detail-content:has(.type-fairy) { --detail-accent:#e58bb4; --detail-glow:rgba(221,116,164,.24); }
+
+    .detail-heading { grid-column: 1 / -1; }
+    .detail-image { grid-column: 1 / -1; }
+
+    .physical-data {
+        display: contents;
+        grid-row: 3;
+        margin: 0;
+    }
+
+    .physical-data > div {
+        position: relative;
+        z-index: 2;
+        margin: 0 3px;
+    }
+
+    .physical-data > div:nth-child(1) { grid-column: 1; grid-row: 3; }
+    .physical-data > div:nth-child(2) { grid-column: 2; grid-row: 3; }
+
+    .detail-grid .detail-panel:nth-child(2) .abilities {
+        grid-column: 3;
+        grid-row: 3;
+        margin: 0 3px;
+    }
+
+    .detail-grid .detail-panel:nth-child(3) .stats {
+        grid-column: 1 / -1;
+        grid-row: 4;
+        margin: 10px 14px 0;
+    }
+
+    .pokemon-description {
+        grid-column: 1 / -1;
+        grid-row: 6;
+    }
+
+    .evolution-section {
+        grid-column: 1 / -1;
+        grid-row: 7;
+    }
+}
+
+@media (max-width: 380px) {
+    #detail-content::before { height: 528px; }
+}
