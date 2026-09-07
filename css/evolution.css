@@ -1,14 +1,14 @@
 /* ========================================
    EVOLUTION CHAIN — GAMEDEX DETAIL
-   This file owns the evolution component.
+   Single source of truth for evolution UI.
 ======================================== */
 
 .evolution-section {
     position: relative !important;
     display: block !important;
     width: 100% !important;
-    margin: 30px 0 0 !important;
-    padding: 0 0 34px !important;
+    margin: 34px 0 0 !important;
+    padding: 0 0 42px !important;
     border: 0 !important;
     background: transparent !important;
     box-shadow: none !important;
@@ -16,44 +16,46 @@
 }
 
 .evolution-section::before,
-.evolution-section::after { display: none !important; }
+.evolution-section::after {
+    display: none !important;
+}
 
 .evolution-section .panel-eyebrow {
     display: block !important;
-    margin: 0 0 7px !important;
+    margin: 0 0 8px !important;
     color: #ef3f22 !important;
     font-size: 9px !important;
     font-weight: 900 !important;
     line-height: 1 !important;
-    letter-spacing: .17em !important;
+    letter-spacing: .18em !important;
     text-transform: uppercase !important;
 }
 
 .evolution-section h2 {
-    margin: 0 0 20px !important;
+    margin: 0 0 24px !important;
     color: #fff !important;
-    font-size: clamp(23px, 3vw, 32px) !important;
+    font-size: clamp(24px, 3vw, 34px) !important;
     font-weight: 900 !important;
     line-height: .95 !important;
     letter-spacing: -.055em !important;
 }
 
+/* Desktop: use the available horizontal space deliberately. */
 .evolution-chain {
-    position: relative !important;
-    display: flex !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr) 42px minmax(0, 1fr) !important;
     align-items: center !important;
-    justify-content: center !important;
     width: 100% !important;
-    gap: 14px !important;
-    margin: 0 !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    gap: 12px !important;
 }
 
 .evolution-chain .pokemon-card {
     position: relative !important;
-    flex: 0 0 128px !important;
-    width: 128px !important;
-    min-width: 128px !important;
-    max-width: 128px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
     margin: 0 !important;
     border: 0 !important;
     background: transparent !important;
@@ -68,38 +70,38 @@
     align-items: center !important;
     justify-content: flex-end !important;
     width: 100% !important;
-    height: 154px !important;
-    min-height: 154px !important;
+    height: 218px !important;
+    min-height: 218px !important;
     margin: 0 !important;
-    padding: 8px 7px 12px !important;
-    border: 1px solid rgba(255,255,255,.09) !important;
-    border-radius: 18px !important;
-    background: linear-gradient(160deg,#171717 0%,#101010 100%) !important;
+    padding: 12px 10px 15px !important;
+    border: 1px solid rgba(255,255,255,.10) !important;
+    border-radius: 22px !important;
+    background: linear-gradient(155deg,#191919 0%,#101010 100%) !important;
     color: #fff !important;
     text-align: center !important;
     overflow: hidden !important;
-    box-shadow: inset 0 1px rgba(255,255,255,.035),0 12px 28px rgba(0,0,0,.2) !important;
+    box-shadow: inset 0 1px rgba(255,255,255,.045),0 18px 40px rgba(0,0,0,.22) !important;
     transition: transform .22s var(--ease),border-color .22s var(--ease),box-shadow .22s var(--ease) !important;
 }
 
 .evolution-card-button::before {
     content: "" !important;
     position: absolute !important;
-    width: 110px !important;
-    height: 110px !important;
+    width: 170px !important;
+    height: 170px !important;
     left: 50% !important;
-    top: 22px !important;
-    transform: translateX(-50%) !important;
+    top: 45% !important;
+    transform: translate(-50%,-50%) !important;
     border-radius: 50% !important;
-    background: radial-gradient(circle,rgba(255,255,255,.075),transparent 68%) !important;
-    filter: blur(2px) !important;
+    background: radial-gradient(circle,rgba(255,255,255,.07),transparent 68%) !important;
+    filter: blur(3px) !important;
     pointer-events: none !important;
 }
 
 .evolution-card-button:hover {
-    transform: translateY(-4px) !important;
-    border-color: rgba(255,255,255,.18) !important;
-    box-shadow: inset 0 1px rgba(255,255,255,.05),0 18px 34px rgba(0,0,0,.32) !important;
+    transform: translateY(-5px) !important;
+    border-color: rgba(255,255,255,.20) !important;
+    box-shadow: inset 0 1px rgba(255,255,255,.06),0 24px 48px rgba(0,0,0,.32) !important;
 }
 
 .evolution-card-button:focus-visible {
@@ -112,26 +114,28 @@
     z-index: 2 !important;
     display: block !important;
     flex: 0 0 auto !important;
-    width: 94px !important;
-    height: 94px !important;
-    margin: auto 0 5px !important;
+    width: 148px !important;
+    height: 148px !important;
+    margin: auto 0 8px !important;
     object-fit: contain !important;
-    filter: drop-shadow(0 12px 12px rgba(0,0,0,.42)) !important;
+    filter: drop-shadow(0 16px 15px rgba(0,0,0,.46)) !important;
     transition: transform .22s var(--ease),filter .22s var(--ease) !important;
 }
 
-.evolution-card-button:hover img { transform: scale(1.05) translateY(-2px) !important; }
+.evolution-card-button:hover img {
+    transform: scale(1.045) translateY(-3px) !important;
+}
 
 .evolution-number {
     position: absolute !important;
     z-index: 4 !important;
-    top: 9px !important;
-    right: 10px !important;
-    color: rgba(255,255,255,.27) !important;
-    font-size: 7px !important;
+    top: 12px !important;
+    right: 13px !important;
+    color: rgba(255,255,255,.28) !important;
+    font-size: 8px !important;
     font-weight: 900 !important;
     line-height: 1 !important;
-    letter-spacing: .06em !important;
+    letter-spacing: .07em !important;
 }
 
 .evolution-card-button strong {
@@ -143,68 +147,68 @@
     margin: 0 !important;
     padding: 0 !important;
     color: #f1f1f1 !important;
-    font-size: 10px !important;
+    font-size: 12px !important;
     font-weight: 900 !important;
-    line-height: 1 !important;
-    letter-spacing: -.02em !important;
+    line-height: 1.05 !important;
+    letter-spacing: -.025em !important;
     text-align: center !important;
     text-transform: capitalize !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
 }
 
 .evolution-arrow {
-    flex: 0 0 18px !important;
     display: grid !important;
     place-items: center !important;
-    width: 18px !important;
-    height: 18px !important;
+    width: 42px !important;
+    height: 42px !important;
     margin: 0 !important;
-    color: rgba(255,255,255,.32) !important;
-    font-size: 12px !important;
+    color: rgba(255,255,255,.38) !important;
+    font-size: 17px !important;
     line-height: 1 !important;
 }
 
 @media (max-width: 760px) {
     .evolution-section {
-        margin-top: 24px !important;
-        padding-bottom: 24px !important;
+        margin-top: 30px !important;
+        padding-bottom: 28px !important;
     }
 
     .evolution-section h2 {
-        margin-bottom: 17px !important;
-        font-size: 20px !important;
+        margin-bottom: 18px !important;
+        font-size: 21px !important;
     }
 
     .evolution-chain {
-        gap: 8px !important;
+        grid-template-columns: minmax(0,1fr) 20px minmax(0,1fr) 20px minmax(0,1fr) !important;
+        gap: 7px !important;
+        max-width: none !important;
     }
 
     .evolution-chain .pokemon-card {
-        flex: 0 0 96px !important;
-        width: 96px !important;
-        min-width: 96px !important;
-        max-width: 96px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
     }
 
     .evolution-card-button {
-        height: 144px !important;
-        min-height: 144px !important;
-        padding: 7px 5px 10px !important;
+        height: 158px !important;
+        min-height: 158px !important;
+        padding: 8px 5px 11px !important;
         border-radius: 16px !important;
     }
 
     .evolution-card-button::before {
-        width: 94px !important;
-        height: 94px !important;
-        top: 19px !important;
+        width: 105px !important;
+        height: 105px !important;
+        top: 45% !important;
     }
 
     .evolution-card-button img {
-        width: 82px !important;
-        height: 82px !important;
-        margin-bottom: 6px !important;
+        width: 105px !important;
+        height: 105px !important;
+        margin-bottom: 7px !important;
     }
 
     .evolution-number {
@@ -213,24 +217,50 @@
         font-size: 6px !important;
     }
 
-    .evolution-card-button strong { font-size: 8px !important; }
-    .evolution-arrow { flex-basis: 14px !important; width: 14px !important; font-size: 10px !important; }
+    .evolution-card-button strong {
+        font-size: 8px !important;
+        line-height: 1.1 !important;
+        white-space: normal !important;
+    }
+
+    .evolution-arrow {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 11px !important;
+    }
 }
 
-@media (max-width: 370px) {
-    .evolution-chain { gap: 5px !important; }
-    .evolution-chain .pokemon-card {
-        flex-basis: 88px !important;
-        width: 88px !important;
-        min-width: 88px !important;
-        max-width: 88px !important;
+@media (max-width: 380px) {
+    .evolution-chain {
+        grid-template-columns: minmax(0,1fr) 17px minmax(0,1fr) 17px minmax(0,1fr) !important;
+        gap: 5px !important;
     }
-    .evolution-card-button { height: 136px !important; min-height: 136px !important; }
-    .evolution-card-button img { width: 74px !important; height: 74px !important; }
-    .evolution-arrow { flex-basis: 12px !important; width: 12px !important; font-size: 9px !important; }
+
+    .evolution-card-button {
+        height: 150px !important;
+        min-height: 150px !important;
+        padding-inline: 4px !important;
+    }
+
+    .evolution-card-button img {
+        width: 96px !important;
+        height: 96px !important;
+    }
+
+    .evolution-card-button strong {
+        font-size: 7px !important;
+    }
+
+    .evolution-arrow {
+        width: 17px !important;
+        height: 17px !important;
+        font-size: 10px !important;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .evolution-card-button,
-    .evolution-card-button img { transition: none !important; }
+    .evolution-card-button img {
+        transition: none !important;
+    }
 }
