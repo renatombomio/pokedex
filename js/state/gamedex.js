@@ -3,10 +3,12 @@ const detailContent = document.querySelector('#detail-content');
 if (detailContent) {
     const observer = new MutationObserver(() => {
         buildGamedexCard();
+        isolateEvolutionCards();
     });
 
     observer.observe(detailContent, { childList: true });
     buildGamedexCard();
+    isolateEvolutionCards();
 }
 
 function buildGamedexCard() {
@@ -79,6 +81,12 @@ function buildGamedexCard() {
     hero.replaceWith(card);
     grid.remove();
     detailContent.insertBefore(info, detailContent.querySelector('.evolution-section'));
+}
+
+function isolateEvolutionCards() {
+    detailContent
+        .querySelectorAll('.evolution-card.pokemon-card')
+        .forEach((card) => card.classList.remove('pokemon-card'));
 }
 
 function createMetaItem(element, fallbackLabel) {
