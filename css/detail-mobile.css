@@ -1,48 +1,38 @@
 /* ========================================
-   MOBILE GAMEDEX — COMPACT CARD
+   MOBILE GAMEDEX — FINAL COMPACT LAYOUT
 ======================================== */
 
 @media (max-width: 760px) {
-    .pokemon-detail .container {
-        padding-inline: 8px;
-    }
-
-    .detail-back {
-        margin: 0 0 12px 6px;
-        padding: 8px 12px;
-        font-size: 10px;
-    }
+    .pokemon-detail .container { padding-inline: 8px; }
+    .detail-back { margin: 0 0 12px 6px; padding: 8px 12px; font-size: 10px; }
 
     #detail-content {
         position: relative;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        grid-template-rows: 58px 224px 58px 128px auto auto;
-        gap: 0;
+        grid-template-rows: 52px 208px 58px 112px;
+        column-gap: 0;
+        row-gap: 0;
         isolation: isolate;
+        margin-bottom: 0;
     }
 
-    /* One continuous Gamedex card surface. */
     #detail-content::before {
         content: "";
         position: absolute;
         z-index: -1;
-        inset: 0 auto auto 0;
-        width: 100%;
-        height: 500px;
-        border: 1px solid color-mix(in srgb, var(--detail-accent, #ef5335) 78%, #fff 4%);
+        inset: 0 0 auto;
+        height: 430px;
+        border: 1px solid color-mix(in srgb, var(--detail-accent, #ef5335) 72%, #fff 4%);
         border-radius: 22px;
         background:
-            radial-gradient(circle at 50% 37%, var(--detail-glow, rgba(239,63,34,.22)), transparent 31%),
-            radial-gradient(circle at 8% 96%, var(--detail-glow, rgba(239,63,34,.13)), transparent 38%),
-            linear-gradient(180deg, #171717 0%, #151515 58%, #111 100%);
-        box-shadow:
-            0 24px 55px rgba(0,0,0,.3),
-            inset 0 1px rgba(255,255,255,.07);
+            radial-gradient(circle at 50% 43%, var(--detail-glow, rgba(239,63,34,.22)), transparent 32%),
+            radial-gradient(circle at 95% 0%, rgba(255,255,255,.055), transparent 30%),
+            #151515;
+        box-shadow: 0 24px 55px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.07);
         pointer-events: none;
     }
 
-    /* Type accent belongs to the whole card, not only the hero fragment. */
     #detail-content:has(.type-normal) { --detail-accent:#aaa; --detail-glow:rgba(190,190,190,.16); }
     #detail-content:has(.type-fire) { --detail-accent:#ff5b32; --detail-glow:rgba(255,78,38,.27); }
     #detail-content:has(.type-water) { --detail-accent:#55a8ff; --detail-glow:rgba(69,157,255,.27); }
@@ -62,292 +52,66 @@
     #detail-content:has(.type-steel) { --detail-accent:#93a5b1; --detail-glow:rgba(145,166,178,.2); }
     #detail-content:has(.type-fairy) { --detail-accent:#e58bb4; --detail-glow:rgba(221,116,164,.24); }
 
-    /* The existing desktop fragments become visual pieces of one card. */
     .detail-hero,
     .detail-grid,
-    .detail-grid .detail-panel {
-        display: contents;
-    }
+    .detail-grid .detail-panel { display: contents; }
 
-    .detail-number {
-        position: absolute;
-        z-index: 4;
-        top: 13px;
-        right: 14px;
-        margin: 0;
-        color: rgba(255,255,255,.22);
-        font-size: 28px;
-        font-weight: 950;
-        line-height: 1;
-        letter-spacing: -.06em;
-    }
+    .detail-number { position:absolute; z-index:4; top:13px; right:14px; margin:0; color:rgba(255,255,255,.22); font-size:28px; font-weight:950; line-height:1; letter-spacing:-.06em; }
+    .detail-heading { position:relative; z-index:3; grid-column:1/-1; grid-row:1; min-width:0; padding:14px 14px 0; }
+    .detail-eyebrow { display:none; }
+    .detail-heading h1 { max-width:72%; margin:0 0 5px; color:#fff; font-size:clamp(28px,8vw,36px); font-weight:950; line-height:.92; letter-spacing:-.055em; text-shadow:none; }
+    .detail-heading .pokemon-types { gap:5px; }
+    .detail-heading .pokemon-type { padding:4px 8px; border:0; border-radius:999px; font-size:8px; font-weight:900; box-shadow:none; }
 
-    .detail-heading {
-        position: relative;
-        z-index: 3;
-        grid-column: 1 / -1;
-        grid-row: 1;
-        min-width: 0;
-        padding: 15px 14px 0;
-    }
+    .detail-image { position:relative; z-index:2; grid-column:1/-1; grid-row:2; display:grid; place-items:center; min-height:0; height:auto; margin:0; }
+    .detail-image::before { width:184px; height:184px; border:1px solid color-mix(in srgb,var(--detail-accent,#ef5335) 22%,transparent); box-shadow:0 0 0 18px color-mix(in srgb,var(--detail-accent,#ef5335) 5%,transparent),0 0 48px var(--detail-glow,rgba(239,63,34,.16)); }
+    .detail-image img { width:184px; height:184px; filter:drop-shadow(0 22px 18px rgba(0,0,0,.48)) drop-shadow(0 0 22px var(--detail-glow,rgba(239,63,34,.14))); }
 
-    .detail-eyebrow {
-        display: none;
-    }
+    .physical-data { display:contents; }
+    .physical-data > div { position:relative; z-index:3; min-width:0; margin:0 3px; padding:6px 7px; border:0; border-radius:8px; background:rgba(255,255,255,.035); }
+    .physical-data > div:nth-child(1) { grid-column:1; grid-row:3; }
+    .physical-data > div:nth-child(2) { grid-column:2; grid-row:3; }
+    .physical-data span { display:none; }
+    .physical-data > div::before { display:block; margin-bottom:3px; color:rgba(255,255,255,.42); font-size:7px; font-weight:850; line-height:1; text-transform:uppercase; letter-spacing:.08em; }
+    .physical-data > div:nth-child(1)::before { content:"Altura"; }
+    .physical-data > div:nth-child(2)::before { content:"Peso"; }
+    .physical-data strong { display:block; color:#fff; font-size:10px; font-weight:900; line-height:1.05; }
 
-    .detail-heading h1 {
-        max-width: 74%;
-        margin: 0 0 6px;
-        color: #fff;
-        font-size: clamp(28px, 8vw, 35px);
-        font-weight: 950;
-        line-height: .92;
-        letter-spacing: -.055em;
-        text-shadow: none;
-    }
+    .detail-grid .detail-panel .panel-eyebrow,
+    .detail-grid .detail-panel h2 { display:none; }
 
-    .detail-heading .pokemon-types {
-        gap: 5px;
-    }
+    .detail-grid .detail-panel:nth-child(2) .abilities { position:relative; z-index:3; grid-column:3; grid-row:3; display:block; min-width:0; margin:0 3px; padding:6px 7px; border:0; border-radius:8px; background:rgba(255,255,255,.035); overflow:hidden; }
+    .detail-grid .detail-panel:nth-child(2) .abilities::before { content:"Habilidad"; display:block; margin-bottom:3px; color:rgba(255,255,255,.42); font-size:7px; font-weight:850; line-height:1; text-transform:uppercase; letter-spacing:.08em; }
+    .detail-grid .detail-panel:nth-child(2) .ability { display:block; max-width:100%; padding:0; border:0; background:transparent; color:#fff; font-size:9px; font-weight:900; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-    .detail-heading .pokemon-type {
-        padding: 4px 8px;
-        border: 0;
-        border-radius: 999px;
-        font-size: 8px;
-        box-shadow: none;
-    }
+    .detail-grid .detail-panel:nth-child(3) .stats { position:relative; z-index:3; grid-column:1/-1; grid-row:4; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); align-content:start; gap:7px; min-width:0; margin:0; padding:12px 14px 13px; }
+    .detail-grid .detail-panel:nth-child(3) .stat-row { min-width:0; }
+    .detail-grid .detail-panel:nth-child(3) .stat-header { display:block; margin-bottom:5px; color:rgba(255,255,255,.48); font-size:6px; font-weight:850; line-height:1; text-transform:uppercase; white-space:nowrap; overflow:hidden; }
+    .detail-grid .detail-panel:nth-child(3) .stat-header strong { display:block; margin-top:3px; min-width:0; color:#fff; font-size:9px; font-weight:900; line-height:1; }
+    .detail-grid .detail-panel:nth-child(3) .stat-bar { height:4px; border:0; border-radius:99px; background:rgba(255,255,255,.09); overflow:hidden; }
+    .detail-grid .detail-panel:nth-child(3) .stat-bar span { display:block; height:100%; border-radius:inherit; }
 
-    .detail-image {
-        position: relative;
-        z-index: 2;
-        grid-column: 1 / -1;
-        grid-row: 2;
-        min-height: 0;
-        height: auto;
-        margin: 0;
-        display: grid;
-        place-items: center;
-    }
+    .pokemon-description { position:relative; z-index:2; grid-column:1/-1; grid-row:5; margin:12px 0 0; padding:13px 14px; border:1px solid #242424; border-radius:14px; background:#101010; color:#aaa; font-size:10px; line-height:1.5; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
+    .pokemon-description::before { content:"Sobre este Pokémon"; display:block; margin-bottom:6px; color:#fff; font-size:10px; font-weight:900; }
 
-    .detail-image::before {
-        width: 194px;
-        height: 194px;
-        border: 1px solid color-mix(in srgb, var(--detail-accent, #ef5335) 26%, transparent);
-        box-shadow:
-            0 0 0 18px color-mix(in srgb, var(--detail-accent, #ef5335) 5%, transparent),
-            0 0 48px var(--detail-glow, rgba(239,63,34,.16));
-    }
-
-    .detail-image img {
-        width: 198px;
-        height: 198px;
-        filter:
-            drop-shadow(0 22px 18px rgba(0,0,0,.48))
-            drop-shadow(0 0 22px var(--detail-glow, rgba(239,63,34,.14)));
-    }
-
-    /* Height / weight / ability = one deliberate metadata row. */
-    .physical-data {
-        position: relative;
-        z-index: 3;
-        grid-row: 3;
-        grid-column: 1 / 3;
-        display: contents;
-        margin: 0;
-    }
-
-    .physical-data > div {
-        position: relative;
-        z-index: 3;
-        min-width: 0;
-        margin: 0 3px;
-        padding: 6px 7px;
-        border-radius: 8px;
-        background: rgba(255,255,255,.025);
-    }
-
-    .physical-data > div:nth-child(1) { grid-column: 1; grid-row: 3; }
-    .physical-data > div:nth-child(2) { grid-column: 2; grid-row: 3; }
-
-    .physical-data > div::before {
-        display: block;
-        margin-bottom: 3px;
-        color: rgba(255,255,255,.42);
-        font-size: 7px;
-        font-weight: 850;
-        line-height: 1;
-        text-transform: uppercase;
-        letter-spacing: .08em;
-    }
-
-    .physical-data > div:nth-child(1)::before { content: "Altura"; }
-    .physical-data > div:nth-child(2)::before { content: "Peso"; }
-    .physical-data span { display: none; }
-    .physical-data strong {
-        display: block;
-        color: #fff;
-        font-size: 10px;
-        font-weight: 900;
-        line-height: 1.05;
-    }
-
-    /* Ability occupies the third metadata column. */
-    .detail-grid .detail-panel:nth-child(2) .panel-eyebrow,
-    .detail-grid .detail-panel:nth-child(2) h2,
-    .detail-grid .detail-panel:nth-child(3) .panel-eyebrow,
-    .detail-grid .detail-panel:nth-child(3) h2,
-    .detail-grid .detail-panel:nth-child(1) .panel-eyebrow,
-    .detail-grid .detail-panel:nth-child(1) h2 {
-        display: none;
-    }
-
-    .detail-grid .detail-panel:nth-child(2) .abilities {
-        position: relative;
-        z-index: 3;
-        grid-column: 3;
-        grid-row: 3;
-        display: block;
-        min-width: 0;
-        margin: 0 3px;
-        padding: 6px 7px;
-        border-radius: 8px;
-        background: rgba(255,255,255,.025);
-        overflow: hidden;
-    }
-
-    .detail-grid .detail-panel:nth-child(2) .abilities::before {
-        content: "Habilidad";
-        display: block;
-        margin-bottom: 3px;
-        color: rgba(255,255,255,.42);
-        font-size: 7px;
-        font-weight: 850;
-        line-height: 1;
-        text-transform: uppercase;
-        letter-spacing: .08em;
-    }
-
-    .detail-grid .detail-panel:nth-child(2) .ability {
-        display: block;
-        max-width: 100%;
-        padding: 0;
-        border: 0;
-        background: transparent;
-        color: #fff;
-        font-size: 9px;
-        font-weight: 900;
-        line-height: 1.1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* Six stats in two columns, still inside the main card. */
-    .detail-grid .detail-panel:nth-child(3) .stats {
-        position: relative;
-        z-index: 3;
-        grid-column: 1 / -1;
-        grid-row: 4;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        align-content: start;
-        gap: 8px 12px;
-        min-width: 0;
-        margin: 8px 14px 0;
-        padding: 0 0 12px;
-    }
-
-    .detail-grid .detail-panel:nth-child(3) .stat-row {
-        min-width: 0;
-    }
-
-    .detail-grid .detail-panel:nth-child(3) .stat-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 5px;
-        margin-bottom: 3px;
-        color: rgba(255,255,255,.42);
-        font-size: 7px;
-        font-weight: 800;
-        line-height: 1;
-        text-transform: uppercase;
-    }
-
-    .detail-grid .detail-panel:nth-child(3) .stat-header strong {
-        min-width: auto;
-        color: #fff;
-        font-size: 8px;
-        font-weight: 900;
-    }
-
-    .detail-grid .detail-panel:nth-child(3) .stat-bar {
-        height: 4px;
-        border: 0;
-        border-radius: 99px;
-        background: rgba(255,255,255,.09);
-        overflow: hidden;
-    }
-
-    /* Description is deliberately detached from the main card. */
-    .pokemon-description {
-        position: relative;
-        z-index: 2;
-        grid-column: 1 / -1;
-        grid-row: 5;
-        margin: 12px 0 0;
-        padding: 13px 14px;
-        border: 1px solid #242424;
-        border-radius: 14px;
-        background: #101010;
-        color: #aaa;
-        font-size: 10px;
-        line-height: 1.5;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-        overflow: hidden;
-    }
-
-    .pokemon-description::before {
-        content: "Sobre este Pokémon";
-        display: block;
-        margin-bottom: 5px;
-        color: #fff;
-        font-size: 9px;
-        font-weight: 850;
-    }
-
-    .evolution-section {
-        grid-column: 1 / -1;
-        grid-row: 6;
-        margin-top: 10px;
-    }
+    .evolution-section { grid-column:1/-1; grid-row:6; margin-top:13px; padding:7px 0 8px; }
+    .evolution-section .panel-eyebrow { margin-bottom:6px; font-size:8px; }
+    .evolution-section h2 { margin-bottom:11px; font-size:18px; line-height:1; }
+    .evolution-chain { width:100%; display:flex; align-items:center; justify-content:space-between; gap:4px; }
+    .evolution-chain .pokemon-card { flex:1 1 0; width:auto; min-width:0; max-width:none; }
+    .evolution-card-button { width:100%; min-height:96px; padding:6px 3px 5px; border:1px solid rgba(255,255,255,.08); border-radius:12px; background:#111; }
+    .evolution-card-button img { width:58px; height:58px; }
+    .evolution-number { top:5px; right:5px; color:#505050; font-size:5px; }
+    .evolution-card-button strong { margin-top:2px; color:#fff; font-size:8px; line-height:1.1; }
 }
 
-@media (max-width: 380px) {
-    #detail-content {
-        grid-template-rows: 56px 210px 58px 128px auto auto;
-    }
-
-    #detail-content::before {
-        height: 478px;
-    }
-
-    .detail-image img,
-    .detail-image::before {
-        width: 180px;
-        height: 180px;
-    }
-
-    .detail-grid .detail-panel:nth-child(3) .stats {
-        gap: 7px 9px;
-    }
+@media (max-width:380px) {
+    #detail-content { grid-template-rows:50px 195px 56px 108px; }
+    #detail-content::before { height:409px; }
+    .detail-image img,.detail-image::before { width:172px; height:172px; }
+    .detail-grid .detail-panel:nth-child(3) .stats { gap:5px; padding-inline:12px; }
+    .evolution-card-button { min-height:90px; }
+    .evolution-card-button img { width:52px; height:52px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .detail-image img {
-        animation: none;
-    }
-}
+@media (prefers-reduced-motion:reduce) { .detail-image img,.evolution-card-button,.evolution-card-button img { animation:none; transition:none; } }
