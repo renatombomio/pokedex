@@ -1,30 +1,38 @@
 /* ========================================
-   EVOLUTION UI — COMPACT GAME HUD
+   EVOLUTION UI — COMPACT GAME ROW
 ======================================== */
 
 .evolution-section {
     position: relative;
-    overflow: hidden;
-    padding: 34px;
-    border-color: #242424;
-    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,.035), transparent 42%), #0d0d0d;
-    box-shadow: 0 22px 55px rgba(0,0,0,.24);
+    overflow: visible;
+    padding: 28px 0 10px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
 .evolution-section::before {
-    content: "";
-    position: absolute;
-    left: 7%; right: 7%; top: 112px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #333 12%, #333 88%, transparent);
+    display: none;
+}
+
+.evolution-section .panel-eyebrow {
+    display: block;
+    margin-bottom: 8px;
+    color: #ef3f22;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .16em;
+    text-transform: uppercase;
 }
 
 .evolution-section h2 {
     position: relative;
     z-index: 2;
-    margin-bottom: 34px;
-    font-size: clamp(28px, 3vw, 38px);
-    letter-spacing: -.05em;
+    margin-bottom: 22px;
+    color: #fff;
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1;
+    letter-spacing: -.06em;
 }
 
 .evolution-chain {
@@ -32,15 +40,15 @@
     z-index: 2;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
+    justify-content: flex-start;
+    gap: 10px;
 }
 
-/* The article itself is transparent: only the interactive button gets a surface. */
+/* Transparent by default. Interaction creates the only visible frame. */
 .evolution-chain .pokemon-card {
-    flex: 0 1 150px;
+    flex: 0 1 96px;
     min-width: 0;
-    max-width: 150px;
+    max-width: 96px;
     animation: none;
 }
 
@@ -49,48 +57,33 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
-    min-height: 150px;
-    padding: 10px 8px 9px;
+    min-height: 116px;
+    padding: 7px 4px 6px;
     border: 1px solid transparent;
-    border-radius: 14px;
+    border-radius: 12px;
     background: transparent;
     color: #fff;
     text-align: center;
-    overflow: hidden;
-    transition: transform .22s var(--ease), border-color .22s var(--ease), background .22s var(--ease), box-shadow .22s var(--ease);
+    overflow: visible;
+    transition: transform .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
 }
 
 .evolution-card-button::before {
-    content: "";
-    position: absolute;
-    width: 130px;
-    height: 130px;
-    top: -58px;
-    right: -50px;
-    border-radius: 50%;
-    background: var(--glow, rgba(255,255,255,.05));
-    filter: blur(8px);
-    opacity: 0;
-    transition: opacity .22s ease;
+    display: none;
 }
 
-/* The card frame appears only while interacting. */
 @media (hover: hover) and (pointer: fine) {
     .evolution-card-button:hover {
-        transform: translateY(-3px);
+        transform: translateY(-2px);
         border-color: var(--accent, #555);
         background: rgba(255,255,255,.035);
-        box-shadow: 0 12px 28px rgba(0,0,0,.28), 0 0 22px var(--glow, rgba(255,255,255,.05));
-    }
-
-    .evolution-card-button:hover::before {
-        opacity: 1;
+        box-shadow: 0 10px 24px rgba(0,0,0,.3), 0 0 18px var(--glow, rgba(255,255,255,.05));
     }
 
     .evolution-card-button:hover img {
-        transform: scale(1.05) translateY(-2px);
-        filter: drop-shadow(0 16px 14px rgba(0,0,0,.46));
+        transform: scale(1.06) translateY(-2px);
     }
 }
 
@@ -102,33 +95,34 @@
 .evolution-card-button img {
     position: relative;
     z-index: 1;
-    width: 92px;
-    height: 92px;
+    width: 70px;
+    height: 70px;
     object-fit: contain;
-    filter: drop-shadow(0 12px 12px rgba(0,0,0,.4));
-    transition: transform .22s var(--ease), filter .22s var(--ease);
+    filter: drop-shadow(0 9px 10px rgba(0,0,0,.38));
+    transition: transform .2s var(--ease), filter .2s var(--ease);
 }
 
 .evolution-number {
     position: absolute;
     z-index: 3;
-    top: 8px;
-    right: 9px;
-    color: #4f4f4f;
-    font-size: 8px;
+    top: 5px;
+    right: 6px;
+    color: #4d4d4d;
+    font-size: 6px;
     font-weight: 850;
-    letter-spacing: .08em;
+    letter-spacing: .06em;
 }
 
 .evolution-card-button strong {
     position: relative;
     z-index: 2;
+    display: block;
     max-width: 100%;
     margin-top: 2px;
-    color: #ddd;
-    font-size: 11px;
+    color: #e8e8e8;
+    font-size: 9px;
     font-weight: 850;
-    line-height: 1.15;
+    line-height: 1.1;
     letter-spacing: -.02em;
     text-transform: capitalize;
     white-space: nowrap;
@@ -140,12 +134,12 @@
     flex: 0 0 auto;
     display: grid;
     place-items: center;
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
     border: 0;
     background: transparent;
     color: #555;
-    font-size: 12px;
+    font-size: 10px;
     line-height: 1;
 }
 
@@ -156,80 +150,76 @@
 
 @media (max-width: 760px) {
     .evolution-section {
-        padding: 20px 10px;
-        margin-top: 10px;
-        border-radius: 20px;
+        padding: 20px 0 6px;
+        margin-top: 4px;
+        border-radius: 0;
     }
 
-    .evolution-section::before {
-        top: 92px;
-        left: 7%; right: 7%;
+    .evolution-section .panel-eyebrow {
+        margin-bottom: 7px;
+        font-size: 8px;
     }
 
     .evolution-section h2 {
-        margin-bottom: 18px;
-        font-size: 23px;
+        margin-bottom: 12px;
+        font-size: 18px;
     }
 
     .evolution-chain {
-        gap: 2px;
+        width: 100%;
+        gap: 3px;
+        justify-content: space-between;
     }
 
     .evolution-chain .pokemon-card {
-        flex: 0 1 92px;
-        width: 92px;
-        max-width: 92px;
+        flex: 1 1 0;
+        width: auto;
+        max-width: 82px;
     }
 
     .evolution-card-button {
-        min-height: 118px;
-        padding: 7px 3px 7px;
-        border-radius: 12px;
+        min-height: 78px;
+        padding: 3px 2px 4px;
+        border-radius: 9px;
     }
 
     .evolution-card-button img {
-        width: 68px;
-        height: 68px;
+        width: 46px;
+        height: 46px;
     }
 
     .evolution-number {
-        top: 5px;
-        right: 5px;
-        font-size: 6px;
+        top: 2px;
+        right: 3px;
+        font-size: 5px;
     }
 
     .evolution-card-button strong {
-        font-size: 9px;
+        margin-top: 1px;
+        font-size: 7px;
     }
 
     .evolution-arrow {
-        width: 19px;
-        height: 19px;
-        font-size: 10px;
+        width: 12px;
+        height: 12px;
+        font-size: 8px;
     }
 }
 
 @media (max-width: 360px) {
-    .evolution-chain .pokemon-card {
-        flex-basis: 82px;
-        width: 82px;
-        max-width: 82px;
-    }
-
     .evolution-card-button img {
-        width: 60px;
-        height: 60px;
+        width: 42px;
+        height: 42px;
     }
 
     .evolution-card-button strong {
-        font-size: 8px;
+        font-size: 6.5px;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .evolution-card-button,
-    .evolution-card-button img,
-    .evolution-card-button::before {
+    .evolution-card-button img {
         transition: none;
     }
 }
