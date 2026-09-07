@@ -1,0 +1,124 @@
+/* ========================================
+   GAMEDEX CARD
+   Dedicated presentation layer.
+======================================== */
+
+#detail-content::before,
+#detail-content::after { display: none !important; }
+#detail-content { display:block !important; position:relative; min-height:0 !important; }
+
+.gamedex-card {
+    --gamedex-accent:#69cf73;
+    --gamedex-glow:rgba(72,205,91,.25);
+    position:relative;
+    isolation:isolate;
+    width:100%;
+    min-height:570px;
+    overflow:hidden;
+    padding:30px 34px 28px;
+    border:1px solid color-mix(in srgb,var(--gamedex-accent) 72%,white 8%);
+    border-radius:30px;
+    background:
+        radial-gradient(circle at 50% 43%,var(--gamedex-glow),transparent 27%),
+        radial-gradient(circle at 0% 100%,color-mix(in srgb,var(--gamedex-accent) 13%,transparent),transparent 36%),
+        linear-gradient(150deg,#1c1c1c 0%,#171717 52%,#101010 100%);
+    box-shadow:0 28px 70px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.07);
+}
+
+.gamedex-card::before {
+    content:"";
+    position:absolute;
+    z-index:-1;
+    width:440px;
+    height:440px;
+    left:50%;
+    top:42%;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:var(--gamedex-glow);
+    filter:blur(54px);
+    opacity:.55;
+}
+
+.gamedex-card.type-normal{--gamedex-accent:#aaa;--gamedex-glow:rgba(190,190,190,.16)}
+.gamedex-card.type-fire{--gamedex-accent:#ff5b32;--gamedex-glow:rgba(255,78,38,.27)}
+.gamedex-card.type-water{--gamedex-accent:#55a8ff;--gamedex-glow:rgba(69,157,255,.27)}
+.gamedex-card.type-electric{--gamedex-accent:#f1cf35;--gamedex-glow:rgba(241,207,53,.24)}
+.gamedex-card.type-grass{--gamedex-accent:#69cf73;--gamedex-glow:rgba(72,205,91,.24)}
+.gamedex-card.type-ice{--gamedex-accent:#55d2df;--gamedex-glow:rgba(73,207,222,.24)}
+.gamedex-card.type-fighting{--gamedex-accent:#e96a4e;--gamedex-glow:rgba(232,92,67,.24)}
+.gamedex-card.type-poison{--gamedex-accent:#bc70df;--gamedex-glow:rgba(180,91,220,.24)}
+.gamedex-card.type-ground{--gamedex-accent:#d49a55;--gamedex-glow:rgba(212,154,85,.24)}
+.gamedex-card.type-flying{--gamedex-accent:#8e91ed;--gamedex-glow:rgba(125,129,226,.24)}
+.gamedex-card.type-psychic{--gamedex-accent:#ec71a6;--gamedex-glow:rgba(231,100,155,.24)}
+.gamedex-card.type-bug{--gamedex-accent:#9ecb4c;--gamedex-glow:rgba(150,196,63,.24)}
+.gamedex-card.type-rock{--gamedex-accent:#b89565;--gamedex-glow:rgba(174,137,87,.24)}
+.gamedex-card.type-ghost{--gamedex-accent:#a37ad7;--gamedex-glow:rgba(145,105,205,.24)}
+.gamedex-card.type-dragon{--gamedex-accent:#747be0;--gamedex-glow:rgba(95,103,218,.24)}
+.gamedex-card.type-dark{--gamedex-accent:#888;--gamedex-glow:rgba(255,255,255,.11)}
+.gamedex-card.type-steel{--gamedex-accent:#93a5b1;--gamedex-glow:rgba(145,166,178,.2)}
+.gamedex-card.type-fairy{--gamedex-accent:#e58bb4;--gamedex-glow:rgba(221,116,164,.24)}
+
+.gamedex-header{position:relative;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.gamedex-title h1{margin:0 0 10px;color:#fff;font-size:clamp(42px,6vw,76px);font-weight:950;line-height:.88;letter-spacing:-.06em}
+.gamedex-types{display:flex;flex-wrap:wrap;gap:6px}
+.gamedex-types .pokemon-type{padding:6px 11px;border:0;border-radius:999px;font-size:9px;font-weight:900;line-height:1;box-shadow:none}
+.gamedex-number{flex:0 0 auto;margin-top:-2px;color:rgba(255,255,255,.17);font-size:clamp(38px,5vw,62px);font-weight:950;line-height:.9;letter-spacing:-.07em}
+
+.gamedex-artwork{position:relative;display:grid;place-items:center;height:310px;margin-top:-2px}
+.gamedex-artwork img{position:relative;z-index:3;width:min(310px,64vw);height:min(310px,64vw);object-fit:contain;filter:drop-shadow(0 28px 22px rgba(0,0,0,.48)) drop-shadow(0 0 24px var(--gamedex-glow));animation:gamedex-art-in .65s cubic-bezier(.2,.75,.25,1) both}
+.gamedex-orbit{position:absolute;left:50%;top:50%;border-radius:50%;transform:translate(-50%,-50%)}
+.gamedex-orbit-back{width:250px;height:250px;border:1px solid color-mix(in srgb,var(--gamedex-accent) 16%,transparent);box-shadow:0 0 0 24px color-mix(in srgb,var(--gamedex-accent) 4%,transparent),0 0 65px var(--gamedex-glow)}
+.gamedex-orbit-front{width:205px;height:205px;border:1px solid color-mix(in srgb,var(--gamedex-accent) 12%,transparent);opacity:.7}
+
+.gamedex-meta{position:relative;z-index:5;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0 0 24px;padding:16px 0 18px;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.gamedex-meta-item{min-width:0;padding:0 18px;border-right:1px solid rgba(255,255,255,.07)}
+.gamedex-meta-item:first-child{padding-left:0}.gamedex-meta-item:last-child{padding-right:0;border-right:0}
+.gamedex-meta-item span{display:block;margin-bottom:6px;color:rgba(255,255,255,.43);font-size:9px;font-weight:850;line-height:1;letter-spacing:.1em;text-transform:uppercase}
+.gamedex-meta-item strong{display:block;overflow:hidden;color:#fff;font-size:15px;font-weight:900;line-height:1.1;letter-spacing:-.02em;text-overflow:ellipsis;white-space:nowrap}
+
+.gamedex-stats{position:relative;z-index:5;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.gamedex-stat{min-width:0}.gamedex-stat-top{display:flex;align-items:baseline;justify-content:space-between;gap:4px;margin-bottom:7px}
+.gamedex-stat-top span{overflow:hidden;color:rgba(255,255,255,.48);font-size:8px;font-weight:900;line-height:1;letter-spacing:.02em;text-overflow:ellipsis;white-space:nowrap}
+.gamedex-stat-top strong{color:#fff;font-size:11px;font-weight:950;line-height:1}
+.gamedex-stat-track{height:5px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.09)}
+.gamedex-stat-track span{display:block;height:100%;border-radius:inherit;background:var(--gamedex-accent);box-shadow:0 0 10px color-mix(in srgb,var(--gamedex-accent) 48%,transparent)}
+
+@keyframes gamedex-art-in{from{opacity:0;transform:scale(.86) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+@media (max-width:760px){
+    .pokemon-detail .container{padding-inline:10px}
+    .gamedex-card{min-height:0;padding:18px 14px 17px;border-radius:24px}
+    .gamedex-header{gap:10px}
+    .gamedex-title h1{margin-bottom:7px;font-size:clamp(32px,9.5vw,42px)}
+    .gamedex-types{gap:5px}
+    .gamedex-types .pokemon-type{padding:4px 8px;font-size:8px}
+    .gamedex-number{margin-top:1px;font-size:31px}
+    .gamedex-artwork{height:282px;margin-top:0}
+    .gamedex-artwork img{width:235px;height:235px}
+    .gamedex-orbit-back{width:205px;height:205px;box-shadow:0 0 0 18px color-mix(in srgb,var(--gamedex-accent) 4%,transparent),0 0 48px var(--gamedex-glow)}
+    .gamedex-orbit-front{width:170px;height:170px}
+    .gamedex-meta{margin-bottom:18px;padding:13px 0 15px}
+    .gamedex-meta-item{padding:0 9px}
+    .gamedex-meta-item span{margin-bottom:5px;font-size:7px;letter-spacing:.08em}
+    .gamedex-meta-item strong{font-size:11px}
+    .gamedex-stats{gap:7px}
+    .gamedex-stat-top{margin-bottom:5px}
+    .gamedex-stat-top span{font-size:7px}
+    .gamedex-stat-top strong{font-size:10px}
+    .gamedex-stat-track{height:5px}
+}
+
+@media (max-width:380px){
+    .gamedex-card{padding-inline:12px}
+    .gamedex-artwork{height:258px}
+    .gamedex-artwork img{width:210px;height:210px}
+    .gamedex-orbit-back{width:185px;height:185px}
+    .gamedex-orbit-front{width:154px;height:154px}
+    .gamedex-meta-item{padding-inline:6px}
+    .gamedex-meta-item strong{font-size:10px}
+    .gamedex-stats{gap:5px}
+    .gamedex-stat-top strong{font-size:9px}
+}
+
+@media (prefers-reduced-motion:reduce){.gamedex-artwork img{animation:none}}
