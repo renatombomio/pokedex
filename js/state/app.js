@@ -5,8 +5,13 @@ import {
 } from './api.js';
 
 
-const INITIAL_LIMIT = 24;
-const PAGE_SIZE = 24;
+/*
+ * Keep the initial payload intentionally small.
+ * Cards can appear sooner, especially on slower
+ * connections and mobile devices.
+ */
+const INITIAL_LIMIT = 12;
+const PAGE_SIZE = 12;
 
 
 const state = {
