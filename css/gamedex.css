@@ -1,10 +1,9 @@
 /* ========================================
    GAMEDEX CARD
-   Dedicated presentation layer.
 ======================================== */
 
 #detail-content::before,
-#detail-content::after { display: none !important; }
+#detail-content::after { display:none !important; }
 #detail-content { display:block !important; position:relative; min-height:0 !important; }
 
 .gamedex-card {
@@ -24,21 +23,7 @@
         linear-gradient(150deg,#1c1c1c 0%,#171717 52%,#101010 100%);
     box-shadow:0 28px 70px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.07);
 }
-
-.gamedex-card::before {
-    content:"";
-    position:absolute;
-    z-index:-1;
-    width:440px;
-    height:440px;
-    left:50%;
-    top:42%;
-    transform:translate(-50%,-50%);
-    border-radius:50%;
-    background:var(--gamedex-glow);
-    filter:blur(54px);
-    opacity:.55;
-}
+.gamedex-card::before { content:"";position:absolute;z-index:-1;width:440px;height:440px;left:50%;top:42%;transform:translate(-50%,-50%);border-radius:50%;background:var(--gamedex-glow);filter:blur(54px);opacity:.55; }
 
 .gamedex-card.type-normal{--gamedex-accent:#aaa;--gamedex-glow:rgba(190,190,190,.16)}
 .gamedex-card.type-fire{--gamedex-accent:#ff5b32;--gamedex-glow:rgba(255,78,38,.27)}
@@ -78,13 +63,37 @@
 .gamedex-meta-item strong{display:block;overflow:hidden;color:#fff;font-size:15px;font-weight:900;line-height:1.1;letter-spacing:-.02em;text-overflow:ellipsis;white-space:nowrap}
 
 .gamedex-stats{position:relative;z-index:5;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-.gamedex-stat{min-width:0}.gamedex-stat-top{display:flex;align-items:baseline;justify-content:space-between;gap:4px;margin-bottom:7px}
-.gamedex-stat-top span{overflow:hidden;color:rgba(255,255,255,.48);font-size:8px;font-weight:900;line-height:1;letter-spacing:.02em;text-overflow:ellipsis;white-space:nowrap}
-.gamedex-stat-top strong{color:#fff;font-size:11px;font-weight:950;line-height:1}
+.gamedex-stat{min-width:0}
+.gamedex-stat-top{display:block;margin-bottom:7px}
+.gamedex-stat-top span{display:block;overflow:hidden;margin-bottom:4px;color:rgba(255,255,255,.48);font-size:8px;font-weight:900;line-height:1;letter-spacing:.02em;text-overflow:ellipsis;white-space:nowrap}
+.gamedex-stat-top strong{display:block;color:#fff;font-size:11px;font-weight:950;line-height:1}
 .gamedex-stat-track{height:5px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.09)}
 .gamedex-stat-track span{display:block;height:100%;border-radius:inherit;background:var(--gamedex-accent);box-shadow:0 0 10px color-mix(in srgb,var(--gamedex-accent) 48%,transparent)}
-
 @keyframes gamedex-art-in{from{opacity:0;transform:scale(.86) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+/* ========================================
+   ABOUT POKÉMON
+======================================== */
+.pokemon-about{position:relative;margin-top:18px;padding:22px 24px 24px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(145deg,#151515,#0e0e0e);box-shadow:0 18px 45px rgba(0,0,0,.2)}
+.pokemon-about-header span{display:block;margin-bottom:7px;color:rgba(255,255,255,.35);font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+.pokemon-about h2{margin:0;color:#fff;font-size:clamp(22px,3vw,30px);font-weight:900;line-height:1;letter-spacing:-.055em}
+.pokemon-about p{max-width:780px;margin:14px 0 0;color:#a6a6a6;font-size:13px;line-height:1.65}
+
+/* ========================================
+   EVOLUTION ROW
+======================================== */
+.evolution-section{margin-top:28px !important;padding:0 0 30px !important}
+.evolution-section .panel-eyebrow{display:block;margin-bottom:7px;color:var(--accent,#ef3f22);font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+.evolution-section h2{margin:0 0 18px !important;color:#fff;font-size:clamp(23px,3vw,32px) !important;line-height:1;letter-spacing:-.055em}
+.evolution-chain{display:flex;align-items:center;justify-content:center;gap:14px;width:100%}
+.evolution-chain .pokemon-card{flex:0 1 125px !important;width:125px !important;max-width:125px !important;min-width:0;border:0 !important;background:transparent !important;box-shadow:none !important;animation:none}
+.evolution-card-button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:148px;padding:10px 6px 9px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:#121212;color:#fff;text-align:center;overflow:hidden;transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.evolution-card-button:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.16);background:#171717}
+.evolution-card-button img{width:92px;height:92px;object-fit:contain;filter:drop-shadow(0 12px 12px rgba(0,0,0,.4));transition:transform .2s ease}
+.evolution-card-button:hover img{transform:scale(1.04)}
+.evolution-number{position:absolute;top:8px;right:9px;color:rgba(255,255,255,.25);font-size:7px;font-weight:900}
+.evolution-card-button strong{display:block;max-width:100%;margin-top:5px;color:#eee;font-size:10px;font-weight:900;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evolution-arrow{flex:0 0 22px;display:grid;place-items:center;width:22px;height:22px;color:rgba(255,255,255,.35);font-size:14px;line-height:1}
 
 @media (max-width:760px){
     .pokemon-detail .container{padding-inline:10px}
@@ -104,9 +113,24 @@
     .gamedex-meta-item strong{font-size:11px}
     .gamedex-stats{gap:7px}
     .gamedex-stat-top{margin-bottom:5px}
-    .gamedex-stat-top span{font-size:7px}
+    .gamedex-stat-top span{margin-bottom:4px;font-size:7px}
     .gamedex-stat-top strong{font-size:10px}
     .gamedex-stat-track{height:5px}
+
+    .pokemon-about{margin-top:16px;padding:17px 15px 18px;border-radius:18px}
+    .pokemon-about-header span{margin-bottom:6px;font-size:7px}
+    .pokemon-about h2{font-size:20px}
+    .pokemon-about p{margin-top:10px;font-size:10px;line-height:1.55}
+
+    .evolution-section{margin-top:24px !important;padding-bottom:24px !important}
+    .evolution-section h2{margin-bottom:14px !important;font-size:20px !important}
+    .evolution-chain{gap:6px;justify-content:space-between}
+    .evolution-chain .pokemon-card{flex:1 1 0 !important;width:auto !important;max-width:none !important}
+    .evolution-card-button{min-height:125px;padding:7px 3px 8px;border-radius:14px}
+    .evolution-card-button img{width:78px;height:78px}
+    .evolution-number{top:6px;right:7px;font-size:6px}
+    .evolution-card-button strong{margin-top:3px;font-size:8px}
+    .evolution-arrow{flex:0 0 15px;width:15px;font-size:10px}
 }
 
 @media (max-width:380px){
@@ -118,7 +142,13 @@
     .gamedex-meta-item{padding-inline:6px}
     .gamedex-meta-item strong{font-size:10px}
     .gamedex-stats{gap:5px}
+    .gamedex-stat-top span{font-size:6px}
     .gamedex-stat-top strong{font-size:9px}
+    .pokemon-about{padding-inline:13px}
+    .evolution-card-button{min-height:116px}
+    .evolution-card-button img{width:68px;height:68px}
+    .evolution-card-button strong{font-size:7px}
+    .evolution-arrow{flex-basis:12px;width:12px}
 }
 
 @media (prefers-reduced-motion:reduce){.gamedex-artwork img{animation:none}}
