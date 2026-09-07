@@ -79,20 +79,20 @@
 .evolution-card-button img { position:relative; z-index:1; width:150px; height:150px; object-fit:contain; filter:drop-shadow(0 16px 14px rgba(0,0,0,.42)); transition:transform .25s var(--ease),filter .25s var(--ease); }
 .evolution-card-button:hover img { transform:scale(1.07) translateY(-3px); filter:drop-shadow(0 20px 18px rgba(0,0,0,.48)); }
 .evolution-number { position:absolute; z-index:3; top:14px; right:16px; color:#555; font-size:11px; font-weight:850; letter-spacing:.08em; }
-.evolution-card-button strong { position:relative; z-index:2; margin-top:5px; font-size:17px; font-weight:850; letter-spacing:-.02em; text-transform:capitalize; }
+.evolution-card-button strong { position:relative; z-index:2; display:block; width:100%; margin-top:5px; font-size:17px; font-weight:850; letter-spacing:-.02em; text-transform:capitalize; white-space:normal; overflow-wrap:anywhere; }
 .evolution-arrow { flex:0 0 auto; display:grid; place-items:center; width:42px; height:42px; border:1px solid #292929; border-radius:50%; background:#111; color:#666; font-size:18px; line-height:1; box-shadow:0 8px 20px rgba(0,0,0,.22); }
 .evolution-card:has(.evolution-card-button[data-pokemon-id]) { --accent:#666; --glow:rgba(255,255,255,.07); }
 
 @media (max-width:760px) {
     .evolution-section {
-        padding: 20px 14px;
+        padding: 20px 12px;
         margin-top: 10px;
         border-radius: 20px;
     }
 
     .evolution-section::before {
         top: 103px;
-        left: 10%; right: 10%;
+        left: 8%; right: 8%;
         width: auto;
         height: 1px;
         background: linear-gradient(90deg,transparent,#333 12%,#333 88%,transparent);
@@ -105,7 +105,7 @@
 
     .evolution-chain {
         flex-direction: row;
-        gap: 5px;
+        gap: 4px;
         align-items: center;
     }
 
@@ -113,17 +113,18 @@
         width: auto;
         max-width: none;
         flex: 1 1 0;
+        min-width: 0;
     }
 
     .evolution-card-button {
-        min-height: 145px;
+        min-height: 148px;
         padding: 9px 4px 10px;
         border-radius: 14px;
     }
 
     .evolution-card-button img {
-        width: 82px;
-        height: 82px;
+        width: 76px;
+        height: 76px;
     }
 
     .evolution-number {
@@ -135,21 +136,24 @@
     .evolution-card-button strong {
         margin-top: 2px;
         font-size: 11px;
+        line-height: 1.1;
     }
 
     .evolution-arrow {
-        width: 22px;
+        width: 18px;
         height: 22px;
-        font-size: 11px;
         border: 0;
         background: transparent;
         box-shadow: none;
+        font-size: 12px;
     }
 }
 
 @media (max-width:360px) {
-    .evolution-card-button img { width:72px; height:72px; }
+    .evolution-section { padding-inline: 10px; }
+    .evolution-card-button img { width:68px; height:68px; }
     .evolution-card-button strong { font-size:10px; }
+    .evolution-arrow { width:16px; font-size:11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
