@@ -44,11 +44,13 @@
     gap: 10px;
 }
 
-/* Transparent by default. Interaction creates the only visible frame. */
 .evolution-chain .pokemon-card {
     flex: 0 1 96px;
     min-width: 0;
     max-width: 96px;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
     animation: none;
 }
 
@@ -61,13 +63,13 @@
     width: 100%;
     min-height: 116px;
     padding: 7px 4px 6px;
-    border: 1px solid transparent;
+    border: 0;
     border-radius: 12px;
     background: transparent;
     color: #fff;
     text-align: center;
     overflow: visible;
-    transition: transform .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
+    transition: transform .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
 }
 
 .evolution-card-button::before {
@@ -77,9 +79,8 @@
 @media (hover: hover) and (pointer: fine) {
     .evolution-card-button:hover {
         transform: translateY(-2px);
-        border-color: var(--accent, #555);
-        background: rgba(255,255,255,.035);
-        box-shadow: 0 10px 24px rgba(0,0,0,.3), 0 0 18px var(--glow, rgba(255,255,255,.05));
+        background: rgba(255,255,255,.025);
+        box-shadow: none;
     }
 
     .evolution-card-button:hover img {
@@ -90,6 +91,7 @@
 .evolution-card-button:focus-visible {
     outline: 2px solid var(--accent, #fff);
     outline-offset: 3px;
+    border-radius: 10px;
 }
 
 .evolution-card-button img {
