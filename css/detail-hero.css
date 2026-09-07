@@ -142,33 +142,67 @@
 
 @media (max-width: 760px) {
     .detail-hero {
-        min-height: 690px;
+        min-height: 0;
+        height: auto;
         grid-template-columns: 1fr;
+        border-radius: 24px;
     }
 
     .detail-heading {
-        padding: 54px 28px 0;
+        padding: 24px 22px 0;
+    }
+
+    .detail-eyebrow {
+        font-size: 10px;
+        letter-spacing: .14em;
     }
 
     .detail-heading h1 {
-        font-size: clamp(54px, 15vw, 78px);
+        margin: 7px 0 10px;
+        font-size: clamp(42px, 12vw, 64px);
+        line-height: .92;
+    }
+
+    .detail-heading .pokemon-type {
+        padding: 5px 9px;
+        font-size: 9px;
     }
 
     .detail-number {
-        font-size: 58px;
+        top: 18px;
+        right: 20px;
+        font-size: 40px;
     }
 
     .detail-image {
-        min-height: 390px;
+        min-height: 285px;
+        height: 285px;
+        margin-top: -2px;
     }
 
     .detail-image::before {
-        width: min(72vw, 310px);
+        width: min(62vw, 235px);
     }
 
     .detail-image img {
-        width: min(84vw, 360px);
-        height: min(84vw, 360px);
+        width: min(68vw, 275px);
+        height: min(68vw, 275px);
+    }
+}
+
+@media (max-width: 380px) {
+    .detail-heading {
+        padding-inline: 18px;
+    }
+
+    .detail-image {
+        min-height: 255px;
+        height: 255px;
+    }
+
+    .detail-image img {
+        width: 235px;
+        height: 235px;
     }
 }
 
