@@ -57,18 +57,19 @@
 .gamedex-orbit-front{width:205px;height:205px;border:1px solid color-mix(in srgb,var(--gamedex-accent) 12%,transparent);opacity:.7}
 
 .gamedex-meta{position:relative;z-index:5;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0 0 24px;padding:16px 0 18px;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
-.gamedex-meta-item{min-width:0;padding:0 18px;border-right:1px solid rgba(255,255,255,.07)}
+.gamedex-meta-item{min-width:0;padding:0 18px;border-right:1px solid rgba(255,255,255,.07);background:transparent !important}
 .gamedex-meta-item:first-child{padding-left:0}.gamedex-meta-item:last-child{padding-right:0;border-right:0}
 .gamedex-meta-item span{display:block;margin-bottom:6px;color:rgba(255,255,255,.43);font-size:9px;font-weight:850;line-height:1;letter-spacing:.1em;text-transform:uppercase}
 .gamedex-meta-item strong{display:block;overflow:hidden;color:#fff;font-size:15px;font-weight:900;line-height:1.1;letter-spacing:-.02em;text-overflow:ellipsis;white-space:nowrap}
 
-.gamedex-stats{position:relative;z-index:5;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-.gamedex-stat{min-width:0}
+.gamedex-stats{position:relative;z-index:5;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;background:transparent !important}
+.gamedex-stat,.gamedex-stat-top,.gamedex-stat-track{background:transparent !important;min-width:0}
+.gamedex-stat{padding:0 !important;border:0 !important;box-shadow:none !important}
 .gamedex-stat-top{display:block;margin-bottom:7px}
 .gamedex-stat-top span{display:block;overflow:hidden;margin-bottom:4px;color:rgba(255,255,255,.48);font-size:8px;font-weight:900;line-height:1;letter-spacing:.02em;text-overflow:ellipsis;white-space:nowrap}
 .gamedex-stat-top strong{display:block;color:#fff;font-size:11px;font-weight:950;line-height:1}
-.gamedex-stat-track{height:5px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.09)}
-.gamedex-stat-track span{display:block;height:100%;border-radius:inherit;background:var(--gamedex-accent);box-shadow:0 0 10px color-mix(in srgb,var(--gamedex-accent) 48%,transparent)}
+.gamedex-stat-track{height:5px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.09) !important}
+.gamedex-stat-track span{display:block;height:100%;border-radius:inherit;background:var(--gamedex-accent) !important;box-shadow:0 0 10px color-mix(in srgb,var(--gamedex-accent) 48%,transparent)}
 @keyframes gamedex-art-in{from{opacity:0;transform:scale(.86) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
 /* ========================================
