@@ -24,6 +24,7 @@ export function initializeNavigation() {
     initialized = true;
 
     document.addEventListener('click', handleNavigationClick);
+    document.addEventListener('navigation:back-requested', handleBackRequest);
     window.addEventListener('popstate', handleHistoryChange);
 
     const route = readRoute();
@@ -95,12 +96,17 @@ export function setDetailView(id = null, options = {}) {
 
 
 export function navigateBack() {
-    if (window.history.length > 1) {
+    if (window.history.state?.view === 'pokemon') {
         window.history.back();
         return;
     }
 
     showHome('pokedex');
+}
+
+
+function handleBackRequest() {
+    navigateBack();
 }
 
 
@@ -249,22 +255,20 @@ function handleNavigationClick(event) {
     if (event.target.closest('[data-open-pokedex]')) {
         event.preventDefault();
         showHome('pokedex');
-        return;
-    }
-
-    if (event.target.closest('#detail-back')) {
-        event.preventDefault();
-        navigateBack();
     }
 }
 
 
 function getRouteId(route) {
-    const id = Number(route.split('/')[1]);
+    const value = route.split('/')[1];
+    const id = Number(value);
+
     return Number.isInteger(id) ? id : null;
 }
 
 
 function prefersReducedMotion() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+    ).matches;
 }
