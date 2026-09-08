@@ -99,6 +99,78 @@ export async function getPokemonByType(type) {
 
 
 /**
+ * Load a Pokémon region.
+ */
+export async function getRegion(nameOrId) {
+
+    if (!nameOrId) {
+
+        throw new Error(
+            'A region name or ID is required.'
+        );
+    }
+
+    const value =
+        String(nameOrId).trim();
+
+    if (value.startsWith('http')) {
+
+        const response =
+            await fetch(value);
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Region request failed: ${response.status} ${response.statusText}`
+            );
+        }
+
+        return response.json();
+    }
+
+    return request(
+        `/region/${value.toLowerCase()}`
+    );
+}
+
+
+/**
+ * Load a regional Pokédex.
+ */
+export async function getPokedex(nameOrId) {
+
+    if (!nameOrId) {
+
+        throw new Error(
+            'A Pokédex name or ID is required.'
+        );
+    }
+
+    const value =
+        String(nameOrId).trim();
+
+    if (value.startsWith('http')) {
+
+        const response =
+            await fetch(value);
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Pokédex request failed: ${response.status} ${response.statusText}`
+            );
+        }
+
+        return response.json();
+    }
+
+    return request(
+        `/pokedex/${value.toLowerCase()}`
+    );
+}
+
+
+/**
  * Load Pokémon species information.
  */
 export async function getPokemonSpecies(
