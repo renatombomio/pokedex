@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Import selected local region assets for generations II-IX.
 
-Maps use Wikimedia Commons recreations where available and a Bulbagarden
-Archives regional map for Galar. Location images use specific Bulbagarden
-Archives game-map files. The app serves local copies; it never hotlinks
-these sources at runtime.
+Maps use Wikimedia Commons recreations where available for older regions and
+Bulbagarden Archives regional maps for the remaining generations. Location
+images use specific Bulbagarden Archives game-map files. The app serves local
+copies; it never hotlinks these sources at runtime.
 """
 
 from pathlib import Path
@@ -56,7 +56,7 @@ REGIONS = {
         },
     },
     "kalos": {
-        "map": ("commons", "Kalos.png"),
+        "map": ("bulbagarden", "Kalos.png"),
         "locations": {
             "vaniville-town.png": "Kalos Vaniville Town Map.png",
             "santalune-city.png": "Kalos Santalune City Map.png",
@@ -66,7 +66,7 @@ REGIONS = {
         },
     },
     "alola": {
-        "map": ("commons", "Alola Map.png"),
+        "map": ("bulbagarden", "Alola artwork.png"),
         "locations": {
             "iki-town.png": "Alola Iki Town Map.png",
             "hauoli-city.png": "Alola Hau'oli City Map.png",
@@ -86,7 +86,7 @@ REGIONS = {
         },
     },
     "paldea": {
-        "map": ("commons", "Paldea Map.png"),
+        "map": ("bulbagarden", "Paldea.png"),
         "locations": {
             "cabo-poco.png": "Paldea Cabo Poco Map.png",
             "mesagoza.png": "Paldea Mesagoza Map.png",
