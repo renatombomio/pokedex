@@ -1,7 +1,6 @@
 import { POKEMON_TYPES } from './types.js';
 import { getPokemonByType } from '../api/pokemon.js';
 import './types-detail.js';
-import './types-filter.js';
 
 const grid = document.querySelector('#types-grid');
 
