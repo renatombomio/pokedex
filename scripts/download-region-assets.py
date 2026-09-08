@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Import selected local region assets for generations II-V.
+"""Import selected local region assets for generations II-IX.
 
-Maps use Wikimedia Commons recreations published under CC0.
-Location images use specific Bulbagarden Archives game-map files.
-The app serves local copies; it never hotlinks these sources at runtime.
+Maps use Wikimedia Commons recreations where available and a Bulbagarden
+Archives regional map for Galar. Location images use specific Bulbagarden
+Archives game-map files. The app serves local copies; it never hotlinks
+these sources at runtime.
 """
 
 from pathlib import Path
@@ -52,6 +53,46 @@ REGIONS = {
             "nacrene-city.png": "Nacrene City Spring BW.png",
             "nimbasa-city.png": "Nimbasa City Spring BW.png",
             "driftveil-city.png": "Driftveil City Summer B2W2.png",
+        },
+    },
+    "kalos": {
+        "map": ("commons", "Kalos.png"),
+        "locations": {
+            "vaniville-town.png": "Kalos Vaniville Town Map.png",
+            "santalune-city.png": "Kalos Santalune City Map.png",
+            "lumiose-city.png": "Kalos Lumiose City Map.png",
+            "coumarine-city.png": "Kalos Coumarine City Map.png",
+            "snowbelle-city.png": "Kalos Snowbelle City Map.png",
+        },
+    },
+    "alola": {
+        "map": ("commons", "Alola Map.png"),
+        "locations": {
+            "iki-town.png": "Alola Iki Town Map.png",
+            "hauoli-city.png": "Alola Hau'oli City Map.png",
+            "konikoni-city.png": "Alola Konikoni City Map.png",
+            "malie-city.png": "Alola Malie City Map.png",
+            "seafolk-village.png": "Alola Seafolk Village Map.png",
+        },
+    },
+    "galar": {
+        "map": ("bulbagarden", "Galar Sw DLC.png"),
+        "locations": {
+            "postwick.png": "Galar Postwick Map.png",
+            "motostoke.png": "Galar Motostoke Map.png",
+            "hammerlocke.png": "Galar Hammerlocke Map.png",
+            "circhester.png": "Galar Circhester Map.png",
+            "wyndon.png": "Galar Wyndon Map.png",
+        },
+    },
+    "paldea": {
+        "map": ("commons", "Paldea Map.png"),
+        "locations": {
+            "cabo-poco.png": "Paldea Cabo Poco Map.png",
+            "mesagoza.png": "Paldea Mesagoza Map.png",
+            "levincia.png": "Paldea Levincia Map.png",
+            "cascarrafa.png": "Paldea Cascarrafa Map.png",
+            "montenevera.png": "Paldea Montenevera Map.png",
         },
     },
 }
@@ -109,7 +150,7 @@ def main() -> None:
             print(f"Downloading {region_id} location: {source_filename}")
             download(bulbagarden_url(source_filename), destination)
 
-    print("Imported region assets for generations II-V.")
+    print("Imported region assets for generations II-IX.")
 
 
 if __name__ == "__main__":
