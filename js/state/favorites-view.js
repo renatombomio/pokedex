@@ -25,10 +25,8 @@ export function initializeFavoritesView() {
         return;
     }
 
-    decorateFavoriteControls(document.querySelector('#pokemon-grid'));
     decorateFavoriteControls(document.querySelector('#detail-content'));
 
-    observeContainer('#pokemon-grid');
     observeContainer('#detail-content');
     observeContainer('#favorites-content');
 
@@ -38,7 +36,7 @@ export function initializeFavoritesView() {
     elements.content.addEventListener('click', (event) => {
         const card = event.target.closest('.pokemon-card');
 
-        if (!card || event.target.closest('.favorite-toggle')) {
+        if (!card) {
             return;
         }
 
@@ -162,7 +160,6 @@ function renderFavorites(pokemon, failedCount) {
     });
 
     elements.content.replaceChildren(fragment);
-    decorateFavoriteControls(elements.content);
 
     if (failedCount > 0) {
         const notice = document.createElement('p');
@@ -217,7 +214,7 @@ function decorateFavoriteControls(root) {
         return;
     }
 
-    root.querySelectorAll('.pokemon-card, .gamedex-card').forEach((card) => {
+    root.querySelectorAll('.gamedex-card').forEach((card) => {
         const id = getCardPokemonId(card);
 
         if (!id || card.querySelector('.favorite-toggle')) {
