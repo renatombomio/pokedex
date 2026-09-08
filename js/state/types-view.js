@@ -19,9 +19,9 @@ const TYPE_REPRESENTATIVES = {
     bug: 212,
     rock: 248,
     ghost: 94,
-    dragon: 373,
+    dragon: 149,
     dark: 491,
-    steel: 681,
+    steel: 823,
     fairy: 700
 };
 
