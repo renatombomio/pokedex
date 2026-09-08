@@ -1,5 +1,7 @@
 import { POKEMON_TYPES } from './types.js';
 import { getPokemonByType } from '../api/pokemon.js';
+import { showTypeDetail } from './navigation.js';
+import './types-detail.js';
 
 const grid = document.querySelector('#types-grid');
 
@@ -63,6 +65,18 @@ async function hydrateTypeCounts() {
         countElement.textContent = `${count} Pokémon`;
     });
 }
+
+grid?.addEventListener('click', (event) => {
+    const card = event.target.closest('.type-card');
+    if (!card) return;
+
+    event.stopPropagation();
+
+    const typeId = card.dataset.type;
+    if (!typeId) return;
+
+    showTypeDetail(typeId);
+});
 
 function getTypeSymbol(type) {
     const symbols = {
