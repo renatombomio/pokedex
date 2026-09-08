@@ -1,7 +1,8 @@
 import {
     getPokemon,
     getPokemonList,
-    getPokemonByType
+    getPokemonByType,
+    getPokedex
 } from '../api/pokemon.js';
 
 
@@ -48,9 +49,28 @@ export async function loadPokemonByType(type) {
 
 
 /**
+ * Load Pokémon belonging to a regional Pokédex.
+ */
+export async function loadPokemonByPokedex(pokedex) {
+
+    const response =
+        await getPokedex(pokedex);
+
+    const pokemon = await Promise.all(
+        response.pokemon_entries.map(
+            ({ pokemon_species }) =>
+                getPokemon(pokemon_species.name)
+        )
+    );
+
+    return pokemon;
+}
+
+
+/**
  * Search Pokémon globally.
  *
- * This searches the complete PokéAPI list,
+ * This searches the complete PokéAPI collection,
  * so Pokémon variants are also found.
  */
 export async function searchPokemonList(query) {
