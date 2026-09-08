@@ -24,9 +24,7 @@
     background: #070707;
 }
 
-.favorites-section .container {
-    position: relative;
-}
+.favorites-section .container { position: relative; }
 
 .favorites-header {
     display: flex;
@@ -36,19 +34,9 @@
     margin-bottom: 34px;
 }
 
-.favorites-header h2 {
-    margin: 0;
-}
-
-.favorites-count {
-    color: #777;
-    font-size: 13px;
-    white-space: nowrap;
-}
-
-.favorites-count strong {
-    color: #fff;
-}
+.favorites-header h2 { margin: 0; }
+.favorites-count { color: #777; font-size: 13px; white-space: nowrap; }
+.favorites-count strong { color: #fff; }
 
 .favorites-grid {
     display: grid;
@@ -71,9 +59,7 @@
     text-align: center;
 }
 
-.favorites-loading {
-    color: #888;
-}
+.favorites-loading { color: #888; }
 
 .favorites-empty-icon {
     display: grid;
@@ -133,23 +119,22 @@
     font-size: 12px;
 }
 
-/* Favorite action shared by grid cards and Gamedex. */
-.pokemon-card,
-.gamedex-card {
-    position: relative;
-}
+/* Favorite action exists only on the detail Gamedex card. */
+.gamedex-card { position: relative; }
 
 .favorite-toggle {
     position: absolute;
     z-index: 12;
+    top: 0;
+    right: 0;
     display: grid;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     padding: 0;
     border: 1px solid rgba(255,255,255,.14);
     border-radius: 50%;
-    background: rgba(7,7,7,.72);
+    background: rgba(7,7,7,.62);
     color: rgba(255,255,255,.62);
     font-size: 15px;
     line-height: 1;
@@ -158,14 +143,10 @@
     transition: transform .2s var(--ease), color .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
 }
 
-/* Grid cards: keep the action in the information/footer area instead of the artwork. */
-.pokemon-card .favorite-toggle {
-    right: 14px;
-    bottom: 14px;
-}
-
-.pokemon-card .pokemon-card-content {
-    padding-right: 62px;
+/* Sits above and to the right of the Habilidad column. */
+.gamedex-card .favorite-toggle {
+    top: 52px;
+    right: 34px;
 }
 
 .favorite-toggle:hover,
@@ -184,19 +165,7 @@
     box-shadow: 0 7px 20px rgba(239,63,34,.18);
 }
 
-.favorite-toggle.is-favorite span {
-    animation: favorite-pop .28s var(--ease);
-}
-
-/* Gamedex: keep the action in the header, separated from the Pokémon name. */
-.gamedex-card .favorite-toggle {
-    top: 20px;
-    right: 20px;
-}
-
-.gamedex-card .gamedex-header {
-    padding-right: 48px;
-}
+.favorite-toggle.is-favorite span { animation: favorite-pop .28s var(--ease); }
 
 @keyframes favorite-pop {
     0% { transform: scale(.7); }
@@ -205,9 +174,7 @@
 }
 
 @media (max-width: 900px) {
-    .favorites-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+    .favorites-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 768px) {
@@ -226,35 +193,17 @@
         gap: 10px;
     }
 
-    .favorite-toggle {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-    }
-
-    .pokemon-card .favorite-toggle {
-        right: 9px;
-        bottom: 9px;
-    }
-
-    .pokemon-card .pokemon-card-content {
-        padding-right: 50px;
-    }
-
     .gamedex-card .favorite-toggle {
-        top: 12px;
-        right: 12px;
-    }
-
-    .gamedex-card .gamedex-header {
-        padding-right: 42px;
+        top: 40px;
+        right: 14px;
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
     }
 }
 
 @media (max-width: 420px) {
-    .favorites-grid {
-        grid-template-columns: 1fr;
-    }
+    .favorites-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
