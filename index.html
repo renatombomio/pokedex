@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Explora el mundo Pokémon. Descubre Pokémon de todas las regiones, sus estadísticas, habilidades, movimientos y evoluciones.">
+    <meta name="theme-color" content="#070707">
     <title>Pokédex — Explora el mundo Pokémon</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/search-modal.css">
@@ -17,8 +18,10 @@
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/favorites.css">
     <link rel="stylesheet" href="css/regions.css">
+    <link rel="stylesheet" href="css/accessibility.css">
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
     <header class="site-header">
         <div class="container header-content">
             <a href="/" class="logo" aria-label="Volver a la Pokédex">
@@ -38,7 +41,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
         <section class="hero">
             <div class="hero-background" aria-hidden="true"><img src="assets/images/hero-pokemon.png" alt=""></div>
             <div class="hero-overlay" aria-hidden="true"></div>
@@ -60,25 +63,22 @@
         <section class="regions-section" id="regions" aria-labelledby="regions-title">
             <div class="container">
                 <header class="regions-header">
-                    <div>
-                        <p class="eyebrow">Mundo Pokémon</p>
-                        <h2 id="regions-title">Regiones</h2>
-                    </div>
+                    <div><p class="eyebrow">Mundo Pokémon</p><h2 id="regions-title">Regiones</h2></div>
                     <p class="regions-intro">Elige una región y descubre sus Pokémon.</p>
                 </header>
                 <div class="regions-grid" id="regions-grid" aria-live="polite"></div>
             </div>
         </section>
 
-        <section class="pokedex-section" id="pokedex">
+        <section class="pokedex-section" id="pokedex" aria-labelledby="pokedex-title">
             <div class="container">
                 <header class="section-header">
-                    <div><p class="eyebrow">Pokédex</p><h2>Descubre Pokémon</h2></div>
+                    <div><p class="eyebrow">Pokédex</p><h2 id="pokedex-title">Descubre Pokémon</h2></div>
                     <p class="pokemon-count"><strong id="pokemon-count">0</strong> Pokémon</p>
                 </header>
                 <div class="filters" id="types" aria-label="Filtrar por tipo">
-                    <button class="filter-button active" type="button" data-type="all">Todos</button>
-                    <button class="filter-button" type="button" data-type="normal">Normal</button><button class="filter-button" type="button" data-type="fire">Fuego</button><button class="filter-button" type="button" data-type="water">Agua</button><button class="filter-button" type="button" data-type="electric">Eléctrico</button><button class="filter-button" type="button" data-type="grass">Planta</button><button class="filter-button" type="button" data-type="ice">Hielo</button><button class="filter-button" type="button" data-type="fighting">Lucha</button><button class="filter-button" type="button" data-type="poison">Veneno</button><button class="filter-button" type="button" data-type="ground">Tierra</button><button class="filter-button" type="button" data-type="flying">Volador</button><button class="filter-button" type="button" data-type="psychic">Psíquico</button><button class="filter-button" type="button" data-type="bug">Bicho</button><button class="filter-button" type="button" data-type="rock">Roca</button><button class="filter-button" type="button" data-type="ghost">Fantasma</button><button class="filter-button" type="button" data-type="dragon">Dragón</button><button class="filter-button" type="button" data-type="dark">Siniestro</button><button class="filter-button" type="button" data-type="steel">Acero</button><button class="filter-button" type="button" data-type="fairy">Hada</button>
+                    <button class="filter-button active" type="button" data-type="all" aria-pressed="true">Todos</button>
+                    <button class="filter-button" type="button" data-type="normal" aria-pressed="false">Normal</button><button class="filter-button" type="button" data-type="fire" aria-pressed="false">Fuego</button><button class="filter-button" type="button" data-type="water" aria-pressed="false">Agua</button><button class="filter-button" type="button" data-type="electric" aria-pressed="false">Eléctrico</button><button class="filter-button" type="button" data-type="grass" aria-pressed="false">Planta</button><button class="filter-button" type="button" data-type="ice" aria-pressed="false">Hielo</button><button class="filter-button" type="button" data-type="fighting" aria-pressed="false">Lucha</button><button class="filter-button" type="button" data-type="poison" aria-pressed="false">Veneno</button><button class="filter-button" type="button" data-type="ground" aria-pressed="false">Tierra</button><button class="filter-button" type="button" data-type="flying" aria-pressed="false">Volador</button><button class="filter-button" type="button" data-type="psychic" aria-pressed="false">Psíquico</button><button class="filter-button" type="button" data-type="bug" aria-pressed="false">Bicho</button><button class="filter-button" type="button" data-type="rock" aria-pressed="false">Roca</button><button class="filter-button" type="button" data-type="ghost" aria-pressed="false">Fantasma</button><button class="filter-button" type="button" data-type="dragon" aria-pressed="false">Dragón</button><button class="filter-button" type="button" data-type="dark" aria-pressed="false">Siniestro</button><button class="filter-button" type="button" data-type="steel" aria-pressed="false">Acero</button><button class="filter-button" type="button" data-type="fairy" aria-pressed="false">Hada</button>
                 </div>
                 <div class="loading-state" id="loading-state" aria-live="polite">
                     <p>Cargando Pokémon...</p>
@@ -108,10 +108,7 @@
         <section class="favorites-section hidden" id="favorites" aria-labelledby="favorites-title">
             <div class="container">
                 <header class="favorites-header">
-                    <div>
-                        <p class="eyebrow">Tu colección</p>
-                        <h2 id="favorites-title">Favoritos</h2>
-                    </div>
+                    <div><p class="eyebrow">Tu colección</p><h2 id="favorites-title">Favoritos</h2></div>
                     <p class="favorites-count"><strong id="favorites-count">0</strong> Pokémon guardados</p>
                 </header>
                 <div class="favorites-grid" id="favorites-content" aria-live="polite"></div>
@@ -128,9 +125,7 @@
     <script type="module" src="js/state/favorites-init.js"></script>
     <script type="module" src="js/state/navigation-init.js"></script>
     <script type="module" src="js/state/detail-router.js"></script>
-    <script type="module">
-        import { initializeRegions } from './js/state/regions-view.js';
-        initializeRegions();
-    </script>
+    <script type="module" src="./js/state/regions-view.js"></script>
+    <script type="module" src="js/state/accessibility.js"></script>
 </body>
 </html>
