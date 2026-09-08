@@ -20,14 +20,16 @@ function initializePokedexTypeFilters() {
     filters.appendChild(allButton);
 
     POKEMON_TYPES.forEach((type) => {
-        filters.appendChild(
-            createFilterButton(type.id, type.name)
-        );
+        filters.appendChild(createFilterButton(type.id, type.name));
     });
 
     pokedex.insertBefore(filters, loadingState);
-
     filters.addEventListener('click', handleFilterClick);
+
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'css/pokedex-filters.css';
+    document.head.appendChild(stylesheet);
 }
 
 function createFilterButton(type, label) {
