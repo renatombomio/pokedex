@@ -188,22 +188,10 @@ function createLocationCard(location, index, region) {
 function getLocationImage(region, locationName) {
     if (!region.locationAssets) return '';
 
-    const knownAssets = new Set([
-        'celadon-city',
-        'cerulean-city',
-        'cinnabar-island',
-        'fuchsia-city',
-        'indigo-plateau',
-        'lavender-town',
-        'pallet-town',
-        'pewter-city',
-        'saffron-city',
-        'vermilion-city',
-        'viridian-city'
-    ]);
-
+    const allowedImages = new Set(region.locationImages ?? []);
     const slug = String(locationName).toLowerCase().trim();
-    return knownAssets.has(slug)
+
+    return allowedImages.has(slug)
         ? `${region.locationAssets}/${slug}.png`
         : '';
 }
