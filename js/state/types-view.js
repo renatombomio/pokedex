@@ -57,18 +57,16 @@ function renderTypeCards() {
             <span class="type-card-pokemon" aria-hidden="true">
                 <img src="${imageUrl}" alt="" loading="lazy" decoding="async">
             </span>
-            <span class="type-card-shine" aria-hidden="true"></span>
             <span class="type-card-topline">
                 <span class="type-card-index">${String(index + 1).padStart(2, '0')}</span>
                 <span class="type-card-arrow" aria-hidden="true">↗</span>
             </span>
             <span class="type-card-symbol" aria-hidden="true">${getTypeSymbol(type.id)}</span>
-            <span class="type-card-name">${type.name}</span>
-            <span class="type-card-description">${type.description}</span>
-            <span class="type-card-meta">
+            <span class="type-card-copy">
+                <span class="type-card-name">${type.name}</span>
                 <span class="type-card-count" data-type-count>— Pokémon</span>
-                <span class="type-card-cta">Ver</span>
             </span>
+            <span class="type-card-cta" aria-hidden="true">→</span>
         `;
 
         fragment.appendChild(card);
