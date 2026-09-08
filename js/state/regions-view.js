@@ -1,6 +1,5 @@
 import { REGIONS } from './regions.js';
 import { getPokemon } from '../api/pokemon.js';
-import { showRegionDetail, initializeRegionDetail } from './regions-detail.js';
 
 const section = document.querySelector('#regions');
 const grid = document.querySelector('#regions-grid');
@@ -8,7 +7,6 @@ const grid = document.querySelector('#regions-grid');
 export async function initializeRegions() {
     if (!section || !grid) return;
 
-    initializeRegionDetail();
     renderRegionShells();
 
     try {
@@ -110,7 +108,9 @@ function handleRegionClick(event) {
     const regionId = button.dataset.regionId;
     if (!regionId) return;
 
-    showRegionDetail(regionId);
+    document.dispatchEvent(new CustomEvent('region:open-detail', {
+        detail: { region: regionId }
+    }));
 }
 
 initializeRegions();
