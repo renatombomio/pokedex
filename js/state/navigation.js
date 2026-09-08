@@ -6,6 +6,7 @@ import {
 const elements = {
     header: document.querySelector('.site-header'),
     hero: document.querySelector('.hero'),
+    regions: document.querySelector('#regions'),
     pokedex: document.querySelector('#pokedex'),
     detail: document.querySelector('#pokemon-detail'),
     favorites: document.querySelector('#favorites'),
@@ -32,9 +33,10 @@ export function getActiveView() {
 export function showHome(target = 'pokedex') {
     activeView = 'home';
     setHeaderView('home');
-    setActiveNav(target === 'types' ? 'types' : 'pokedex');
+    setActiveNav(target === 'types' ? 'types' : target === 'regions' ? 'regions' : 'pokedex');
 
     elements.hero?.classList.remove('hidden');
+    elements.regions?.classList.remove('hidden');
     elements.pokedex?.classList.remove('hidden');
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
@@ -43,6 +45,16 @@ export function showHome(target = 'pokedex') {
     if (target === 'types') {
         requestAnimationFrame(() => {
             elements.types?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+        return;
+    }
+
+    if (target === 'regions') {
+        requestAnimationFrame(() => {
+            elements.regions?.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });
@@ -67,6 +79,7 @@ export async function showFavorites() {
     setActiveNav('favorites');
 
     elements.hero?.classList.add('hidden');
+    elements.regions?.classList.add('hidden');
     elements.pokedex?.classList.add('hidden');
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
@@ -126,6 +139,12 @@ function handleNavigationClick(event) {
         if (hash === '#types') {
             event.preventDefault();
             showHome('types');
+            return;
+        }
+
+        if (hash === '#regions') {
+            event.preventDefault();
+            showHome('regions');
             return;
         }
 
