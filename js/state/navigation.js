@@ -115,7 +115,17 @@ export function setDetailView(id = null, options = {}) {
 }
 
 export function navigateBack() {
-    if (window.history.state?.view === 'pokemon' || window.history.state?.view === 'type') {
+    if (window.history.state?.view === 'type') {
+        showHome('types', { pushHistory: false });
+        window.history.replaceState(
+            { view: 'types' },
+            '',
+            '#types'
+        );
+        return;
+    }
+
+    if (window.history.state?.view === 'pokemon') {
         window.history.back();
         return;
     }
@@ -143,7 +153,11 @@ function pushRoute(route) {
     const url = route === 'pokedex' ? '#pokedex' : `#${route}`;
 
     window.history.pushState(
-        { view: route.split('/')[0], id: getRouteId(route), type: getRouteType(route) },
+        {
+            view: route.split('/')[0],
+            id: getRouteId(route),
+            type: getRouteType(route)
+        },
         '',
         url
     );
