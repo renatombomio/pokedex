@@ -142,22 +142,30 @@
 .favorite-toggle {
     position: absolute;
     z-index: 12;
-    top: 14px;
-    left: 14px;
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 34px;
+    height: 34px;
     padding: 0;
     border: 1px solid rgba(255,255,255,.14);
     border-radius: 50%;
     background: rgba(7,7,7,.72);
     color: rgba(255,255,255,.62);
-    font-size: 18px;
+    font-size: 15px;
     line-height: 1;
-    box-shadow: 0 8px 22px rgba(0,0,0,.28);
+    box-shadow: 0 7px 18px rgba(0,0,0,.24);
     backdrop-filter: blur(12px);
     transition: transform .2s var(--ease), color .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+
+/* Grid cards: keep the action in the information/footer area instead of the artwork. */
+.pokemon-card .favorite-toggle {
+    right: 14px;
+    bottom: 14px;
+}
+
+.pokemon-card .pokemon-card-content {
+    padding-right: 62px;
 }
 
 .favorite-toggle:hover,
@@ -173,16 +181,21 @@
     border-color: rgba(239,63,34,.65);
     background: rgba(239,63,34,.16);
     color: #ff5a3b;
-    box-shadow: 0 8px 24px rgba(239,63,34,.18);
+    box-shadow: 0 7px 20px rgba(239,63,34,.18);
 }
 
 .favorite-toggle.is-favorite span {
     animation: favorite-pop .28s var(--ease);
 }
 
+/* Gamedex: keep the action in the header, separated from the Pokémon name. */
 .gamedex-card .favorite-toggle {
     top: 20px;
-    left: 20px;
+    right: 20px;
+}
+
+.gamedex-card .gamedex-header {
+    padding-right: 48px;
 }
 
 @keyframes favorite-pop {
@@ -214,16 +227,27 @@
     }
 
     .favorite-toggle {
-        top: 9px;
-        left: 9px;
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .pokemon-card .favorite-toggle {
+        right: 9px;
+        bottom: 9px;
+    }
+
+    .pokemon-card .pokemon-card-content {
+        padding-right: 50px;
     }
 
     .gamedex-card .favorite-toggle {
         top: 12px;
-        left: 12px;
+        right: 12px;
+    }
+
+    .gamedex-card .gamedex-header {
+        padding-right: 42px;
     }
 }
 
