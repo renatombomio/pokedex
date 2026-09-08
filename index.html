@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/view-transitions.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/favorites.css">
 </head>
 <body>
     <header class="site-header">
@@ -24,10 +25,10 @@
                 <span class="logo-divider" aria-hidden="true"></span>
                 <span class="pokedex-wordmark">Pokédex</span>
             </a>
-            <nav class="main-nav" aria-label="Navegación principal">
+            <nav class="main-nav" id="main-navigation" aria-label="Navegación principal">
                 <a href="#pokedex">Pokédex</a>
                 <a href="#types">Tipos</a>
-                <a href="#favorites">Favoritos</a>
+                <a href="#favorites">Favoritos <span class="nav-favorites-count" data-favorites-count hidden>0</span></a>
             </nav>
             <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-navigation">
                 <span></span><span></span><span></span>
@@ -89,8 +90,17 @@
             </div>
         </section>
 
-        <section class="favorites-section" id="favorites">
-            <div class="container"><p class="eyebrow">Tu colección</p><h2>Favoritos</h2><p class="favorites-description">Guarda tus Pokémon favoritos y encuéntralos rápidamente.</p></div>
+        <section class="favorites-section hidden" id="favorites" aria-labelledby="favorites-title">
+            <div class="container">
+                <header class="favorites-header">
+                    <div>
+                        <p class="eyebrow">Tu colección</p>
+                        <h2 id="favorites-title">Favoritos</h2>
+                    </div>
+                    <p class="favorites-count"><strong id="favorites-count">0</strong> Pokémon guardados</p>
+                </header>
+                <div class="favorites-grid" id="favorites-content" aria-live="polite"></div>
+            </div>
         </section>
     </main>
 
@@ -100,5 +110,8 @@
     <script type="module" src="js/state/gamedex.js"></script>
     <script type="module" src="js/state/search-carousel.js"></script>
     <script type="module" src="js/state/menu.js"></script>
+    <script type="module" src="js/state/favorites-view.js"></script>
+    <script type="module" src="js/state/navigation.js"></script>
+    <script type="module" src="js/state/detail-router.js"></script>
 </body>
 </html>
