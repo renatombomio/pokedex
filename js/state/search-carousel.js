@@ -194,7 +194,9 @@ function initializeSearchCarousel(searchModal) {
                 direction === 'next'
                     ? amount
                     : -amount,
-            behavior: 'smooth'
+            behavior: prefersReducedMotion()
+                ? 'auto'
+                : 'smooth'
         });
     }
 
@@ -238,4 +240,10 @@ function initializeSearchCarousel(searchModal) {
     requestAnimationFrame(
         updateCarousel
     );
+}
+
+function prefersReducedMotion() {
+    return window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+    ).matches;
 }
