@@ -20,6 +20,7 @@ export function initializeNavigation() {
 
     document.addEventListener('click', handleNavigationClick);
     document.addEventListener('navigation:back-requested', handleBackRequest);
+    document.addEventListener('region:open-detail', handleRegionOpenRequest);
     window.addEventListener('popstate', handleHistoryChange);
 
     const route = readRoute();
@@ -108,6 +109,28 @@ export function showTypeDetail(typeId, options = {}) {
     });
 }
 
+export async function showRegionDetailView(regionId, options = {}) {
+    if (!regionId) return;
+
+    activeView = 'region';
+    setHeaderView('detail');
+    setActiveNav('regions');
+
+    elements.hero?.classList.add('hidden');
+    elements.regions?.classList.add('hidden');
+    elements.types?.classList.add('hidden');
+    elements.pokedex?.classList.add('hidden');
+    elements.detail?.classList.add('hidden');
+    elements.detail?.setAttribute('aria-hidden', 'true');
+    elements.favorites?.classList.add('hidden');
+    getTypeDetailElement()?.classList.add('hidden');
+    getTypeDetailElement()?.setAttribute('aria-hidden', 'true');
+
+    const { initializeRegionDetail, showRegionDetail } = await import('./regions-detail.js');
+    initializeRegionDetail();
+    await showRegionDetail(regionId, options);
+}
+
 export function setDetailView(id = null, options = {}) {
     activeView = 'detail';
     setHeaderView('detail');
@@ -152,6 +175,15 @@ export function navigateBack() {
 
 function handleBackRequest() {
     navigateBack();
+}
+
+async function handleRegionOpenRequest(event) {
+    const regionId = event.detail?.region;
+    if (!regionId) return;
+
+    await showRegionDetailView(regionId, {
+        pushHistory: event.detail?.fromHistory !== true
+    });
 }
 
 function showHomeElements() {
