@@ -8,8 +8,15 @@ const grid = document.querySelector('#types-grid');
 export function initializeTypes() {
     if (!grid) return;
 
+    removeLegacyTypeControls();
     renderTypeCards();
     hydrateTypeCounts();
+}
+
+function removeLegacyTypeControls() {
+    document
+        .querySelectorAll('.types-section > .container > .filter-button')
+        .forEach((control) => control.remove());
 }
 
 function renderTypeCards() {
@@ -34,7 +41,7 @@ function renderTypeCards() {
             <span class="type-card-description">${type.description}</span>
             <span class="type-card-meta">
                 <span class="type-card-count" data-type-count>— Pokémon</span>
-                <span class="type-card-cta">Explorar</span>
+                <span class="type-card-cta">Ver</span>
             </span>
         `;
 
@@ -92,10 +99,10 @@ document.addEventListener('type:filter-changed', (event) => {
 
 function getTypeSymbol(type) {
     const symbols = {
-        normal: 'N', fire: 'F', water: 'W', electric: 'E', grass: 'G',
-        ice: 'I', fighting: 'L', poison: 'P', ground: 'T', flying: 'V',
-        psychic: 'Ψ', bug: 'B', rock: 'R', ghost: 'G', dragon: 'D',
-        dark: 'S', steel: 'A', fairy: 'H'
+        normal: '✦', fire: 'ϟ', water: '◒', electric: 'ϟ', grass: '✤',
+        ice: '❄', fighting: '✕', poison: '☣', ground: '⌁', flying: '➤',
+        psychic: '◉', bug: '⌘', rock: '◆', ghost: '◌', dragon: '◈',
+        dark: '◐', steel: '⬡', fairy: '✧'
     };
 
     return symbols[type] ?? '•';
