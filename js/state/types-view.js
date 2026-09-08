@@ -5,6 +5,27 @@ import './types-filter.js';
 
 const grid = document.querySelector('#types-grid');
 
+const TYPE_REPRESENTATIVES = {
+    normal: 133,
+    fire: 6,
+    water: 9,
+    electric: 25,
+    grass: 3,
+    ice: 144,
+    fighting: 448,
+    poison: 94,
+    ground: 383,
+    flying: 18,
+    psychic: 150,
+    bug: 212,
+    rock: 248,
+    ghost: 94,
+    dragon: 384,
+    dark: 197,
+    steel: 376,
+    fairy: 700
+};
+
 export function initializeTypes() {
     if (!grid) return;
 
@@ -30,7 +51,13 @@ function renderTypeCards() {
         card.setAttribute('aria-pressed', 'false');
         card.style.setProperty('--type-index', index);
 
+        const representativeId = TYPE_REPRESENTATIVES[type.id];
+        const imageUrl = getRepresentativeImage(representativeId);
+
         card.innerHTML = `
+            <span class="type-card-pokemon" aria-hidden="true">
+                <img src="${imageUrl}" alt="" loading="lazy" decoding="async">
+            </span>
             <span class="type-card-shine" aria-hidden="true"></span>
             <span class="type-card-topline">
                 <span class="type-card-index">${String(index + 1).padStart(2, '0')}</span>
@@ -96,6 +123,10 @@ document.addEventListener('type:filter-changed', (event) => {
         card.setAttribute('aria-pressed', String(active));
     });
 });
+
+function getRepresentativeImage(id) {
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+}
 
 function getTypeSymbol(type) {
     const symbols = {
