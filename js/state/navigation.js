@@ -65,6 +65,9 @@ export async function showFavorites(options = {}) {
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
     getTypeDetailElement()?.classList.add('hidden');
+    getTypeDetailElement()?.setAttribute('aria-hidden', 'true');
+    getRegionDetailElement()?.classList.add('hidden');
+    getRegionDetailElement()?.setAttribute('aria-hidden', 'true');
     elements.favorites?.classList.remove('hidden');
 
     if (options.pushHistory !== false) pushRoute('favorites');
@@ -79,7 +82,6 @@ export async function showFavorites(options = {}) {
 
 export function showTypeDetail(typeId, options = {}) {
     const typeDetail = getTypeDetailElement();
-
     if (!typeDetail || !typeId) return;
 
     activeView = 'type';
@@ -93,6 +95,8 @@ export function showTypeDetail(typeId, options = {}) {
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
     elements.favorites?.classList.add('hidden');
+    getRegionDetailElement()?.classList.add('hidden');
+    getRegionDetailElement()?.setAttribute('aria-hidden', 'true');
     typeDetail.classList.remove('hidden');
     typeDetail.setAttribute('aria-hidden', 'false');
 
@@ -109,12 +113,25 @@ export function setDetailView(id = null, options = {}) {
     setHeaderView('detail');
     setActiveNav('pokedex');
 
+    getRegionDetailElement()?.classList.add('hidden');
+    getRegionDetailElement()?.setAttribute('aria-hidden', 'true');
+
     if (options.pushHistory !== false && Number.isInteger(id)) {
         pushRoute(`pokemon/${id}`);
     }
 }
 
 export function navigateBack() {
+    if (window.history.state?.view === 'region') {
+        showHome('regions', { pushHistory: false });
+        window.history.replaceState(
+            { view: 'regions' },
+            '',
+            '#regions'
+        );
+        return;
+    }
+
     if (window.history.state?.view === 'type') {
         showHome('types', { pushHistory: false });
         window.history.replaceState(
@@ -147,6 +164,8 @@ function showHomeElements() {
     elements.favorites?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getTypeDetailElement()?.setAttribute('aria-hidden', 'true');
+    getRegionDetailElement()?.classList.add('hidden');
+    getRegionDetailElement()?.setAttribute('aria-hidden', 'true');
 }
 
 function pushRoute(route) {
@@ -156,7 +175,8 @@ function pushRoute(route) {
         {
             view: route.split('/')[0],
             id: getRouteId(route),
-            type: getRouteType(route)
+            type: getRouteType(route),
+            region: getRouteRegion(route)
         },
         '',
         url
@@ -192,6 +212,15 @@ function restoreRoute(route) {
         return;
     }
 
+    if (view === 'region' && route.state.region) {
+        requestAnimationFrame(() => {
+            document.dispatchEvent(new CustomEvent('region:open-detail', {
+                detail: { region: route.state.region, fromHistory: true }
+            }));
+        });
+        return;
+    }
+
     if (view === 'favorites') {
         showFavorites({ pushHistory: false });
         return;
@@ -213,6 +242,11 @@ function readRoute() {
     if (hash.startsWith('type/')) {
         const type = hash.split('/')[1]?.toLowerCase();
         if (type) return { state: { view: 'type', type }, url: `#type/${type}` };
+    }
+
+    if (hash.startsWith('region/')) {
+        const region = hash.split('/')[1]?.toLowerCase();
+        if (region) return { state: { view: 'region', region }, url: `#region/${region}` };
     }
 
     if (hash.startsWith('pokemon/')) {
@@ -270,8 +304,16 @@ function getRouteType(route) {
     return route.startsWith('type/') ? route.split('/')[1] : null;
 }
 
+function getRouteRegion(route) {
+    return route.startsWith('region/') ? route.split('/')[1] : null;
+}
+
 function getTypeDetailElement() {
     return document.querySelector('#type-detail');
+}
+
+function getRegionDetailElement() {
+    return document.querySelector('#region-detail');
 }
 
 function prefersReducedMotion() {
