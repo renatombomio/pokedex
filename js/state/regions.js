@@ -6,7 +6,9 @@ export const REGIONS = [
         pokedex: 'kanto',
         starters: ['bulbasaur', 'charmander', 'squirtle'],
         accent: '#5fc96b',
-        description: 'El comienzo de la aventura y el hogar de los 151 Pokémon originales.'
+        description: 'El comienzo de la aventura y el hogar de los 151 Pokémon originales.',
+        map: 'assets/regions/kanto/map.png',
+        locationAssets: 'assets/regions/kanto/locations'
     },
     {
         id: 'johto',
