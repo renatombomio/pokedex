@@ -30,10 +30,9 @@ export function renderGamedex(details) {
         .join('');
 
     const evolutionTree = getEvolutionTree();
-    const evolutionSection = evolutionTree?.children.length || evolutionTree?.pokemon
+    const evolutionSection = evolutionTree?.children?.length
         ? createEvolutionSection(evolutionTree)
         : '';
-
     const favorite = isFavorite(pokemon.id);
 
     detailContent.innerHTML = `
@@ -141,26 +140,13 @@ function createStat(stat) {
 
 
 function createEvolutionSection(tree) {
-    if (!tree) {
+    if (!tree?.children?.length) {
         return '';
     }
 
     const rootCard = createEvolutionCard(tree.pokemon);
-    const children = tree.children ?? [];
 
-    if (children.length === 0) {
-        return `
-            <section class="evolution-section">
-                <span class="panel-eyebrow">Evoluciones</span>
-                <h2>Cadena evolutiva</h2>
-                <div class="evolution-chain evolution-chain-single">
-                    ${rootCard}
-                </div>
-            </section>
-        `;
-    }
-
-    if (children.length === 1) {
+    if (tree.children.length === 1) {
         return `
             <section class="evolution-section">
                 <span class="panel-eyebrow">Evoluciones</span>
@@ -168,7 +154,7 @@ function createEvolutionSection(tree) {
                 <div class="evolution-chain evolution-chain-linear">
                     ${rootCard}
                     <span class="evolution-arrow" aria-hidden="true"></span>
-                    ${createLinearDescendant(children[0])}
+                    ${createLinearDescendant(tree.children[0])}
                 </div>
             </section>
         `;
@@ -184,7 +170,7 @@ function createEvolutionSection(tree) {
                 </div>
                 <div class="evolution-tree-connector" aria-hidden="true"></div>
                 <div class="evolution-tree-branches">
-                    ${children.map((child) => `
+                    ${tree.children.map((child) => `
                         <div class="evolution-branch">
                             <span class="evolution-arrow" aria-hidden="true"></span>
                             ${createLinearDescendant(child)}
