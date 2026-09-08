@@ -9,19 +9,7 @@ export const REGIONS = [
         description: 'El comienzo de la aventura y el hogar de los 151 Pokémon originales.',
         map: 'assets/regions/kanto/map.png',
         locationAssets: 'assets/regions/kanto/locations',
-        locationImages: [
-            'pallet-town',
-            'viridian-city',
-            'pewter-city',
-            'cerulean-city',
-            'vermilion-city',
-            'lavender-town',
-            'celadon-city',
-            'fuchsia-city',
-            'saffron-city',
-            'cinnabar-island',
-            'indigo-plateau'
-        ]
+        locationImages: ['pallet-town', 'viridian-city', 'pewter-city', 'cerulean-city', 'vermilion-city', 'lavender-town', 'celadon-city', 'fuchsia-city', 'saffron-city', 'cinnabar-island', 'indigo-plateau']
     },
     {
         id: 'johto',
@@ -33,13 +21,7 @@ export const REGIONS = [
         description: 'Una región de tradición, leyendas y nuevos Pokémon por descubrir.',
         map: 'assets/regions/johto/map.png',
         locationAssets: 'assets/regions/johto/locations',
-        locationImages: [
-            'new-bark-town',
-            'goldenrod-city',
-            'ecruteak-city',
-            'olivine-city',
-            'blackthorn-city'
-        ]
+        locationImages: ['new-bark-town', 'goldenrod-city', 'ecruteak-city', 'olivine-city', 'blackthorn-city']
     },
     {
         id: 'hoenn',
@@ -51,13 +33,7 @@ export const REGIONS = [
         description: 'Una región marcada por el mar, la naturaleza y grandes aventuras.',
         map: 'assets/regions/hoenn/map.png',
         locationAssets: 'assets/regions/hoenn/locations',
-        locationImages: [
-            'littleroot-town',
-            'dewford-town',
-            'fallarbor-town',
-            'slateport-city',
-            'lilycove-city'
-        ]
+        locationImages: ['littleroot-town', 'dewford-town', 'fallarbor-town', 'slateport-city', 'lilycove-city']
     },
     {
         id: 'sinnoh',
@@ -69,13 +45,7 @@ export const REGIONS = [
         description: 'Una tierra antigua donde los mitos y los Pokémon legendarios cobran vida.',
         map: 'assets/regions/sinnoh/map.png',
         locationAssets: 'assets/regions/sinnoh/locations',
-        locationImages: [
-            'twinleaf-town',
-            'jubilife-city',
-            'hearthome-city',
-            'veilstone-city',
-            'snowpoint-city'
-        ]
+        locationImages: ['twinleaf-town', 'jubilife-city', 'hearthome-city', 'veilstone-city', 'snowpoint-city']
     },
     {
         id: 'unova',
@@ -87,13 +57,7 @@ export const REGIONS = [
         description: 'Una región urbana y diversa con una Pokédex completamente nueva.',
         map: 'assets/regions/unova/map.png',
         locationAssets: 'assets/regions/unova/locations',
-        locationImages: [
-            'nuvema-town',
-            'accumula-town',
-            'nacrene-city',
-            'nimbasa-city',
-            'driftveil-city'
-        ]
+        locationImages: ['nuvema-town', 'accumula-town', 'nacrene-city', 'nimbasa-city', 'driftveil-city']
     },
     {
         id: 'kalos',
@@ -102,7 +66,10 @@ export const REGIONS = [
         pokedex: 'kalos-central',
         starters: ['chespin', 'fennekin', 'froakie'],
         accent: '#e66f8f',
-        description: 'Una región de belleza, ciudades elegantes y la energía de la megaevolución.'
+        description: 'Una región de belleza, ciudades elegantes y la energía de la megaevolución.',
+        map: 'assets/regions/kalos/map.png',
+        locationAssets: 'assets/regions/kalos/locations',
+        locationImages: ['vaniville-town', 'santalune-city', 'lumiose-city', 'coumarine-city', 'snowbelle-city']
     },
     {
         id: 'alola',
@@ -111,7 +78,10 @@ export const REGIONS = [
         pokedex: 'original-alola',
         starters: ['rowlet', 'litten', 'popplio'],
         accent: '#e8c64c',
-        description: 'Un archipiélago tropical donde cada isla tiene su propio carácter.'
+        description: 'Un archipiélago tropical donde cada isla tiene su propio carácter.',
+        map: 'assets/regions/alola/map.png',
+        locationAssets: 'assets/regions/alola/locations',
+        locationImages: ['iki-town', 'hauoli-city', 'konikoni-city', 'malie-city', 'seafolk-village']
     },
     {
         id: 'galar',
@@ -120,7 +90,10 @@ export const REGIONS = [
         pokedex: 'galar',
         starters: ['grookey', 'scorbunny', 'sobble'],
         accent: '#8b7be0',
-        description: 'Una región inspirada en el Reino Unido, dominada por estadios y grandes combates.'
+        description: 'Una región inspirada en el Reino Unido, dominada por estadios y grandes combates.',
+        map: 'assets/regions/galar/map.png',
+        locationAssets: 'assets/regions/galar/locations',
+        locationImages: ['postwick', 'motostoke', 'hammerlocke', 'circhester', 'wyndon']
     },
     {
         id: 'paldea',
@@ -129,7 +102,10 @@ export const REGIONS = [
         pokedex: 'paldea',
         starters: ['sprigatito', 'fuecoco', 'quaxly'],
         accent: '#e07a4f',
-        description: 'Una región abierta para explorar a tu ritmo y descubrir nuevas formas de aventura.'
+        description: 'Una región abierta para explorar a tu ritmo y descubrir nuevas formas de aventura.',
+        map: 'assets/regions/paldea/map.png',
+        locationAssets: 'assets/regions/paldea/locations',
+        locationImages: ['cabo-poco', 'mesagoza', 'levincia', 'cascarrafa', 'montenevera']
     }
 ];
 
