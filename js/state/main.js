@@ -1,7 +1,6 @@
 import {
     initializeApp,
     loadMorePokemon,
-    filterByType,
     searchPokemon
 } from './app.js';
 
@@ -19,12 +18,6 @@ const searchForm =
 
 const searchInput =
     document.querySelector('#search-input');
-
-const filterContainer =
-    document.querySelector('#types');
-
-const filterButtons = () =>
-    document.querySelectorAll('.filter-button');
 
 const loadMoreButton =
     document.querySelector('#load-more-button');
@@ -188,46 +181,6 @@ function createSearchResultCard(pokemon) {
 
 
 /* ========================================
-   DYNAMIC TYPE FILTERS
-======================================== */
-
-addMissingTypeFilters();
-
-function addMissingTypeFilters() {
-    if (!filterContainer) {
-        return;
-    }
-
-    const existingTypes = new Set(
-        [...filterButtons()].map(
-            (button) => button.dataset.type
-        )
-    );
-
-    const missingTypes = [
-        ['dark', 'Siniestro'],
-        ['steel', 'Acero'],
-        ['fairy', 'Hada']
-    ];
-
-    missingTypes.forEach(([type, label]) => {
-        if (existingTypes.has(type)) {
-            return;
-        }
-
-        const button = document.createElement('button');
-
-        button.className = `filter-button type-${type}`;
-        button.type = 'button';
-        button.dataset.type = type;
-        button.textContent = label;
-
-        filterContainer.appendChild(button);
-    });
-}
-
-
-/* ========================================
    START
 ======================================== */
 
@@ -314,45 +267,6 @@ searchModal.addEventListener(
                 detail: { id: pokemonId }
             })
         );
-    }
-);
-
-
-/* ========================================
-   FILTERS
-======================================== */
-
-filterContainer.addEventListener(
-    'click',
-    async (event) => {
-        const button = event.target.closest('.filter-button');
-
-        if (!button) {
-            return;
-        }
-
-        filterButtons().forEach((item) => {
-            item.classList.remove('active');
-        });
-
-        button.classList.add('active');
-
-        try {
-            showLoading();
-
-            const state = await filterByType(
-                button.dataset.type
-            );
-
-            renderPokemon(state.filteredPokemon);
-        } catch (error) {
-            console.error(
-                'Failed to filter Pokémon:',
-                error
-            );
-
-            showError();
-        }
     }
 );
 
