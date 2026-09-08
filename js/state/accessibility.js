@@ -7,17 +7,27 @@ const menuButton = document.querySelector('.menu-toggle');
 let lastFocusedElement = null;
 let modalTrigger = null;
 
-// Arrow/Home/End navigation keeps normal Tab navigation intact.
+// Navigate the Pokémon grid by visual row and column while preserving Tab navigation.
 grid?.addEventListener('keydown', (event) => {
     const buttons = [...grid.querySelectorAll('.pokemon-card-button')];
     const index = buttons.indexOf(event.target);
     if (index < 0) return;
 
+    let columns = 1;
+    const gridColumns = window.getComputedStyle(grid).gridTemplateColumns;
+    if (gridColumns && gridColumns !== 'none') {
+        columns = Math.max(1, gridColumns.split(' ').length);
+    }
+
     let next = null;
-    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = Math.min(index + 1, buttons.length - 1);
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = Math.max(index - 1, 0);
+
+    if (event.key === 'ArrowRight') next = Math.min(index + 1, buttons.length - 1);
+    if (event.key === 'ArrowLeft') next = Math.max(index - 1, 0);
+    if (event.key === 'ArrowDown') next = Math.min(index + columns, buttons.length - 1);
+    if (event.key === 'ArrowUp') next = Math.max(index - columns, 0);
     if (event.key === 'Home') next = 0;
     if (event.key === 'End') next = buttons.length - 1;
+
     if (next === null || next === index) return;
 
     event.preventDefault();
@@ -91,7 +101,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Move focus into the dialog when search results open and return it to the search field on close.
+// Move focus into the dialog when search results open and return it to the search trigger on close.
 const searchModalObserver = new MutationObserver(() => {
     const modal = document.querySelector('.search-modal');
     if (!modal) return;
@@ -109,13 +119,16 @@ const searchModalObserver = new MutationObserver(() => {
     if (!isOpen && wasOpen) {
         modal.dataset.a11yOpen = 'false';
         requestAnimationFrame(() => {
-            if (modalTrigger && document.contains(modalTrigger)) {
-                modalTrigger.focus();
-            }
+            if (modalTrigger && document.contains(modalTrigger)) modalTrigger.focus();
         });
     }
 });
 
 if (document.body) {
-    searchModalObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'aria-hidden'] });
+    searchModalObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'aria-hidden']
+    });
 }
