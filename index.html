@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/favorites.css">
+    <link rel="stylesheet" href="css/regions.css">
 </head>
 <body>
     <header class="site-header">
@@ -28,6 +29,7 @@
             <nav class="main-nav" id="main-navigation" aria-label="Navegación principal">
                 <a href="#pokedex">Pokédex</a>
                 <a href="#types">Tipos</a>
+                <a href="#regions">Regiones</a>
                 <a href="#favorites">Favoritos <span class="nav-favorites-count" data-favorites-count hidden>0</span></a>
             </nav>
             <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-navigation">
@@ -52,6 +54,19 @@
                         <button type="submit">Buscar</button>
                     </form>
                 </div>
+            </div>
+        </section>
+
+        <section class="regions-section" id="regions" aria-labelledby="regions-title">
+            <div class="container">
+                <header class="regions-header">
+                    <div>
+                        <p class="eyebrow">Mundo Pokémon</p>
+                        <h2 id="regions-title">Regiones</h2>
+                    </div>
+                    <p class="regions-intro">Elige una región y descubre sus Pokémon.</p>
+                </header>
+                <div class="regions-grid" id="regions-grid" aria-live="polite"></div>
             </div>
         </section>
 
@@ -113,5 +128,9 @@
     <script type="module" src="js/state/favorites-init.js"></script>
     <script type="module" src="js/state/navigation-init.js"></script>
     <script type="module" src="js/state/detail-router.js"></script>
+    <script type="module">
+        import { initializeRegions } from './js/state/regions-view.js';
+        initializeRegions();
+    </script>
 </body>
 </html>
