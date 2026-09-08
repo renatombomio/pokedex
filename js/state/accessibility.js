@@ -5,6 +5,7 @@ const detailBack = document.querySelector('#detail-back');
 const menuButton = document.querySelector('.menu-toggle');
 
 let lastFocusedElement = null;
+let modalTrigger = null;
 
 // Arrow/Home/End navigation keeps normal Tab navigation intact.
 grid?.addEventListener('keydown', (event) => {
@@ -61,3 +62,60 @@ document.querySelector('#types')?.addEventListener('click', (event) => {
         item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
     });
 });
+
+// Keep keyboard focus inside the search dialog while it is open.
+document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('#search-form button[type="submit"]');
+    if (!trigger) return;
+    modalTrigger = trigger;
+});
+
+document.addEventListener('keydown', (event) => {
+    const modal = document.querySelector('.search-modal.is-open');
+    if (!modal || event.key !== 'Tab') return;
+
+    const focusable = [...modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+        .filter((element) => !element.disabled && element.offsetParent !== null);
+
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+    }
+});
+
+// Move focus into the dialog when search results open and return it to the search field on close.
+const searchModalObserver = new MutationObserver(() => {
+    const modal = document.querySelector('.search-modal');
+    if (!modal) return;
+
+    const isOpen = modal.classList.contains('is-open');
+    const wasOpen = modal.dataset.a11yOpen === 'true';
+
+    if (isOpen && !wasOpen) {
+        modal.dataset.a11yOpen = 'true';
+        requestAnimationFrame(() => {
+            modal.querySelector('.search-modal-close')?.focus();
+        });
+    }
+
+    if (!isOpen && wasOpen) {
+        modal.dataset.a11yOpen = 'false';
+        requestAnimationFrame(() => {
+            if (modalTrigger && document.contains(modalTrigger)) {
+                modalTrigger.focus();
+            }
+        });
+    }
+});
+
+if (document.body) {
+    searchModalObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'aria-hidden'] });
+}
