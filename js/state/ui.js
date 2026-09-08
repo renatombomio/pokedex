@@ -203,23 +203,15 @@ export function renderPokemonDetails(details) {
 
 
 /**
- * Hide Pokémon detail view.
+ * Request contextual back navigation.
+ *
+ * Navigation owns history and view transitions, so UI does not directly
+ * hide the detail view when the Back control is activated.
  */
 export function hidePokemonDetails() {
-    const detailSection = document.querySelector('#pokemon-detail');
-    const heroSection = document.querySelector('.hero');
-    const pokedexSection = document.querySelector('#pokedex');
-    const favoritesSection = document.querySelector('#favorites');
-
-    detailSection.classList.add('hidden');
-    detailSection.setAttribute('aria-hidden', 'true');
-
-    heroSection?.classList.remove('hidden');
-    pokedexSection?.classList.remove('hidden');
-    favoritesSection?.classList.remove('hidden');
-
-    hideGamedex();
-    scrollToTop();
+    document.dispatchEvent(
+        new CustomEvent('navigation:back-requested')
+    );
 }
 
 
