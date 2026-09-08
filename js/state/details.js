@@ -16,7 +16,7 @@ const state = {
 
 
 /**
- * Load all data required for the Pokémon detail view.
+ * Load all data required by the Pokémon detail view.
  */
 export async function loadPokemonDetails(identifier) {
     state.loading = true;
@@ -53,33 +53,50 @@ export function getDetailsState() {
 
 
 /**
- * Flatten the PokéAPI evolution chain into render-ready entries.
+ * Return the evolution tree without flattening branching families.
+ */
+export function getEvolutionTree() {
+    if (!state.evolution?.chain) {
+        return null;
+    }
+
+    return mapEvolutionNode(state.evolution.chain);
+}
+
+
+/**
+ * Return a flat list for consumers that only need the Pokémon in the chain.
  */
 export function getEvolutionList() {
-    if (!state.evolution?.chain) {
-        return [];
-    }
-
+    const tree = getEvolutionTree();
     const evolutionList = [];
 
-    function walk(chain) {
-        if (!chain) {
-            return;
-        }
-
-        if (chain.species) {
-            evolutionList.push({
-                id: getIdFromUrl(chain.species.url),
-                name: chain.species.name,
-                url: chain.species.url
-            });
-        }
-
-        chain.evolves_to?.forEach(walk);
+    function walk(node) {
+        if (!node) return;
+        evolutionList.push(node.pokemon);
+        node.children.forEach(walk);
     }
 
-    walk(state.evolution.chain);
+    walk(tree);
     return evolutionList;
+}
+
+
+function mapEvolutionNode(node) {
+    if (!node?.species) {
+        return null;
+    }
+
+    return {
+        pokemon: {
+            id: getIdFromUrl(node.species.url),
+            name: node.species.name,
+            url: node.species.url
+        },
+        children: (node.evolves_to ?? [])
+            .map(mapEvolutionNode)
+            .filter(Boolean)
+    };
 }
 
 
@@ -89,7 +106,9 @@ function getIdFromUrl(url) {
     }
 
     const parts = url.split('/').filter(Boolean);
-    return Number(parts[parts.length - 1]);
+    const id = Number(parts[parts.length - 1]);
+
+    return Number.isInteger(id) ? id : null;
 }
 
 
