@@ -164,6 +164,9 @@ async function handleTypeDetailClick(event) {
     const explore = event.target.closest('[data-explore-type]');
     if (explore) {
         const typeId = explore.dataset.exploreType;
+        document.dispatchEvent(new CustomEvent('type:filter-changed', {
+            detail: { type: typeId }
+        }));
         showLoading();
 
         try {
