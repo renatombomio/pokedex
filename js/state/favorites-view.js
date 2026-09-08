@@ -216,12 +216,13 @@ function decorateFavoriteControls(root) {
 
     root.querySelectorAll('.gamedex-card').forEach((card) => {
         const id = getCardPokemonId(card);
+        const meta = card.querySelector('.gamedex-meta');
 
-        if (!id || card.querySelector('.favorite-toggle')) {
+        if (!id || !meta || card.querySelector('.favorite-toggle')) {
             return;
         }
 
-        card.appendChild(createFavoriteButton(id));
+        meta.appendChild(createFavoriteButton(id));
     });
 }
 
