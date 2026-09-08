@@ -74,3 +74,5 @@ function getTypeSymbol(type) {
 
     return symbols[type] ?? '•';
 }
+
+initializeTypes();
