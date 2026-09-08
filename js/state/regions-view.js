@@ -1,19 +1,14 @@
 import { REGIONS } from './regions.js';
 import { getPokemon } from '../api/pokemon.js';
-import { filterByRegion } from './app.js';
-import { renderPokemon, showLoading, showError } from './ui.js';
-import { showHome } from './navigation.js';
-
+import { showRegionDetail, initializeRegionDetail } from './regions-detail.js';
 
 const section = document.querySelector('#regions');
 const grid = document.querySelector('#regions-grid');
 
-
 export async function initializeRegions() {
-    if (!section || !grid) {
-        return;
-    }
+    if (!section || !grid) return;
 
+    initializeRegionDetail();
     renderRegionShells();
 
     try {
@@ -22,7 +17,6 @@ export async function initializeRegions() {
         console.error('Failed to load region starters:', error);
     }
 }
-
 
 function renderRegionShells() {
     const fragment = document.createDocumentFragment();
@@ -64,40 +58,29 @@ function renderRegionShells() {
     });
 
     grid.replaceChildren(fragment);
-
-    grid.addEventListener('click', handleRegionClick);
+    grid.onclick = handleRegionClick;
 }
-
 
 async function hydrateStarters() {
     const starterRequests = REGIONS.flatMap((region) =>
-        region.starters.map((starter) =>
-            getPokemon(starter)
-        )
+        region.starters.map((starter) => getPokemon(starter))
     );
 
     const starters = await Promise.all(starterRequests);
-    const byName = new Map(
-        starters.map((pokemon) => [pokemon.name, pokemon])
-    );
+    const byName = new Map(starters.map((pokemon) => [pokemon.name, pokemon]));
 
     REGIONS.forEach((region) => {
         const container = grid.querySelector(
             `[data-region-id="${region.id}"] [data-region-starters]`
         );
 
-        if (!container) {
-            return;
-        }
+        if (!container) return;
 
         const fragment = document.createDocumentFragment();
 
         region.starters.forEach((name) => {
             const pokemon = byName.get(name);
-
-            if (!pokemon) {
-                return;
-            }
+            if (!pokemon) return;
 
             const wrapper = document.createElement('span');
             wrapper.className = 'region-starter';
@@ -110,6 +93,7 @@ async function hydrateStarters() {
                 '';
             image.alt = pokemon.name;
             image.loading = 'lazy';
+            image.decoding = 'async';
 
             wrapper.appendChild(image);
             fragment.appendChild(wrapper);
@@ -119,40 +103,14 @@ async function hydrateStarters() {
     });
 }
 
-
-async function handleRegionClick(event) {
+function handleRegionClick(event) {
     const button = event.target.closest('.region-card-button');
+    if (!button) return;
 
-    if (!button) {
-        return;
-    }
+    const regionId = button.dataset.regionId;
+    if (!regionId) return;
 
-    const region = REGIONS.find(
-        (item) => item.id === button.dataset.regionId
-    );
-
-    if (!region) {
-        return;
-    }
-
-    button.disabled = true;
-    button.classList.add('is-loading');
-
-    try {
-        showLoading();
-
-        const state = await filterByRegion(region);
-
-        renderPokemon(state.filteredPokemon);
-        showHome('pokedex');
-    } catch (error) {
-        console.error(
-            `Could not open region ${region.name}:`,
-            error
-        );
-        showError();
-    } finally {
-        button.disabled = false;
-        button.classList.remove('is-loading');
-    }
+    showRegionDetail(regionId);
 }
+
+initializeRegions();
