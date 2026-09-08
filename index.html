@@ -3,13 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex</title>
+    <meta name="description" content="Explora el mundo Pokémon. Descubre Pokémon de todas las regiones, sus estadísticas, habilidades, movimientos y evoluciones.">
+    <meta name="theme-color" content="#070707">
+    <title>Pokédex — Explora el mundo Pokémon</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/card-effects.css">
     <link rel="stylesheet" href="css/types.css">
     <link rel="stylesheet" href="css/search-modal.css">
+    <link rel="stylesheet" href="css/detail-hero.css">
+    <link rel="stylesheet" href="css/detail-mobile.css">
+    <link rel="stylesheet" href="css/detail-stats.css">
+    <link rel="stylesheet" href="css/gamedex.css">
+    <link rel="stylesheet" href="css/evolution.css">
+    <link rel="stylesheet" href="css/view-transitions.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/favorites.css">
+    <link rel="stylesheet" href="css/regions.css">
+    <link rel="stylesheet" href="css/accessibility.css">
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
     <header class="site-header">
         <div class="container header-content">
             <a href="/" class="logo" aria-label="Volver a la Pokédex">
@@ -29,19 +43,19 @@
         </div>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" tabindex="-1">
         <section class="hero" aria-labelledby="hero-title">
-            <div class="hero-background"><img src="assets/images/pokemon-hero.jpg" alt=""></div>
-            <div class="hero-overlay"></div>
+            <div class="hero-background" aria-hidden="true"><img src="assets/images/pokemon-hero.jpg" alt=""></div>
+            <div class="hero-overlay" aria-hidden="true"></div>
             <div class="container hero-content">
                 <div class="hero-copy">
                     <p class="eyebrow">Enciclopedia Pokémon</p>
                     <h1 id="hero-title">Descubre el mundo <span>Pokémon</span></h1>
                     <p class="hero-description">Explora especies, tipos, regiones y evoluciones en una experiencia creada para descubrir Pokémon de otra manera.</p>
                     <form class="search-form" id="search-form" role="search">
-                        <span class="search-icon" aria-hidden="true">⌕</span>
                         <label class="sr-only" for="search-input">Buscar Pokémon</label>
-                        <input id="search-input" type="search" placeholder="Busca por nombre o número..." autocomplete="off">
+                        <span class="search-icon" aria-hidden="true">⌕</span>
+                        <input id="search-input" type="search" name="pokemon" placeholder="Busca por nombre o número..." autocomplete="off">
                         <button type="submit">Buscar</button>
                     </form>
                 </div>
