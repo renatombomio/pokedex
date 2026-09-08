@@ -25,11 +25,6 @@ export function initializeFavoritesView() {
         return;
     }
 
-    decorateFavoriteControls(document.querySelector('#detail-content'));
-
-    observeContainer('#detail-content');
-    observeContainer('#favorites-content');
-
     document.addEventListener('click', handleFavoriteClick, true);
     document.addEventListener('favorites:changed', handleFavoritesChanged);
 
@@ -49,6 +44,14 @@ export function initializeFavoritesView() {
                 })
             );
         }
+    });
+
+    elements.content.addEventListener('click', (event) => {
+        if (!event.target.closest('[data-open-pokedex]')) {
+            return;
+        }
+
+        document.querySelector('.main-nav a[href="#pokedex"]')?.click();
     });
 
     updateFavoriteCount();
@@ -193,7 +196,7 @@ function createFavoriteCard(pokemon) {
             <div class="pokemon-card-image">
                 <span class="pokemon-number">#${formatId(pokemon.id)}</span>
                 <img
-                    src="${getPokemonImage(pokemon)}"
+                    src="${escapeAttribute(getPokemonImage(pokemon))}"
                     alt="${capitalize(pokemon.name)}"
                     loading="lazy"
                 >
@@ -206,63 +209,6 @@ function createFavoriteCard(pokemon) {
     `;
 
     return article;
-}
-
-
-function decorateFavoriteControls(root) {
-    if (!root) {
-        return;
-    }
-
-    root.querySelectorAll('.gamedex-card').forEach((card) => {
-        const id = getCardPokemonId(card);
-        const meta = card.querySelector('.gamedex-meta');
-
-        if (!id || !meta || card.querySelector('.favorite-toggle')) {
-            return;
-        }
-
-        meta.appendChild(createFavoriteButton(id));
-    });
-}
-
-
-function observeContainer(selector) {
-    const root = document.querySelector(selector);
-
-    if (!root) {
-        return;
-    }
-
-    const observer = new MutationObserver(() => {
-        decorateFavoriteControls(root);
-    });
-
-    observer.observe(root, {
-        childList: true,
-        subtree: true
-    });
-}
-
-
-function createFavoriteButton(id) {
-    const button = document.createElement('button');
-    const favorite = isFavorite(id);
-
-    button.className = 'favorite-toggle';
-    button.type = 'button';
-    button.dataset.pokemonId = id;
-    button.setAttribute('aria-pressed', String(favorite));
-    button.setAttribute(
-        'aria-label',
-        favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'
-    );
-    button.title = favorite ? 'Quitar de favoritos' : 'Añadir a favoritos';
-    button.innerHTML = '<span aria-hidden="true">♥</span>';
-
-    syncFavoriteButton(button, favorite);
-
-    return button;
 }
 
 
@@ -325,20 +271,6 @@ function renderEmptyState(message) {
 }
 
 
-function getCardPokemonId(card) {
-    const datasetId = Number(card.dataset.pokemonId);
-
-    if (Number.isInteger(datasetId)) {
-        return datasetId;
-    }
-
-    const number = card.querySelector('.gamedex-number')?.textContent || '';
-    const parsed = Number(number.replace(/[^0-9]/g, ''));
-
-    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
-}
-
-
 function getPokemonImage(pokemon) {
     return (
         pokemon.sprites?.other?.['official-artwork']?.front_default ||
@@ -378,4 +310,9 @@ function escapeHtml(value) {
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
+}
+
+
+function escapeAttribute(value) {
+    return escapeHtml(value);
 }
