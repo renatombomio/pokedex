@@ -32,7 +32,7 @@ export function initializeFavoritesView() {
     observeContainer('#detail-content');
     observeContainer('#favorites-content');
 
-    document.addEventListener('click', handleFavoriteClick);
+    document.addEventListener('click', handleFavoriteClick, true);
     document.addEventListener('favorites:changed', handleFavoritesChanged);
 
     elements.content.addEventListener('click', (event) => {
