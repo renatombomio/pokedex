@@ -8,7 +8,20 @@ export const REGIONS = [
         accent: '#5fc96b',
         description: 'El comienzo de la aventura y el hogar de los 151 Pokémon originales.',
         map: 'assets/regions/kanto/map.png',
-        locationAssets: 'assets/regions/kanto/locations'
+        locationAssets: 'assets/regions/kanto/locations',
+        locationImages: [
+            'pallet-town',
+            'viridian-city',
+            'pewter-city',
+            'cerulean-city',
+            'vermilion-city',
+            'lavender-town',
+            'celadon-city',
+            'fuchsia-city',
+            'saffron-city',
+            'cinnabar-island',
+            'indigo-plateau'
+        ]
     },
     {
         id: 'johto',
@@ -17,7 +30,16 @@ export const REGIONS = [
         pokedex: 'original-johto',
         starters: ['chikorita', 'cyndaquil', 'totodile'],
         accent: '#d99b4b',
-        description: 'Una región de tradición, leyendas y nuevos Pokémon por descubrir.'
+        description: 'Una región de tradición, leyendas y nuevos Pokémon por descubrir.',
+        map: 'assets/regions/johto/map.png',
+        locationAssets: 'assets/regions/johto/locations',
+        locationImages: [
+            'new-bark-town',
+            'goldenrod-city',
+            'ecruteak-city',
+            'olivine-city',
+            'blackthorn-city'
+        ]
     },
     {
         id: 'hoenn',
@@ -26,7 +48,16 @@ export const REGIONS = [
         pokedex: 'hoenn',
         starters: ['treecko', 'torchic', 'mudkip'],
         accent: '#5d9fe8',
-        description: 'Una región marcada por el mar, la naturaleza y grandes aventuras.'
+        description: 'Una región marcada por el mar, la naturaleza y grandes aventuras.',
+        map: 'assets/regions/hoenn/map.png',
+        locationAssets: 'assets/regions/hoenn/locations',
+        locationImages: [
+            'littleroot-town',
+            'dewford-town',
+            'fallarbor-town',
+            'slateport-city',
+            'lilycove-city'
+        ]
     },
     {
         id: 'sinnoh',
@@ -35,7 +66,16 @@ export const REGIONS = [
         pokedex: 'original-sinnoh',
         starters: ['turtwig', 'chimchar', 'piplup'],
         accent: '#8e8edb',
-        description: 'Una tierra antigua donde los mitos y los Pokémon legendarios cobran vida.'
+        description: 'Una tierra antigua donde los mitos y los Pokémon legendarios cobran vida.',
+        map: 'assets/regions/sinnoh/map.png',
+        locationAssets: 'assets/regions/sinnoh/locations',
+        locationImages: [
+            'twinleaf-town',
+            'jubilife-city',
+            'hearthome-city',
+            'veilstone-city',
+            'snowpoint-city'
+        ]
     },
     {
         id: 'unova',
@@ -44,7 +84,16 @@ export const REGIONS = [
         pokedex: 'original-unova',
         starters: ['snivy', 'tepig', 'oshawott'],
         accent: '#b4b8c2',
-        description: 'Una región urbana y diversa con una Pokédex completamente nueva.'
+        description: 'Una región urbana y diversa con una Pokédex completamente nueva.',
+        map: 'assets/regions/unova/map.png',
+        locationAssets: 'assets/regions/unova/locations',
+        locationImages: [
+            'nuvema-town',
+            'accumula-town',
+            'nacrene-city',
+            'nimbasa-city',
+            'driftveil-city'
+        ]
     },
     {
         id: 'kalos',
