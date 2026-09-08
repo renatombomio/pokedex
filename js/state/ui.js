@@ -65,23 +65,8 @@ export function getRetryButton() {
 
 
 /**
- * Keep the legacy UI entry point as a thin adapter.
- * Gamedex owns the actual detail rendering.
+ * Create a Pokémon card.
  */
-export function renderPokemonDetails(details) {
-    renderGamedex(details);
-}
-
-
-/**
- * Keep the existing back-button API while delegating
- * the detail view lifecycle to Gamedex.
- */
-export function hidePokemonDetails() {
-    hideGamedex();
-}
-
-
 function createPokemonCard(pokemon) {
     const article = document.createElement('article');
     article.className = 'pokemon-card';
@@ -103,16 +88,22 @@ function createPokemonCard(pokemon) {
             aria-label="Ver ${capitalize(pokemon.name)}"
         >
             <div class="pokemon-card-image">
-                <span class="pokemon-number">#${formatId(pokemon.id)}</span>
+                <span class="pokemon-number">
+                    #${formatId(pokemon.id)}
+                </span>
+
                 <img
                     src="${getPokemonImage(pokemon)}"
                     alt="${capitalize(pokemon.name)}"
                     loading="lazy"
                 >
             </div>
+
             <div class="pokemon-card-content">
                 <h3>${capitalize(pokemon.name)}</h3>
-                <div class="pokemon-types">${types}</div>
+                <div class="pokemon-types">
+                    ${types}
+                </div>
             </div>
         </button>
     `;
@@ -121,15 +112,23 @@ function createPokemonCard(pokemon) {
 }
 
 
+/**
+ * Get the best available Pokémon artwork.
+ */
 function getPokemonImage(pokemon) {
     return (
-        pokemon.sprites?.other?.['official-artwork']?.front_default ??
-        pokemon.sprites?.front_default ??
+        pokemon.sprites?.other?.['official-artwork']?.front_default
+        ??
+        pokemon.sprites?.front_default
+        ??
         ''
     );
 }
 
 
+/**
+ * Translate PokéAPI type names.
+ */
 function translateType(type) {
     const translations = {
         normal: 'Normal',
@@ -156,18 +155,84 @@ function translateType(type) {
 }
 
 
+/**
+ * Capitalize Pokémon names.
+ */
 function capitalize(value) {
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 
+/**
+ * Format Pokédex number.
+ */
 function formatId(id) {
     return String(id).padStart(3, '0');
 }
 
 
+/**
+ * Hide every application state.
+ */
 function hideAllStates() {
     elements.loading.classList.add('hidden');
     elements.error.classList.add('hidden');
     elements.empty.classList.add('hidden');
+}
+
+
+/**
+ * Render Pokémon detail view.
+ */
+export function renderPokemonDetails(details) {
+    const detailSection = document.querySelector('#pokemon-detail');
+    const heroSection = document.querySelector('.hero');
+    const pokedexSection = document.querySelector('#pokedex');
+    const favoritesSection = document.querySelector('#favorites');
+
+    heroSection?.classList.add('hidden');
+    pokedexSection?.classList.add('hidden');
+    favoritesSection?.classList.add('hidden');
+
+    detailSection.classList.remove('hidden');
+    detailSection.setAttribute('aria-hidden', 'false');
+
+    renderGamedex(details);
+    scrollToTop();
+}
+
+
+/**
+ * Hide Pokémon detail view.
+ */
+export function hidePokemonDetails() {
+    const detailSection = document.querySelector('#pokemon-detail');
+    const heroSection = document.querySelector('.hero');
+    const pokedexSection = document.querySelector('#pokedex');
+    const favoritesSection = document.querySelector('#favorites');
+
+    detailSection.classList.add('hidden');
+    detailSection.setAttribute('aria-hidden', 'true');
+
+    heroSection?.classList.remove('hidden');
+    pokedexSection?.classList.remove('hidden');
+    favoritesSection?.classList.remove('hidden');
+
+    hideGamedex();
+    scrollToTop();
+}
+
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+    });
+}
+
+
+function prefersReducedMotion() {
+    return window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+    ).matches;
 }
