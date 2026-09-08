@@ -21,7 +21,10 @@ document.addEventListener('pokemon:open-detail', async (event) => {
         return;
     }
 
-    await openPokemonDetail(id);
+    await openPokemonDetail(
+        id,
+        event.detail?.fromHistory === true
+    );
 });
 
 
@@ -29,10 +32,6 @@ document.addEventListener('pokemon:open-detail', async (event) => {
    EVOLUTION CHAIN → DETAIL
 ======================================== */
 
-/*
- * Evolution cards are rendered dynamically inside the detail view,
- * so delegation keeps this integration independent from ui.js.
- */
 document.addEventListener('click', (event) => {
     const button = event.target.closest('.evolution-card-button');
 
@@ -52,7 +51,7 @@ document.addEventListener('click', (event) => {
 });
 
 
-async function openPokemonDetail(id) {
+async function openPokemonDetail(id, fromHistory = false) {
     const requestId = ++activeRequestId;
 
     try {
@@ -62,7 +61,10 @@ async function openPokemonDetail(id) {
             return;
         }
 
-        setDetailView();
+        setDetailView(id, {
+            pushHistory: !fromHistory
+        });
+
         renderPokemonDetails(details);
     } catch (error) {
         console.error(
