@@ -1,6 +1,7 @@
 import {
     loadPokemonCollection,
     loadPokemonByType,
+    loadPokemonByPokedex,
     searchPokemonList
 } from './api.js';
 
@@ -19,6 +20,7 @@ const state = {
     filteredPokemon: [],
 
     selectedType: 'all',
+    selectedRegion: null,
 
     loading: false,
     error: null,
@@ -37,7 +39,8 @@ export async function initializeApp() {
         loading: true,
         error: null,
         offset: 0,
-        selectedType: 'all'
+        selectedType: 'all',
+        selectedRegion: null
     });
 
     try {
@@ -84,7 +87,8 @@ export async function loadMorePokemon() {
     if (
         state.loading ||
         !state.hasMore ||
-        state.selectedType !== 'all'
+        state.selectedType !== 'all' ||
+        state.selectedRegion
     ) {
         return getState();
     }
@@ -152,11 +156,12 @@ export async function loadMorePokemon() {
  * Filter Pokémon by type.
  *
  * The type filter is completely independent
- * from the search field.
+ * from the search field and region selection.
  */
 export async function filterByType(type) {
 
     state.selectedType = type;
+    state.selectedRegion = null;
 
 
     /*
@@ -180,27 +185,17 @@ export async function filterByType(type) {
 
     try {
 
-        /*
-         * Get all Pokémon belonging to this type
-         * directly from PokéAPI.
-         */
         const pokemon =
             await loadPokemonByType(type);
 
-
-        /*
-         * The search field is completely ignored.
-         */
         state.filteredPokemon = [
             ...pokemon
         ];
-
 
         setState({
             loading: false,
             error: null
         });
-
 
         return getState();
 
@@ -208,6 +203,68 @@ export async function filterByType(type) {
 
         console.error(
             `Failed to filter Pokémon by type "${type}":`,
+            error
+        );
+
+        setState({
+            loading: false,
+            error
+        });
+
+        throw error;
+    }
+}
+
+
+/**
+ * Filter Pokémon by regional Pokédex.
+ */
+export async function filterByRegion({
+    name,
+    pokedex,
+    generation
+}) {
+
+    if (!name || !pokedex) {
+        throw new Error(
+            'A region name and Pokédex are required.'
+        );
+    }
+
+    setState({
+        loading: true,
+        error: null,
+        selectedType: 'all',
+        selectedRegion: {
+            name,
+            pokedex,
+            generation
+        },
+        hasMore: false
+    });
+
+    try {
+
+        const pokemon =
+            await loadPokemonByPokedex(pokedex);
+
+        state.filteredPokemon = [
+            ...pokemon
+        ];
+
+        setState({
+            loading: false,
+            error: null,
+            offset: 0,
+            hasMore: false
+        });
+
+        return getState();
+
+    } catch (error) {
+
+        console.error(
+            `Failed to load region "${name}":`,
             error
         );
 
@@ -237,13 +294,11 @@ export async function searchPokemon(query) {
             .toLowerCase();
 
 
-    /*
-     * Empty search.
-     */
     if (!searchQuery) {
 
         if (
-            state.selectedType === 'all'
+            state.selectedType === 'all' &&
+            !state.selectedRegion
         ) {
 
             state.filteredPokemon = [
@@ -253,6 +308,9 @@ export async function searchPokemon(query) {
             return getState();
         }
 
+        if (state.selectedRegion) {
+            return filterByRegion(state.selectedRegion);
+        }
 
         return filterByType(
             state.selectedType
@@ -268,33 +326,19 @@ export async function searchPokemon(query) {
 
     try {
 
-        /*
-         * Search the complete PokéAPI collection.
-         *
-         * This can return Pokémon variants,
-         * such as the different Pikachu forms.
-         */
         const results =
             await searchPokemonList(
                 searchQuery
             );
 
-
-        /*
-         * Display search results directly.
-         *
-         * The selected type is NOT applied.
-         */
         state.filteredPokemon = [
             ...results
         ];
-
 
         setState({
             loading: false,
             error: null
         });
-
 
         return getState();
 
