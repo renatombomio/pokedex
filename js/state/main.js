@@ -6,12 +6,7 @@ import {
 } from './app.js';
 
 import {
-    loadPokemonDetails
-} from './details.js';
-
-import {
     renderPokemon,
-    renderPokemonDetails,
     hidePokemonDetails,
     showLoading,
     showError,
@@ -299,28 +294,26 @@ searchForm.addEventListener(
 
 searchModal.addEventListener(
     'click',
-    async (event) => {
+    (event) => {
         const card = event.target.closest('.search-result-card');
 
         if (!card) {
             return;
         }
 
-        const pokemonId = card.dataset.pokemonId;
+        const pokemonId = Number(card.dataset.pokemonId);
 
-        try {
-            closeSearchModal();
-
-            const details =
-                await loadPokemonDetails(pokemonId);
-
-            renderPokemonDetails(details);
-        } catch (error) {
-            console.error(
-                'Could not load Pokémon details:',
-                error
-            );
+        if (!Number.isInteger(pokemonId)) {
+            return;
         }
+
+        closeSearchModal();
+
+        document.dispatchEvent(
+            new CustomEvent('pokemon:open-detail', {
+                detail: { id: pokemonId }
+            })
+        );
     }
 );
 
@@ -370,26 +363,24 @@ filterContainer.addEventListener(
 
 pokemonGrid.addEventListener(
     'click',
-    async (event) => {
+    (event) => {
         const card = event.target.closest('.pokemon-card');
 
         if (!card) {
             return;
         }
 
-        const pokemonId = card.dataset.pokemonId;
+        const pokemonId = Number(card.dataset.pokemonId);
 
-        try {
-            const details =
-                await loadPokemonDetails(pokemonId);
-
-            renderPokemonDetails(details);
-        } catch (error) {
-            console.error(
-                'Could not load Pokémon details:',
-                error
-            );
+        if (!Number.isInteger(pokemonId)) {
+            return;
         }
+
+        document.dispatchEvent(
+            new CustomEvent('pokemon:open-detail', {
+                detail: { id: pokemonId }
+            })
+        );
     }
 );
 
