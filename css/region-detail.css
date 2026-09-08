@@ -1,0 +1,530 @@
+/* ========================================
+   REGION DETAIL — WORLD EXPLORER
+======================================== */
+
+.region-detail {
+    position: relative;
+    min-height: 100vh;
+    padding: 28px 0 110px;
+    overflow: hidden;
+    background: #080808;
+    color: #fff;
+}
+
+.region-detail::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(to bottom, #000, transparent 90%);
+}
+
+.region-detail-container {
+    position: relative;
+    z-index: 1;
+}
+
+.region-detail-back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    margin-bottom: 26px;
+    padding: 0 15px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 999px;
+    background: rgba(255,255,255,.035);
+    color: rgba(255,255,255,.7);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.region-detail-back:hover {
+    border-color: color-mix(in srgb, var(--region-accent, #fff) 40%, rgba(255,255,255,.15));
+    color: #fff;
+    transform: translateX(-2px);
+}
+
+.region-detail-back:focus-visible,
+.region-pokedex-link:focus-visible,
+.region-starter-card:focus-visible,
+.region-detail-error button:focus-visible {
+    outline: 2px solid var(--region-accent, #fff);
+    outline-offset: 3px;
+}
+
+.region-detail-hero {
+    --region-accent: #ef3f22;
+    display: grid;
+    grid-template-columns: minmax(0, .78fr) minmax(480px, 1.22fr);
+    gap: clamp(30px, 5vw, 80px);
+    align-items: center;
+    min-height: 560px;
+    padding: clamp(26px, 4vw, 56px);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 34px;
+    background:
+        radial-gradient(circle at 78% 48%, color-mix(in srgb, var(--region-accent) 16%, transparent), transparent 34%),
+        linear-gradient(145deg, #151515, #0c0c0c 72%);
+    box-shadow: 0 35px 100px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.05);
+}
+
+.region-detail-heading {
+    max-width: 560px;
+}
+
+.region-detail-heading .eyebrow,
+.region-panel-heading .eyebrow {
+    display: block;
+    margin-bottom: 11px;
+    color: color-mix(in srgb, var(--region-accent, #fff) 82%, white);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.region-detail-heading h1 {
+    margin: 0 0 20px;
+    color: #fff;
+    font-size: clamp(56px, 8vw, 112px);
+    line-height: .84;
+    letter-spacing: -.075em;
+}
+
+.region-detail-heading p {
+    max-width: 480px;
+    margin: 0;
+    color: #858585;
+    font-size: clamp(14px, 1.3vw, 17px);
+    line-height: 1.7;
+}
+
+.region-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.region-detail-meta span {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
+    padding: 11px 13px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    background: rgba(255,255,255,.035);
+    color: #737373;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.region-detail-meta strong {
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: -.03em;
+}
+
+/* Schematic map. The API supplies real region/location data; this visual layer
+   is intentionally local so the experience does not depend on hotlinked maps. */
+.region-map {
+    position: relative;
+    min-height: 440px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 28px;
+    background: #090909;
+    box-shadow: inset 0 0 80px rgba(0,0,0,.5);
+    isolation: isolate;
+}
+
+.region-map-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .7;
+    background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+}
+
+.region-map::before,
+.region-map::after {
+    content: "";
+    position: absolute;
+    inset: 16%;
+    border: 1px solid color-mix(in srgb, var(--region-accent) 18%, transparent);
+    border-radius: 47% 53% 43% 57% / 55% 42% 58% 45%;
+    transform: rotate(-8deg);
+    box-shadow: 0 0 70px color-mix(in srgb, var(--region-accent) 9%, transparent);
+}
+
+.region-map::after {
+    inset: 24% 27% 18% 22%;
+    opacity: .5;
+    transform: rotate(27deg);
+}
+
+.region-map-land {
+    position: absolute;
+    inset: 19% 18%;
+    z-index: 1;
+    border: 2px solid color-mix(in srgb, var(--region-accent) 46%, white 8%);
+    border-radius: 48% 52% 38% 62% / 57% 39% 61% 43%;
+    background: color-mix(in srgb, var(--region-accent) 8%, transparent);
+    transform: rotate(-10deg);
+    clip-path: polygon(12% 28%, 31% 8%, 58% 14%, 79% 4%, 92% 27%, 83% 48%, 93% 70%, 67% 82%, 51% 97%, 28% 83%, 7% 68%, 16% 47%);
+}
+
+.region-map-land::after {
+    content: "";
+    position: absolute;
+    inset: 12%;
+    border: 1px dashed color-mix(in srgb, var(--region-accent) 25%, transparent);
+    border-radius: inherit;
+}
+
+.region-map-land-johto { transform: rotate(18deg) scale(.88); }
+.region-map-land-hoenn { transform: rotate(-24deg) scale(1.08, .88); }
+.region-map-land-sinnoh { transform: rotate(8deg) scale(.9, 1.08); }
+.region-map-land-unova { transform: rotate(-4deg) scale(1.05, .92); }
+.region-map-land-kalos { transform: rotate(21deg) scale(.88, 1.06); }
+.region-map-land-alola { transform: rotate(-7deg) scale(.82, .74); }
+.region-map-land-galar { transform: rotate(28deg) scale(.82, 1.1); }
+.region-map-land-paldea { transform: rotate(-16deg) scale(1.04, .9); }
+
+.region-map-label {
+    position: absolute;
+    left: 22px;
+    bottom: 20px;
+    z-index: 3;
+    color: rgba(255,255,255,.38);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .18em;
+}
+
+.region-map-compass {
+    position: absolute;
+    top: 20px;
+    right: 22px;
+    z-index: 3;
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 50%;
+    color: rgba(255,255,255,.45);
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.region-map-pin {
+    position: absolute;
+    z-index: 4;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #090909;
+    border-radius: 50%;
+    background: var(--region-accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--region-accent) 15%, transparent), 0 0 18px color-mix(in srgb, var(--region-accent) 42%, transparent);
+}
+
+.region-map-pin-1 { left: 30%; top: 35%; }
+.region-map-pin-2 { left: 48%; top: 27%; }
+.region-map-pin-3 { left: 64%; top: 39%; }
+.region-map-pin-4 { left: 39%; top: 51%; }
+.region-map-pin-5 { left: 59%; top: 56%; }
+.region-map-pin-6 { left: 28%; top: 67%; }
+.region-map-pin-7 { left: 52%; top: 72%; }
+.region-map-pin-8 { left: 73%; top: 63%; }
+
+.region-map-pin i {
+    position: absolute;
+    inset: -6px;
+    border: 1px solid color-mix(in srgb, var(--region-accent) 25%, transparent);
+    border-radius: 50%;
+    animation: regionPinPulse 2.8s ease-out infinite;
+}
+
+.region-map-pin:nth-of-type(odd) i { animation-delay: .8s; }
+
+@keyframes regionPinPulse {
+    0%, 100% { transform: scale(.7); opacity: .25; }
+    50% { transform: scale(1.3); opacity: .8; }
+}
+
+.region-explorer-panel,
+.region-locations {
+    margin-top: 24px;
+    padding: clamp(24px, 3vw, 36px);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 28px;
+    background: #101010;
+}
+
+.region-panel-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.region-panel-heading h2 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(27px, 3vw, 40px);
+    line-height: .95;
+    letter-spacing: -.055em;
+}
+
+.region-pokedex-link {
+    flex: 0 0 auto;
+    min-height: 42px;
+    padding: 0 15px;
+    border: 1px solid color-mix(in srgb, var(--region-accent, #fff) 28%, rgba(255,255,255,.1));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--region-accent, #fff) 8%, transparent);
+    color: color-mix(in srgb, var(--region-accent, #fff) 85%, white);
+    font: inherit;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.region-starter-showcase {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.region-starter-card {
+    --region-accent: #ef3f22;
+    position: relative;
+    min-width: 0;
+    min-height: 300px;
+    overflow: hidden;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 20px;
+    background: linear-gradient(145deg, #171717, #0c0c0c);
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .28s var(--ease), border-color .28s var(--ease), box-shadow .28s var(--ease);
+}
+
+.region-starter-card:hover {
+    transform: translateY(-5px);
+    border-color: color-mix(in srgb, var(--region-accent) 45%, rgba(255,255,255,.1));
+    box-shadow: 0 20px 50px rgba(0,0,0,.3), 0 0 30px color-mix(in srgb, var(--region-accent) 10%, transparent);
+}
+
+.region-starter-card img {
+    display: block;
+    width: 100%;
+    height: 210px;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 18px rgba(0,0,0,.42));
+    transition: transform .35s var(--ease);
+}
+
+.region-starter-card:hover img { transform: scale(1.08) translateY(-4px); }
+
+.region-starter-number,
+.region-starter-open {
+    position: absolute;
+    z-index: 2;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.region-starter-number { top: 16px; left: 17px; color: #666; }
+.region-starter-open { right: 17px; bottom: 18px; color: color-mix(in srgb, var(--region-accent) 78%, white); }
+
+.region-starter-name {
+    display: block;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 850;
+    letter-spacing: -.04em;
+}
+
+.region-location-count {
+    color: #555;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.region-location-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid rgba(255,255,255,.07);
+    border-left: 1px solid rgba(255,255,255,.07);
+}
+
+.region-location-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    min-height: 56px;
+    padding: 0 14px;
+    border-right: 1px solid rgba(255,255,255,.07);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.region-location-item b {
+    color: #444;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.region-location-item span {
+    overflow: hidden;
+    color: #aaa;
+    font-size: 11px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.region-location-empty {
+    padding: 20px;
+    color: #666;
+    font-size: 12px;
+}
+
+.region-detail-loading,
+.region-detail-error {
+    padding: 80px 0;
+}
+
+.region-detail-loading h1,
+.region-detail-error h1 {
+    margin: 0 0 12px;
+    font-size: clamp(48px, 7vw, 90px);
+    line-height: .9;
+    letter-spacing: -.07em;
+}
+
+.region-detail-loading p,
+.region-detail-error p {
+    color: #777;
+}
+
+.region-detail-error button {
+    margin-top: 20px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    color: #080808;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .region-detail-hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .region-map {
+        min-height: 390px;
+    }
+
+    .region-location-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .region-detail {
+        padding-top: 18px;
+    }
+
+    .region-detail-hero {
+        gap: 24px;
+        padding: 20px;
+        border-radius: 24px;
+    }
+
+    .region-detail-heading h1 {
+        font-size: clamp(54px, 17vw, 82px);
+    }
+
+    .region-map {
+        min-height: 310px;
+        border-radius: 20px;
+    }
+
+    .region-explorer-panel,
+    .region-locations {
+        padding: 20px;
+        border-radius: 22px;
+    }
+
+    .region-panel-heading {
+        display: block;
+    }
+
+    .region-pokedex-link {
+        width: 100%;
+        margin-top: 18px;
+    }
+
+    .region-starter-showcase {
+        grid-template-columns: 1fr;
+    }
+
+    .region-starter-card {
+        min-height: 220px;
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        grid-template-rows: 1fr auto;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .region-starter-card img {
+        grid-row: 1 / -1;
+        width: 125px;
+        height: 150px;
+    }
+
+    .region-starter-name {
+        align-self: end;
+        font-size: 21px;
+    }
+
+    .region-starter-open {
+        position: static;
+        align-self: start;
+        margin-top: 7px;
+    }
+
+    .region-location-list {
+        grid-template-columns: 1fr;
+    }
+}
