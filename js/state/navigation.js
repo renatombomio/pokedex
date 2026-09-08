@@ -16,12 +16,19 @@ const elements = {
 
 
 let activeView = 'home';
+let initialized = false;
 
 
 export function initializeNavigation() {
+    if (initialized) return;
+    initialized = true;
+
     document.addEventListener('click', handleNavigationClick);
-    setHeaderView('home');
-    setActiveNav('pokedex');
+    window.addEventListener('popstate', handleHistoryChange);
+
+    const route = readRoute();
+    window.history.replaceState(route.state, '', route.url);
+    restoreRoute(route);
 }
 
 
@@ -30,50 +37,30 @@ export function getActiveView() {
 }
 
 
-export function showHome(target = 'pokedex') {
+export function showHome(target = 'pokedex', options = {}) {
     activeView = 'home';
     setHeaderView('home');
-    setActiveNav(target === 'types' ? 'types' : target === 'regions' ? 'regions' : 'pokedex');
+    setActiveNav(target);
+    showHomeElements();
 
-    elements.hero?.classList.remove('hidden');
-    elements.regions?.classList.remove('hidden');
-    elements.pokedex?.classList.remove('hidden');
-    elements.detail?.classList.add('hidden');
-    elements.detail?.setAttribute('aria-hidden', 'true');
-    elements.favorites?.classList.add('hidden');
+    if (options.pushHistory !== false) pushRoute(target);
 
-    if (target === 'types') {
-        requestAnimationFrame(() => {
-            elements.types?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+    requestAnimationFrame(() => {
+        const targetElement = target === 'types'
+            ? elements.types
+            : target === 'regions'
+                ? elements.regions
+                : elements.pokedex;
+
+        targetElement?.scrollIntoView({
+            behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+            block: 'start'
         });
-        return;
-    }
-
-    if (target === 'regions') {
-        requestAnimationFrame(() => {
-            elements.regions?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        });
-        return;
-    }
-
-    if (target === 'pokedex') {
-        requestAnimationFrame(() => {
-            elements.pokedex?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        });
-    }
+    });
 }
 
 
-export async function showFavorites() {
+export async function showFavorites(options = {}) {
     activeView = 'favorites';
     setHeaderView('favorites');
     setActiveNav('favorites');
@@ -85,33 +72,137 @@ export async function showFavorites() {
     elements.detail?.setAttribute('aria-hidden', 'true');
     elements.favorites?.classList.remove('hidden');
 
+    if (options.pushHistory !== false) pushRoute('favorites');
+
     window.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth'
     });
 
     await renderFavoritesView();
 }
 
 
-export function setDetailView() {
+export function setDetailView(id = null, options = {}) {
+    activeView = 'detail';
     setHeaderView('detail');
     setActiveNav('pokedex');
+
+    if (options.pushHistory !== false && Number.isInteger(id)) {
+        pushRoute(`pokemon/${id}`);
+    }
+}
+
+
+export function navigateBack() {
+    if (window.history.length > 1) {
+        window.history.back();
+        return;
+    }
+
+    showHome('pokedex');
+}
+
+
+function showHomeElements() {
+    elements.hero?.classList.remove('hidden');
+    elements.regions?.classList.remove('hidden');
+    elements.pokedex?.classList.remove('hidden');
+    elements.detail?.classList.add('hidden');
+    elements.detail?.setAttribute('aria-hidden', 'true');
+    elements.favorites?.classList.add('hidden');
+}
+
+
+function pushRoute(route) {
+    const url = route === 'pokedex' ? '#pokedex' : `#${route}`;
+
+    window.history.pushState(
+        { view: route.split('/')[0], id: getRouteId(route) },
+        '',
+        url
+    );
+}
+
+
+function handleHistoryChange(event) {
+    restoreRoute(
+        event.state?.view
+            ? { state: event.state }
+            : readRoute()
+    );
+}
+
+
+function restoreRoute(route) {
+    const view = route.state?.view ?? 'home';
+
+    if (view === 'pokemon' && Number.isInteger(route.state.id)) {
+        requestAnimationFrame(() => {
+            document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
+                detail: {
+                    id: route.state.id,
+                    fromHistory: true
+                }
+            }));
+        });
+        return;
+    }
+
+    if (view === 'favorites') {
+        showFavorites({ pushHistory: false });
+        return;
+    }
+
+    showHome(
+        view === 'types' || view === 'regions' ? view : 'pokedex',
+        { pushHistory: false }
+    );
+}
+
+
+function readRoute() {
+    const hash = window.location.hash.replace(/^#/, '');
+
+    if (hash === 'favorites') {
+        return { state: { view: 'favorites' }, url: '#favorites' };
+    }
+
+    if (hash === 'types') {
+        return { state: { view: 'types' }, url: '#types' };
+    }
+
+    if (hash === 'regions') {
+        return { state: { view: 'regions' }, url: '#regions' };
+    }
+
+    if (hash.startsWith('pokemon/')) {
+        const id = Number(hash.split('/')[1]);
+
+        if (Number.isInteger(id)) {
+            return {
+                state: { view: 'pokemon', id },
+                url: `#pokemon/${id}`
+            };
+        }
+    }
+
+    return { state: { view: 'pokedex' }, url: '#pokedex' };
 }
 
 
 function setHeaderView(view) {
-    if (!elements.header) {
-        return;
-    }
-
-    elements.header.dataset.view = view;
+    elements.header?.setAttribute('data-view', view);
 }
 
 
 function setActiveNav(target) {
+    const navTarget = ['types', 'regions', 'favorites'].includes(target)
+        ? target
+        : 'pokedex';
+
     elements.navLinks.forEach((link) => {
-        const isActive = link.getAttribute('href') === `#${target}`;
+        const isActive = link.getAttribute('href') === `#${navTarget}`;
 
         link.classList.toggle('is-active', isActive);
 
@@ -158,11 +249,22 @@ function handleNavigationClick(event) {
     if (event.target.closest('[data-open-pokedex]')) {
         event.preventDefault();
         showHome('pokedex');
+        return;
     }
 
-    if (event.target.closest('#detail-back') && activeView === 'favorites') {
-        requestAnimationFrame(() => {
-            showFavorites();
-        });
+    if (event.target.closest('#detail-back')) {
+        event.preventDefault();
+        navigateBack();
     }
+}
+
+
+function getRouteId(route) {
+    const id = Number(route.split('/')[1]);
+    return Number.isInteger(id) ? id : null;
+}
+
+
+function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
