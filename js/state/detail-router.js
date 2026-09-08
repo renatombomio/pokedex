@@ -6,6 +6,10 @@ import {
     renderPokemonDetails
 } from './ui.js';
 
+import {
+    setDetailView
+} from './navigation.js';
+
 
 let activeRequestId = 0;
 
@@ -58,6 +62,7 @@ async function openPokemonDetail(id) {
             return;
         }
 
+        setDetailView();
         renderPokemonDetails(details);
     } catch (error) {
         console.error(
