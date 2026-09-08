@@ -1,0 +1,38 @@
+name: Import Gen II-V region assets
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'assets/regions/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Download region assets
+        run: python scripts/download-region-assets.py
+
+      - name: Commit imported assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/regions/johto assets/regions/hoenn assets/regions/sinnoh assets/regions/unova
+          if git diff --cached --quiet; then
+            echo "No asset changes detected."
+            exit 0
+          fi
+          git commit -m "Add Gen II-V region map assets"
+          git push
