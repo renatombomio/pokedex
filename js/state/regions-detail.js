@@ -1,4 +1,4 @@
-import { REGIONS, getRegionById } from './regions.js';
+import { getRegionById } from './regions.js';
 import { filterByRegion } from './app.js';
 import { renderPokemon, showError, showLoading } from './ui.js';
 import { getRegion, getPokedex, getPokemon } from '../api/pokemon.js';
@@ -77,7 +77,7 @@ function renderLoadingShell(region) {
 }
 
 function renderRegionDetail(region, apiRegion, pokedex, starters) {
-    const locations = (apiRegion.locations ?? []).slice(0, 8);
+    const locations = apiRegion.locations ?? [];
     const count = pokedex.pokemon_entries?.length ?? 0;
 
     detailElement.innerHTML = `
@@ -95,17 +95,7 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
                     </div>
                 </div>
 
-                <div class="region-map" aria-label="Mapa esquemático de ${region.name}">
-                    <div class="region-map-grid" aria-hidden="true"></div>
-                    <div class="region-map-land region-map-land-${region.id}" aria-hidden="true"></div>
-                    <span class="region-map-label">MAPA REGIONAL</span>
-                    ${locations.map((location, index) => `
-                        <span class="region-map-pin region-map-pin-${index + 1}" title="${formatLocation(location.name)}" aria-hidden="true">
-                            <i></i>
-                        </span>
-                    `).join('')}
-                    <span class="region-map-compass" aria-hidden="true">N</span>
-                </div>
+                ${createRegionMap(region, locations)}
             </header>
 
             <section class="region-explorer-panel" aria-labelledby="region-explorer-title">
@@ -130,22 +120,82 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
                         <span class="eyebrow">Territorio</span>
                         <h2 id="region-locations-title">Lugares de ${region.name}</h2>
                     </div>
-                    <span class="region-location-count">${apiRegion.locations?.length ?? 0} lugares registrados</span>
+                    <span class="region-location-count">${locations.length} lugares registrados</span>
                 </div>
-                <div class="region-location-list">
+                <div class="region-location-list region-location-grid">
                     ${locations.length
-                        ? locations.map((location, index) => `
-                            <span class="region-location-item">
-                                <b>${String(index + 1).padStart(2, '0')}</b>
-                                <span>${formatLocation(location.name)}</span>
-                            </span>
-                        `).join('')
+                        ? locations.map((location, index) => createLocationCard(location, index, region)).join('')
                         : '<span class="region-location-empty">Información de localizaciones no disponible.</span>'
                     }
                 </div>
             </section>
         </div>
     `;
+}
+
+function createRegionMap(region, locations) {
+    if (!region.map) {
+        return `
+            <div class="region-map region-map-unavailable" aria-label="Mapa de ${region.name}">
+                <span class="region-map-label">MAPA REGIONAL</span>
+                <span class="region-map-unavailable-text">Mapa próximamente</span>
+            </div>
+        `;
+    }
+
+    return `
+        <figure class="region-map" aria-labelledby="region-map-caption">
+            <img
+                class="region-map-image"
+                src="${region.map}"
+                alt="Mapa de la región de ${region.name}"
+                decoding="async"
+            >
+            <figcaption id="region-map-caption" class="region-map-label">MAPA REGIONAL · ${region.name.toUpperCase()}</figcaption>
+        </figure>
+    `;
+}
+
+function createLocationCard(location, index, region) {
+    const name = formatLocation(location.name);
+    const image = getLocationImage(region, location.name);
+
+    return `
+        <article class="region-location-card${image ? ' has-image' : ''}">
+            ${image
+                ? `<img src="${image}" alt="${name}" loading="lazy" decoding="async">`
+                : '<div class="region-location-image-placeholder" aria-hidden="true"><span>LOCATION</span></div>'
+            }
+            <div class="region-location-card-content">
+                <span class="region-location-index">${String(index + 1).padStart(2, '0')}</span>
+                <h3>${name}</h3>
+                <span class="region-location-source">${image ? 'Imagen disponible' : 'Datos de PokéAPI'}</span>
+            </div>
+        </article>
+    `;
+}
+
+function getLocationImage(region, locationName) {
+    if (!region.locationAssets) return '';
+
+    const knownAssets = new Set([
+        'celadon-city',
+        'cerulean-city',
+        'cinnabar-island',
+        'fuchsia-city',
+        'indigo-plateau',
+        'lavender-town',
+        'pallet-town',
+        'pewter-city',
+        'saffron-city',
+        'vermilion-city',
+        'viridian-city'
+    ]);
+
+    const slug = String(locationName).toLowerCase().trim();
+    return knownAssets.has(slug)
+        ? `${region.locationAssets}/${slug}.png`
+        : '';
 }
 
 function createStarter(pokemon, region) {
