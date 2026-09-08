@@ -4,6 +4,8 @@ import { renderPokemon, showError, showLoading } from './ui.js';
 import { getRegion, getPokedex, getPokemon } from '../api/pokemon.js';
 import { showHome } from './navigation.js';
 
+const MAX_FEATURED_LOCATIONS = 5;
+
 let detailElement = null;
 let requestId = 0;
 
@@ -78,6 +80,7 @@ function renderLoadingShell(region) {
 
 function renderRegionDetail(region, apiRegion, pokedex, starters) {
     const locations = apiRegion.locations ?? [];
+    const featuredLocations = getFeaturedLocations(locations, region);
     const count = pokedex.pokemon_entries?.length ?? 0;
 
     detailElement.innerHTML = `
@@ -95,7 +98,7 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
                     </div>
                 </div>
 
-                ${createRegionMap(region, locations)}
+                ${createRegionMap(region)}
             </header>
 
             <section class="region-explorer-panel" aria-labelledby="region-explorer-title">
@@ -117,15 +120,15 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
             <section class="region-locations" aria-labelledby="region-locations-title">
                 <div class="region-panel-heading">
                     <div>
-                        <span class="eyebrow">Territorio</span>
-                        <h2 id="region-locations-title">Lugares de ${region.name}</h2>
+                        <span class="eyebrow">Localizaciones destacadas</span>
+                        <h2 id="region-locations-title">Lugares icónicos de ${region.name}</h2>
                     </div>
-                    <span class="region-location-count">${locations.length} lugares registrados</span>
+                    <span class="region-location-count">${featuredLocations.length} destacados</span>
                 </div>
                 <div class="region-location-list region-location-grid">
-                    ${locations.length
-                        ? locations.map((location, index) => createLocationCard(location, index, region)).join('')
-                        : '<span class="region-location-empty">Información de localizaciones no disponible.</span>'
+                    ${featuredLocations.length
+                        ? featuredLocations.map((location, index) => createLocationCard(location, index, region)).join('')
+                        : '<span class="region-location-empty">No hay imágenes de localizaciones disponibles para esta región.</span>'
                     }
                 </div>
             </section>
@@ -133,7 +136,7 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
     `;
 }
 
-function createRegionMap(region, locations) {
+function createRegionMap(region) {
     if (!region.map) {
         return `
             <div class="region-map region-map-unavailable" aria-label="Mapa de ${region.name}">
@@ -156,20 +159,27 @@ function createRegionMap(region, locations) {
     `;
 }
 
+function getFeaturedLocations(locations, region) {
+    return locations
+        .map((location) => ({
+            location,
+            image: getLocationImage(region, location.name)
+        }))
+        .filter(({ image }) => image)
+        .slice(0, MAX_FEATURED_LOCATIONS)
+        .map(({ location }) => location);
+}
+
 function createLocationCard(location, index, region) {
     const name = formatLocation(location.name);
     const image = getLocationImage(region, location.name);
 
     return `
-        <article class="region-location-card${image ? ' has-image' : ''}">
-            ${image
-                ? `<img src="${image}" alt="${name}" loading="lazy" decoding="async">`
-                : '<div class="region-location-image-placeholder" aria-hidden="true"><span>LOCATION</span></div>'
-            }
+        <article class="region-location-card has-image">
+            <img src="${image}" alt="${name}" loading="lazy" decoding="async">
             <div class="region-location-card-content">
                 <span class="region-location-index">${String(index + 1).padStart(2, '0')}</span>
                 <h3>${name}</h3>
-                <span class="region-location-source">${image ? 'Imagen disponible' : 'Datos de PokéAPI'}</span>
             </div>
         </article>
     `;
