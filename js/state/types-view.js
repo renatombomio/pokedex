@@ -1,6 +1,5 @@
 import { POKEMON_TYPES } from './types.js';
 import { getPokemonByType } from '../api/pokemon.js';
-import { showTypeDetail } from './navigation.js';
 import './types-detail.js';
 
 const grid = document.querySelector('#types-grid');
@@ -75,7 +74,9 @@ grid?.addEventListener('click', (event) => {
     const typeId = card.dataset.type;
     if (!typeId) return;
 
-    showTypeDetail(typeId);
+    document.dispatchEvent(new CustomEvent('type:open-detail', {
+        detail: { type: typeId }
+    }));
 });
 
 function getTypeSymbol(type) {
