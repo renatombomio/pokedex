@@ -8,6 +8,7 @@
     <title>Pokédex — Explora el mundo Pokémon</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/card-effects.css">
+    <link rel="stylesheet" href="css/types.css">
     <link rel="stylesheet" href="css/search-modal.css">
     <link rel="stylesheet" href="css/detail-hero.css">
     <link rel="stylesheet" href="css/detail-mobile.css">
@@ -71,16 +72,28 @@
             </div>
         </section>
 
+        <section class="types-section" id="types" aria-labelledby="types-title">
+            <div class="container">
+                <header class="types-header">
+                    <div>
+                        <p class="eyebrow">Afinidades</p>
+                        <h2 id="types-title">Tipos Pokémon</h2>
+                    </div>
+                    <p class="types-intro">Explora las 18 afinidades elementales y descubre los Pokémon que pertenecen a cada una.</p>
+                </header>
+                <div class="types-grid" id="types-grid" aria-label="Tipos Pokémon"></div>
+                <div class="types-filter-row" aria-label="Acciones de filtrado">
+                    <button class="filter-button type-filter-all" type="button" data-type="all" aria-pressed="true">Ver todos los Pokémon</button>
+                </div>
+            </div>
+        </section>
+
         <section class="pokedex-section" id="pokedex" aria-labelledby="pokedex-title">
             <div class="container">
                 <header class="section-header">
                     <div><p class="eyebrow">Pokédex</p><h2 id="pokedex-title">Descubre Pokémon</h2></div>
                     <p class="pokemon-count"><strong id="pokemon-count">0</strong> Pokémon</p>
                 </header>
-                <div class="filters" id="types" aria-label="Filtrar por tipo">
-                    <button class="filter-button active" type="button" data-type="all" aria-pressed="true">Todos</button>
-                    <button class="filter-button" type="button" data-type="normal" aria-pressed="false">Normal</button><button class="filter-button" type="button" data-type="fire" aria-pressed="false">Fuego</button><button class="filter-button" type="button" data-type="water" aria-pressed="false">Agua</button><button class="filter-button" type="button" data-type="electric" aria-pressed="false">Eléctrico</button><button class="filter-button" type="button" data-type="grass" aria-pressed="false">Planta</button><button class="filter-button" type="button" data-type="ice" aria-pressed="false">Hielo</button><button class="filter-button" type="button" data-type="fighting" aria-pressed="false">Lucha</button><button class="filter-button" type="button" data-type="poison" aria-pressed="false">Veneno</button><button class="filter-button" type="button" data-type="ground" aria-pressed="false">Tierra</button><button class="filter-button" type="button" data-type="flying" aria-pressed="false">Volador</button><button class="filter-button" type="button" data-type="psychic" aria-pressed="false">Psíquico</button><button class="filter-button" type="button" data-type="bug" aria-pressed="false">Bicho</button><button class="filter-button" type="button" data-type="rock" aria-pressed="false">Roca</button><button class="filter-button" type="button" data-type="ghost" aria-pressed="false">Fantasma</button><button class="filter-button" type="button" data-type="dragon" aria-pressed="false">Dragón</button><button class="filter-button" type="button" data-type="dark" aria-pressed="false">Siniestro</button><button class="filter-button" type="button" data-type="steel" aria-pressed="false">Acero</button><button class="filter-button" type="button" data-type="fairy" aria-pressed="false">Hada</button>
-                </div>
                 <div class="loading-state" id="loading-state" aria-live="polite">
                     <p>Cargando Pokémon...</p>
                     <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
@@ -95,7 +108,7 @@
                 <div class="error-state hidden" id="error-state" role="alert"><h3>Algo salió mal.</h3><p>No pudimos cargar los Pokémon. Inténtalo de nuevo.</p><button id="retry-button" type="button">Intentar otra vez</button></div>
                 <div class="pokemon-grid" id="pokemon-grid" aria-live="polite"></div>
                 <div class="load-more"><button id="load-more-button" type="button">Cargar más Pokémon</button></div>
-                <div class="empty-state hidden" id="empty-state"><h3>No encontramos ningún Pokémon.</h3><p>Prueba con otro nombre o cambia el filtro.</p></div>
+                <div class="empty-state hidden" id="empty-state"><h3>No encontramos ningún Pokémon.</h3><p>Prueba con otro filtro o cambia la búsqueda.</p></div>
             </div>
         </section>
 
@@ -127,6 +140,7 @@
     <script type="module" src="js/state/navigation-init.js"></script>
     <script type="module" src="js/state/detail-router.js"></script>
     <script type="module" src="./js/state/regions-view.js"></script>
+    <script type="module" src="./js/state/types-view.js"></script>
     <script type="module" src="js/state/accessibility.js"></script>
 </body>
 </html>
