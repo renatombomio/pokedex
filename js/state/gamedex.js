@@ -1,14 +1,18 @@
 import {
-    getEvolutionList
+    getEvolutionTree
 } from './details.js';
+
+import {
+    isFavorite
+} from './favorites.js';
 
 
 const detailContent = document.querySelector('#detail-content');
+const MAX_BASE_STAT = 255;
 
 
 /**
  * Render the complete Gamedex view directly from the detail state.
- * No intermediate detail DOM or MutationObserver is required.
  */
 export function renderGamedex(details) {
     if (!detailContent || !details?.pokemon || !details?.species) {
@@ -25,10 +29,12 @@ export function renderGamedex(details) {
         `)
         .join('');
 
-    const evolutionList = getEvolutionList();
-    const evolutionSection = evolutionList.length > 1
-        ? createEvolutionSection(evolutionList)
+    const evolutionTree = getEvolutionTree();
+    const evolutionSection = evolutionTree?.children.length || evolutionTree?.pokemon
+        ? createEvolutionSection(evolutionTree)
         : '';
+
+    const favorite = isFavorite(pokemon.id);
 
     detailContent.innerHTML = `
         <article class="gamedex-card type-${primaryType}">
@@ -56,6 +62,16 @@ export function renderGamedex(details) {
                     <span>Habilidad</span>
                     <strong>${escapeHtml(getPrimaryAbility(pokemon))}</strong>
                 </div>
+                <button
+                    class="favorite-toggle${favorite ? ' is-favorite' : ''}"
+                    type="button"
+                    data-pokemon-id="${pokemon.id}"
+                    aria-pressed="${favorite}"
+                    aria-label="${favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
+                    title="${favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
+                >
+                    <span aria-hidden="true">♥</span>
+                </button>
             </div>
 
             <div class="gamedex-stats" aria-label="Estadísticas base">
@@ -73,49 +89,16 @@ export function renderGamedex(details) {
 
         ${evolutionSection}
     `;
-
-    showDetailView();
 }
 
 
 /**
- * Hide Gamedex and restore the main Pokédex view.
+ * Hide Gamedex.
  */
 export function hideGamedex() {
     const detailSection = document.querySelector('#pokemon-detail');
-    const heroSection = document.querySelector('.hero');
-    const pokedexSection = document.querySelector('#pokedex');
-    const favoritesSection = document.querySelector('#favorites');
-
     detailSection?.classList.add('hidden');
     detailSection?.setAttribute('aria-hidden', 'true');
-    heroSection?.classList.remove('hidden');
-    pokedexSection?.classList.remove('hidden');
-    favoritesSection?.classList.remove('hidden');
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-
-function showDetailView() {
-    const detailSection = document.querySelector('#pokemon-detail');
-    const heroSection = document.querySelector('.hero');
-    const pokedexSection = document.querySelector('#pokedex');
-    const favoritesSection = document.querySelector('#favorites');
-
-    heroSection?.classList.add('hidden');
-    pokedexSection?.classList.add('hidden');
-    favoritesSection?.classList.add('hidden');
-    detailSection?.classList.remove('hidden');
-    detailSection?.setAttribute('aria-hidden', 'false');
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
 }
 
 
@@ -130,23 +113,23 @@ function createMetaItem(label, value) {
 
 
 function createStat(stat) {
-    const label = translateStat(stat.stat.name);
-    const shortLabel = {
-        PS: 'PS',
-        Ataque: 'ATQ',
-        Defensa: 'DEF',
-        'At. Especial': 'ATQ ESP',
-        'Def. Especial': 'DEF ESP',
-        Velocidad: 'VEL'
-    }[label] ?? label.slice(0, 7).toUpperCase();
+    const labels = {
+        hp: 'PS',
+        attack: 'ATQ',
+        defense: 'DEF',
+        'special-attack': 'ATQ ESP',
+        'special-defense': 'DEF ESP',
+        speed: 'VEL'
+    };
 
-    const value = Number(stat.base_stat) || 0;
-    const width = Math.min(value, 100);
+    const value = Math.max(0, Number(stat.base_stat) || 0);
+    const width = Math.min(value / MAX_BASE_STAT * 100, 100);
+    const label = labels[stat.stat.name] ?? stat.stat.name;
 
     return `
         <div class="gamedex-stat">
             <div class="gamedex-stat-top">
-                <span>${escapeHtml(shortLabel)}</span>
+                <span>${escapeHtml(label)}</span>
                 <strong>${value}</strong>
             </div>
             <div class="gamedex-stat-track">
@@ -157,48 +140,108 @@ function createStat(stat) {
 }
 
 
-function createEvolutionSection(evolutionList) {
-    const cards = evolutionList
-        .map((evolution, index) => {
-            const arrow = index < evolutionList.length - 1
-                ? '<span class="evolution-arrow" aria-hidden="true"></span>'
-                : '';
+function createEvolutionSection(tree) {
+    if (!tree) {
+        return '';
+    }
 
-            return `
-                <article
-                    class="evolution-card"
-                    data-pokemon-id="${evolution.id}"
-                >
-                    <button
-                        class="evolution-card-button"
-                        type="button"
-                        data-pokemon-id="${evolution.id}"
-                        aria-label="Ver ${escapeHtml(capitalize(evolution.name))}"
-                    >
-                        <span class="evolution-number">
-                            #${formatId(evolution.id)}
-                        </span>
-                        <img
-                            src="${escapeAttribute(getEvolutionImage(evolution.id))}"
-                            alt="${escapeHtml(capitalize(evolution.name))}"
-                            loading="lazy"
-                        >
-                        <strong>${escapeHtml(capitalize(evolution.name))}</strong>
-                    </button>
-                </article>
-                ${arrow}
-            `;
-        })
-        .join('');
+    const rootCard = createEvolutionCard(tree.pokemon);
+    const children = tree.children ?? [];
+
+    if (children.length === 0) {
+        return `
+            <section class="evolution-section">
+                <span class="panel-eyebrow">Evoluciones</span>
+                <h2>Cadena evolutiva</h2>
+                <div class="evolution-chain evolution-chain-single">
+                    ${rootCard}
+                </div>
+            </section>
+        `;
+    }
+
+    if (children.length === 1) {
+        return `
+            <section class="evolution-section">
+                <span class="panel-eyebrow">Evoluciones</span>
+                <h2>Cadena evolutiva</h2>
+                <div class="evolution-chain evolution-chain-linear">
+                    ${rootCard}
+                    <span class="evolution-arrow" aria-hidden="true"></span>
+                    ${createLinearDescendant(children[0])}
+                </div>
+            </section>
+        `;
+    }
 
     return `
-        <section class="evolution-section">
+        <section class="evolution-section evolution-section-branching">
             <span class="panel-eyebrow">Evoluciones</span>
             <h2>Cadena evolutiva</h2>
-            <div class="evolution-chain">
-                ${cards}
+            <div class="evolution-tree">
+                <div class="evolution-tree-root">
+                    ${rootCard}
+                </div>
+                <div class="evolution-tree-connector" aria-hidden="true"></div>
+                <div class="evolution-tree-branches">
+                    ${children.map((child) => `
+                        <div class="evolution-branch">
+                            <span class="evolution-arrow" aria-hidden="true"></span>
+                            ${createLinearDescendant(child)}
+                        </div>
+                    `).join('')}
+                </div>
             </div>
         </section>
+    `;
+}
+
+
+function createLinearDescendant(node) {
+    const cards = [createEvolutionCard(node.pokemon)];
+    let current = node;
+
+    while (current.children?.length === 1) {
+        cards.push('<span class="evolution-arrow" aria-hidden="true"></span>');
+        current = current.children[0];
+        cards.push(createEvolutionCard(current.pokemon));
+    }
+
+    if (current.children?.length > 1) {
+        cards.push(`
+            <div class="evolution-subbranches">
+                ${current.children.map((child) => `
+                    <div class="evolution-branch">
+                        <span class="evolution-arrow" aria-hidden="true"></span>
+                        ${createLinearDescendant(child)}
+                    </div>
+                `).join('')}
+            </div>
+        `);
+    }
+
+    return cards.join('');
+}
+
+
+function createEvolutionCard(pokemon) {
+    return `
+        <article class="evolution-card" data-pokemon-id="${pokemon.id}">
+            <button
+                class="evolution-card-button"
+                type="button"
+                data-pokemon-id="${pokemon.id}"
+                aria-label="Ver ${escapeHtml(capitalize(pokemon.name))}"
+            >
+                <span class="evolution-number">#${formatId(pokemon.id)}</span>
+                <img
+                    src="${escapeAttribute(getEvolutionImage(pokemon.id))}"
+                    alt="${escapeHtml(capitalize(pokemon.name))}"
+                    loading="lazy"
+                >
+                <strong>${escapeHtml(capitalize(pokemon.name))}</strong>
+            </button>
+        </article>
     `;
 }
 
@@ -262,20 +305,6 @@ function translateType(type) {
     };
 
     return translations[type] ?? capitalize(type);
-}
-
-
-function translateStat(stat) {
-    const translations = {
-        hp: 'PS',
-        attack: 'Ataque',
-        defense: 'Defensa',
-        'special-attack': 'At. Especial',
-        'special-defense': 'Def. Especial',
-        speed: 'Velocidad'
-    };
-
-    return translations[stat] ?? capitalize(stat);
 }
 
 
