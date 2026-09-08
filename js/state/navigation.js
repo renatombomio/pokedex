@@ -4,11 +4,13 @@ import {
 
 
 const elements = {
+    header: document.querySelector('.site-header'),
     hero: document.querySelector('.hero'),
     pokedex: document.querySelector('#pokedex'),
     detail: document.querySelector('#pokemon-detail'),
     favorites: document.querySelector('#favorites'),
-    types: document.querySelector('#types')
+    types: document.querySelector('#types'),
+    navLinks: [...document.querySelectorAll('.main-nav a')]
 };
 
 
@@ -17,6 +19,8 @@ let activeView = 'home';
 
 export function initializeNavigation() {
     document.addEventListener('click', handleNavigationClick);
+    setHeaderView('home');
+    setActiveNav('pokedex');
 }
 
 
@@ -27,6 +31,8 @@ export function getActiveView() {
 
 export function showHome(target = 'pokedex') {
     activeView = 'home';
+    setHeaderView('home');
+    setActiveNav(target === 'types' ? 'types' : 'pokedex');
 
     elements.hero?.classList.remove('hidden');
     elements.pokedex?.classList.remove('hidden');
@@ -57,6 +63,8 @@ export function showHome(target = 'pokedex') {
 
 export async function showFavorites() {
     activeView = 'favorites';
+    setHeaderView('favorites');
+    setActiveNav('favorites');
 
     elements.hero?.classList.add('hidden');
     elements.pokedex?.classList.add('hidden');
@@ -70,6 +78,36 @@ export async function showFavorites() {
     });
 
     await renderFavoritesView();
+}
+
+
+export function setDetailView() {
+    setHeaderView('detail');
+    setActiveNav('pokedex');
+}
+
+
+function setHeaderView(view) {
+    if (!elements.header) {
+        return;
+    }
+
+    elements.header.dataset.view = view;
+}
+
+
+function setActiveNav(target) {
+    elements.navLinks.forEach((link) => {
+        const isActive = link.getAttribute('href') === `#${target}`;
+
+        link.classList.toggle('is-active', isActive);
+
+        if (isActive) {
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.removeAttribute('aria-current');
+        }
+    });
 }
 
 
