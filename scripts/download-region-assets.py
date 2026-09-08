@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """Import selected local region assets for generations II-IX.
 
-Maps use Wikimedia Commons recreations where available for older regions and
-Bulbagarden Archives regional maps for the remaining generations. Location
-images use specific Bulbagarden Archives game-map files. The app serves local
-copies; it never hotlinks these sources at runtime.
+Maps use Wikimedia Commons recreations for older regions where already
+configured and Bulbagarden Archives regional maps for the remaining
+regions. Location images use specific Bulbagarden Archives game-map files.
+The app serves local copies; it never hotlinks these sources at runtime.
 """
 
 from pathlib import Path
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 import json
+import time
 
 USER_AGENT = "pokedex-portfolio-region-assets/1.0"
+REQUEST_DELAY = 0.75
 
 REGIONS = {
     "johto": {
@@ -135,20 +137,30 @@ def resolve_url(source: str, filename: str) -> str:
     return bulbagarden_url(filename)
 
 
+def import_asset(source: str, filename: str, destination: Path) -> None:
+    if destination.exists() and destination.stat().st_size > 0:
+        print(f"Skipping existing asset: {destination}")
+        return
+
+    time.sleep(REQUEST_DELAY)
+    print(f"Downloading {filename} -> {destination}")
+    download(resolve_url(source, filename), destination)
+
+
 def main() -> None:
     for region_id, config in REGIONS.items():
         root = Path("assets/regions") / region_id
         root.mkdir(parents=True, exist_ok=True)
 
         source, filename = config["map"]
-        map_path = root / "map.png"
-        print(f"Downloading {region_id} map: {filename}")
-        download(resolve_url(source, filename), map_path)
+        import_asset(source, filename, root / "map.png")
 
         for output_name, source_filename in config["locations"].items():
-            destination = root / "locations" / output_name
-            print(f"Downloading {region_id} location: {source_filename}")
-            download(bulbagarden_url(source_filename), destination)
+            import_asset(
+                "bulbagarden",
+                source_filename,
+                root / "locations" / output_name,
+            )
 
     print("Imported region assets for generations II-IX.")
 
