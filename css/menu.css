@@ -2,6 +2,14 @@
    MOBILE NAVIGATION
 ======================================== */
 
+.main-nav a.is-active {
+    color: #fff;
+}
+
+.main-nav a.is-active:after {
+    width: 100%;
+}
+
 @media (max-width: 768px) {
 
     .header-content {
@@ -31,11 +39,18 @@
 
     .main-nav a {
         padding: 12px 14px;
-        border-radius: 10px;
     }
 
-    .main-nav a:hover {
+    .main-nav a:hover,
+    .main-nav a.is-active {
         background: rgba(255,255,255,.06);
+    }
+
+    .main-nav a.is-active:after {
+        left: 14px;
+        right: 14px;
+        bottom: 5px;
+        width: auto;
     }
 
     .menu-toggle[aria-expanded="true"] {
