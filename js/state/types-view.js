@@ -1,6 +1,7 @@
 import { POKEMON_TYPES } from './types.js';
 import { getPokemonByType } from '../api/pokemon.js';
 import './types-detail.js';
+import './types-filter.js';
 
 const grid = document.querySelector('#types-grid');
 
@@ -77,6 +78,16 @@ grid?.addEventListener('click', (event) => {
     document.dispatchEvent(new CustomEvent('type:open-detail', {
         detail: { type: typeId }
     }));
+});
+
+document.addEventListener('type:filter-changed', (event) => {
+    const type = event.detail?.type;
+
+    document.querySelectorAll('.type-card').forEach((card) => {
+        const active = type !== 'all' && card.dataset.type === type;
+        card.classList.toggle('active', active);
+        card.setAttribute('aria-pressed', String(active));
+    });
 });
 
 function getTypeSymbol(type) {
