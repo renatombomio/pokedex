@@ -66,6 +66,10 @@ export function getRetryButton() {
 
 /**
  * Create a Pokémon card.
+ *
+ * The primary artwork remains the high-quality official artwork. When
+ * PokéAPI provides an animated Showdown sprite, it is layered behind it
+ * as a subtle living background element rather than replacing the artwork.
  */
 function createPokemonCard(pokemon) {
     const article = document.createElement('article');
@@ -80,6 +84,20 @@ function createPokemonCard(pokemon) {
         `)
         .join('');
 
+    const animatedImage = getAnimatedPokemonImage(pokemon);
+    const animatedMarkup = animatedImage
+        ? `
+            <img
+                class="pokemon-card-animated"
+                src="${animatedImage}"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+            >
+        `
+        : '';
+
     article.innerHTML = `
         <button
             class="pokemon-card-button"
@@ -92,10 +110,13 @@ function createPokemonCard(pokemon) {
                     #${formatId(pokemon.id)}
                 </span>
 
+                ${animatedMarkup}
+
                 <img
                     src="${getPokemonImage(pokemon)}"
                     alt="${capitalize(pokemon.name)}"
                     loading="lazy"
+                    decoding="async"
                 >
             </div>
 
@@ -120,6 +141,23 @@ function getPokemonImage(pokemon) {
         pokemon.sprites?.other?.['official-artwork']?.front_default
         ??
         pokemon.sprites?.front_default
+        ??
+        ''
+    );
+}
+
+
+/**
+ * Get an animated sprite when PokéAPI exposes one.
+ *
+ * Showdown is preferred because it is available for a broad range of
+ * Pokémon. Gen V animated sprites are used as a fallback when available.
+ */
+function getAnimatedPokemonImage(pokemon) {
+    return (
+        pokemon.sprites?.other?.showdown?.front_default
+        ??
+        pokemon.sprites?.versions?.['generation-v']?.['black-white']?.animated?.front_default
         ??
         ''
     );
