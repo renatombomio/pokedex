@@ -12,7 +12,7 @@ const TYPE_REPRESENTATIVES = {
     grass: 254,
     ice: 144,
     fighting: 448,
-    poison: 94,
+    poison: 169,
     ground: 529,
     flying: 398,
     psychic: 150,
