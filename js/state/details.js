@@ -4,20 +4,14 @@ import {
     getEvolutionChain
 } from '../api/pokemon.js';
 
-
 const state = {
     pokemon: null,
     species: null,
     evolution: null,
-
     loading: false,
     error: null
 };
 
-
-/**
- * Load all data required by the Pokémon detail view.
- */
 export async function loadPokemonDetails(identifier) {
     state.loading = true;
     state.error = null;
@@ -41,32 +35,15 @@ export async function loadPokemonDetails(identifier) {
     }
 }
 
-
-/**
- * Get the current detail state.
- */
 export function getDetailsState() {
-    return {
-        ...state
-    };
+    return { ...state };
 }
 
-
-/**
- * Return the evolution tree without flattening branching families.
- */
 export function getEvolutionTree() {
-    if (!state.evolution?.chain) {
-        return null;
-    }
-
+    if (!state.evolution?.chain) return null;
     return mapEvolutionNode(state.evolution.chain);
 }
 
-
-/**
- * Return a flat list for consumers that only need the Pokémon in the chain.
- */
 export function getEvolutionList() {
     const tree = getEvolutionTree();
     const evolutionList = [];
@@ -81,11 +58,8 @@ export function getEvolutionList() {
     return evolutionList;
 }
 
-
 function mapEvolutionNode(node) {
-    if (!node?.species) {
-        return null;
-    }
+    if (!node?.species) return null;
 
     return {
         pokemon: {
@@ -93,28 +67,46 @@ function mapEvolutionNode(node) {
             name: node.species.name,
             url: node.species.url
         },
+        evolutionDetails: Array.isArray(node.evolution_details)
+            ? node.evolution_details.map(mapEvolutionDetail)
+            : [],
         children: (node.evolves_to ?? [])
             .map(mapEvolutionNode)
             .filter(Boolean)
     };
 }
 
+function mapEvolutionDetail(detail) {
+    if (!detail) return null;
+
+    return {
+        trigger: detail.trigger?.name ?? null,
+        minLevel: detail.min_level ?? null,
+        item: detail.item?.name ?? null,
+        heldItem: detail.held_item?.name ?? null,
+        knownMove: detail.known_move?.name ?? null,
+        knownMoveType: detail.known_move_type?.name ?? null,
+        minHappiness: detail.min_happiness ?? null,
+        minBeauty: detail.min_beauty ?? null,
+        minAffection: detail.min_affection ?? null,
+        timeOfDay: detail.time_of_day ?? null,
+        location: detail.location?.name ?? null,
+        gender: detail.gender ?? null,
+        needsOverworldRain: detail.needs_overworld_rain ?? false,
+        turnUpsideDown: detail.turn_upside_down ?? false,
+        relativePhysicalStats: detail.relative_physical_stats ?? null,
+        partySpecies: detail.party_species?.name ?? null,
+        partyType: detail.party_type?.name ?? null
+    };
+}
 
 function getIdFromUrl(url) {
-    if (!url) {
-        return null;
-    }
-
+    if (!url) return null;
     const parts = url.split('/').filter(Boolean);
     const id = Number(parts[parts.length - 1]);
-
     return Number.isInteger(id) ? id : null;
 }
 
-
-/**
- * Clear the current detail state.
- */
 export function clearDetails() {
     state.pokemon = null;
     state.species = null;
