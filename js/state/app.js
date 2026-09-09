@@ -98,10 +98,7 @@ export async function applyFilters() {
 
         let references = resolved.length === 0
             ? state.pokemon.map(({ name, id }) => ({ name, id }))
-            : resolved.reduce((intersection, dataset) => {
-                const ids = new Set(dataset.map(({ id }) => id));
-                return intersection.filter(({ id }) => ids.has(id));
-            }, resolved[0]);
+            : intersectReferences(resolved);
 
         references = references.filter(({ id }) => Number.isInteger(id));
 
@@ -117,6 +114,20 @@ export async function applyFilters() {
         setState({ loading: false, error });
         throw error;
     }
+}
+
+function intersectReferences(datasets) {
+    const orderedDatasets = [...datasets].sort((a, b) => a.length - b.length);
+    let intersection = orderedDatasets[0];
+
+    for (let index = 1; index < orderedDatasets.length; index += 1) {
+        const ids = new Set(orderedDatasets[index].map(({ id }) => id));
+        intersection = intersection.filter(({ id }) => ids.has(id));
+
+        if (intersection.length === 0) break;
+    }
+
+    return intersection;
 }
 
 export async function searchPokemon(query) {
