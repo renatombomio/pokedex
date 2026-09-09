@@ -5,29 +5,58 @@ import {
     getPokedex
 } from '../api/pokemon.js';
 
+const HYDRATION_CONCURRENCY = 8;
+
+/**
+ * Hydrate a list of PokéAPI references without opening an unbounded number
+ * of simultaneous requests. Result order always matches the input order.
+ */
+async function hydratePokemon(references, concurrency = HYDRATION_CONCURRENCY) {
+    const results = new Array(references.length);
+    let nextIndex = 0;
+
+    async function worker() {
+        while (true) {
+            const index = nextIndex++;
+            if (index >= references.length) return;
+
+            results[index] = await getPokemon(references[index]);
+        }
+    }
+
+    const workerCount = Math.min(
+        Math.max(1, concurrency),
+        references.length
+    );
+
+    await Promise.all(
+        Array.from({ length: workerCount }, () => worker())
+    );
+
+    return results;
+}
+
 export async function loadPokemonCollection({ limit = 24, offset = 0 } = {}) {
     const response = await getPokemonList(limit, offset);
 
-    return Promise.all(
-        response.results.map(({ name }) => getPokemon(name))
+    return hydratePokemon(
+        response.results.map(({ name }) => name)
     );
 }
 
 export async function loadPokemonByType(type) {
     const response = await getPokemonByType(type);
 
-    return Promise.all(
-        response.pokemon.map(({ pokemon }) => getPokemon(pokemon.name))
+    return hydratePokemon(
+        response.pokemon.map(({ pokemon }) => pokemon.name)
     );
 }
 
 export async function loadPokemonByPokedex(pokedex) {
     const response = await getPokedex(pokedex);
 
-    return Promise.all(
-        response.pokemon_entries.map(({ pokemon_species }) =>
-            getPokemon(pokemon_species.name)
-        )
+    return hydratePokemon(
+        response.pokemon_entries.map(({ pokemon_species }) => pokemon_species.name)
     );
 }
 
@@ -42,8 +71,8 @@ export async function loadPokemonByGeneration({ start, end }) {
 
     const response = await getPokemonList(end - start + 1, start - 1);
 
-    return Promise.all(
-        response.results.map(({ name }) => getPokemon(name))
+    return hydratePokemon(
+        response.results.map(({ name }) => name)
     );
 }
 
@@ -60,7 +89,9 @@ export async function searchPokemonList(query) {
         );
     });
 
-    return Promise.all(matches.map(({ name }) => getPokemon(name)));
+    return hydratePokemon(
+        matches.map(({ name }) => name)
+    );
 }
 
 export async function loadPokemonDetails(nameOrId) {
