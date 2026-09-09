@@ -54,17 +54,20 @@ export async function loadMorePokemon() {
 }
 
 export async function filterByType(type) {
+    searchRequestId += 1;
     state.filters.type = type || 'all';
     return applyFilters();
 }
 
 export async function filterByRegion({ name, pokedex, generation }) {
+    searchRequestId += 1;
     if (!name || !pokedex) throw new Error('A region name and Pokédex are required.');
     state.filters.region = { name, pokedex, generation };
     return applyFilters();
 }
 
 export async function filterByGeneration(generation) {
+    searchRequestId += 1;
     state.filters.generation = generation || null;
     return applyFilters();
 }
@@ -137,6 +140,8 @@ function intersectReferences(datasets) {
 export async function searchPokemon(query) {
     const searchQuery = query.trim().toLowerCase();
     if (!searchQuery) return applyFilters();
+
+    filterRequestId += 1;
     const currentRequest = ++searchRequestId;
     setState({ loading: true, error: null });
     try {
