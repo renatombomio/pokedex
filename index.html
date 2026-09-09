@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/regions.css">
     <link rel="stylesheet" href="css/region-detail.css">
     <link rel="stylesheet" href="css/region-assets.css">
+    <link rel="stylesheet" href="css/generations.css">
     <link rel="stylesheet" href="css/accessibility.css">
 </head>
 <body>
@@ -37,6 +38,7 @@
                 <a href="#pokedex">Pokédex</a>
                 <a href="#types">Tipos</a>
                 <a href="#regions">Regiones</a>
+                <a href="#generations">Generaciones</a>
                 <a href="#favorites">Favoritos <span class="nav-favorites-count" data-favorites-count hidden>0</span></a>
             </nav>
             <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-navigation">
@@ -73,13 +75,20 @@
             </div>
         </section>
 
+        <section class="generations-section" id="generations" aria-labelledby="generations-title">
+            <div class="container">
+                <header class="generations-header">
+                    <div><p class="eyebrow">Historia Pokémon</p><h2 id="generations-title">Generaciones</h2></div>
+                    <p class="generations-intro">Recorre las nueve generaciones, descubre sus Pokémon iniciales y entra directamente en su Pokédex.</p>
+                </header>
+                <div class="generations-grid" id="generations-grid" aria-live="polite"></div>
+            </div>
+        </section>
+
         <section class="types-section" id="types" aria-labelledby="types-title">
             <div class="container">
                 <header class="types-header">
-                    <div>
-                        <p class="eyebrow">Afinidades</p>
-                        <h2 id="types-title">Tipos Pokémon</h2>
-                    </div>
+                    <div><p class="eyebrow">Afinidades</p><h2 id="types-title">Tipos Pokémon</h2></div>
                     <p class="types-intro">Explora las 18 afinidades elementales y descubre los Pokémon que pertenecen a cada una.</p>
                 </header>
                 <div class="types-grid" id="types-grid" aria-label="Tipos Pokémon"></div>
@@ -139,6 +148,7 @@
     <script type="module" src="js/state/detail-router.js"></script>
     <script type="module" src="./js/state/regions-view.js"></script>
     <script type="module" src="./js/state/types-view.js"></script>
+    <script type="module" src="./js/state/generations-view.js"></script>
     <script type="module" src="js/state/accessibility.js"></script>
 </body>
 </html>
