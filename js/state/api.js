@@ -37,6 +37,19 @@ async function hydratePokemon(references, concurrency = HYDRATION_CONCURRENCY) {
     return results;
 }
 
+function extractId(url) {
+    const id = Number(url.split('/').filter(Boolean).pop());
+    return Number.isInteger(id) ? id : null;
+}
+
+function extractReferences(response, collectionKey) {
+    return response[collectionKey]
+        .map((entry) => entry.name ? entry : entry.pokemon ?? entry.pokemon_species)
+        .filter(Boolean)
+        .map(({ name, url }) => ({ name, id: extractId(url) }))
+        .filter(({ name, id }) => name && id !== null);
+}
+
 export async function loadPokemonCollection({ limit = 24, offset = 0 } = {}) {
     const response = await getPokemonList(limit, offset);
 
@@ -62,19 +75,47 @@ export async function loadPokemonByPokedex(pokedex) {
 }
 
 /**
- * Load the base Pokédex entries belonging to a generation.
- * Generation boundaries map directly to National Pokédex IDs.
+ * Return lightweight references for a type without hydrating every Pokémon.
+ * This is used when several filters are combined so only the final
+ * intersection needs full Pokémon payloads.
  */
-export async function loadPokemonByGeneration({ start, end }) {
+export async function loadPokemonReferencesByType(type) {
+    const response = await getPokemonByType(type);
+    return extractReferences(response, 'pokemon');
+}
+
+/**
+ * Return lightweight references for a Pokédex without hydrating every Pokémon.
+ */
+export async function loadPokemonReferencesByPokedex(pokedex) {
+    const response = await getPokedex(pokedex);
+    return extractReferences(response, 'pokemon_entries');
+}
+
+/**
+ * Return lightweight references for a generation without hydrating every
+ * Pokémon. Generation boundaries map directly to National Pokédex IDs.
+ */
+export async function loadPokemonReferencesByGeneration({ start, end }) {
     if (!Number.isInteger(start) || !Number.isInteger(end) || start > end) {
         throw new Error('A valid generation range is required.');
     }
 
     const response = await getPokemonList(end - start + 1, start - 1);
 
+    return response.results
+        .map(({ name, url }) => ({ name, id: extractId(url) }))
+        .filter(({ name, id }) => name && id !== null);
+}
+
+export async function loadPokemonByGeneration({ start, end }) {
     return hydratePokemon(
-        response.results.map(({ name }) => name)
+        (await loadPokemonReferencesByGeneration({ start, end })).map(({ name }) => name)
     );
+}
+
+export async function hydratePokemonReferences(references) {
+    return hydratePokemon(references.map(({ name }) => name));
 }
 
 export async function searchPokemonList(query) {
