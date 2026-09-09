@@ -1,0 +1,180 @@
+/* ========================================
+   GENERATIONS — COLLECTIBLE INDEX
+======================================== */
+
+.generations-section {
+    padding: 110px 0;
+    background: #080808;
+    border-top: 1px solid rgba(255,255,255,.05);
+    border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.generations-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 34px;
+}
+
+.generations-intro {
+    max-width: 470px;
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.generations-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.generation-card {
+    min-width: 0;
+}
+
+.generation-card-button {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-height: 390px;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 22px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 26px;
+    background: #101010;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.generation-card-button:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255,255,255,.18);
+    box-shadow: 0 24px 55px rgba(0,0,0,.35);
+}
+
+.generation-card-top,
+.generation-card-bottom {
+    position: relative;
+    z-index: 2;
+}
+
+.generation-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.generation-number {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .16em;
+}
+
+.generation-region {
+    color: #666;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.generation-card-visual {
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-height: 225px;
+    isolation: isolate;
+}
+
+.generation-card-visual::before {
+    position: absolute;
+    width: 190px;
+    height: 190px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 50%;
+    content: '';
+}
+
+.generation-orbit {
+    position: absolute;
+    border: 1px solid rgba(255,255,255,.05);
+    border-radius: 50%;
+}
+
+.generation-orbit-one { width: 250px; height: 110px; transform: rotate(25deg); }
+.generation-orbit-two { width: 110px; height: 250px; transform: rotate(25deg); }
+
+.generation-starters {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    height: 210px;
+}
+
+.generation-starters img {
+    width: 34%;
+    max-width: 145px;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 18px rgba(0,0,0,.55));
+    transition: transform .25s ease;
+}
+
+.generation-card-button:hover .generation-starters img:nth-child(1) { transform: translateY(-5px) rotate(-3deg); }
+.generation-card-button:hover .generation-starters img:nth-child(2) { transform: translateY(-10px); }
+.generation-card-button:hover .generation-starters img:nth-child(3) { transform: translateY(-5px) rotate(3deg); }
+
+.generation-card-bottom {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 4px 14px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.generation-card-bottom strong {
+    font-size: 20px;
+    letter-spacing: -.04em;
+}
+
+.generation-card-bottom small {
+    color: #666;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+}
+
+.generation-explore {
+    grid-row: 1 / span 2;
+    color: #aaa;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 1000px) {
+    .generations-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 680px) {
+    .generations-section { padding: 78px 0; }
+    .generations-header { display: block; }
+    .generations-intro { margin-top: 14px; }
+    .generations-grid { grid-template-columns: 1fr; gap: 12px; }
+    .generation-card-button { min-height: 350px; }
+}
