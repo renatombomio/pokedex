@@ -20,6 +20,7 @@ export function initializeNavigation() {
     initialized = true;
 
     document.addEventListener('click', handleNavigationClick);
+    document.addEventListener('change', handleNavigationChange);
     document.addEventListener('navigation:back-requested', handleBackRequest);
     document.addEventListener('region:open-detail', handleRegionOpenRequest);
     document.addEventListener('generation:open-detail', handleGenerationOpenRequest);
@@ -168,6 +169,17 @@ export function navigateBack() {
 
 function handleBackRequest() {
     navigateBack();
+}
+
+function handleNavigationChange(event) {
+    const select = event.target.closest('[data-gamedex-form]');
+    if (!select) return;
+
+    const form = select.value?.trim();
+    const id = Number(window.history.state?.id);
+    if (!form || !Number.isInteger(id)) return;
+
+    setDetailView(id, { form });
 }
 
 async function handleRegionOpenRequest(event) {
