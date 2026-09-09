@@ -1,24 +1,34 @@
+import { cachedRequest } from './cache.js';
+
 const API_BASE_URL =
     'https://pokeapi.co/api/v2';
 
 
 /**
  * Base API request.
+ *
+ * All PokéAPI requests pass through the shared cache layer so repeated
+ * requests reuse completed responses and concurrent requests are deduplicated.
  */
 async function request(endpoint) {
 
-    const response = await fetch(
-        `${API_BASE_URL}${endpoint}`
+    const url =
+        `${API_BASE_URL}${endpoint}`;
+
+    return cachedRequest(
+        url,
+        async () => {
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(
+                    `PokéAPI request failed: ${response.status} ${response.statusText}`
+                );
+            }
+
+            return response.json();
+        }
     );
-
-    if (!response.ok) {
-
-        throw new Error(
-            `PokéAPI request failed: ${response.status} ${response.statusText}`
-        );
-    }
-
-    return response.json();
 }
 
 
@@ -39,17 +49,20 @@ export async function getPokemon(nameOrId) {
 
     if (value.startsWith('http')) {
 
-        const response =
-            await fetch(value);
+        return cachedRequest(
+            value,
+            async () => {
+                const response = await fetch(value);
 
-        if (!response.ok) {
+                if (!response.ok) {
+                    throw new Error(
+                        `Pokémon request failed: ${response.status} ${response.statusText}`
+                    );
+                }
 
-            throw new Error(
-                `Pokémon request failed: ${response.status} ${response.statusText}`
-            );
-        }
-
-        return response.json();
+                return response.json();
+            }
+        );
     }
 
     const identifier =
@@ -115,17 +128,20 @@ export async function getRegion(nameOrId) {
 
     if (value.startsWith('http')) {
 
-        const response =
-            await fetch(value);
+        return cachedRequest(
+            value,
+            async () => {
+                const response = await fetch(value);
 
-        if (!response.ok) {
+                if (!response.ok) {
+                    throw new Error(
+                        `Region request failed: ${response.status} ${response.statusText}`
+                    );
+                }
 
-            throw new Error(
-                `Region request failed: ${response.status} ${response.statusText}`
-            );
-        }
-
-        return response.json();
+                return response.json();
+            }
+        );
     }
 
     return request(
@@ -151,17 +167,20 @@ export async function getPokedex(nameOrId) {
 
     if (value.startsWith('http')) {
 
-        const response =
-            await fetch(value);
+        return cachedRequest(
+            value,
+            async () => {
+                const response = await fetch(value);
 
-        if (!response.ok) {
+                if (!response.ok) {
+                    throw new Error(
+                        `Pokédex request failed: ${response.status} ${response.statusText}`
+                    );
+                }
 
-            throw new Error(
-                `Pokédex request failed: ${response.status} ${response.statusText}`
-            );
-        }
-
-        return response.json();
+                return response.json();
+            }
+        );
     }
 
     return request(
@@ -193,17 +212,20 @@ export async function getPokemonSpecies(
      */
     if (value.startsWith('http')) {
 
-        const response =
-            await fetch(value);
+        return cachedRequest(
+            value,
+            async () => {
+                const response = await fetch(value);
 
-        if (!response.ok) {
+                if (!response.ok) {
+                    throw new Error(
+                        `Species request failed: ${response.status} ${response.statusText}`
+                    );
+                }
 
-            throw new Error(
-                `Species request failed: ${response.status} ${response.statusText}`
-            );
-        }
-
-        return response.json();
+                return response.json();
+            }
+        );
     }
 
     const identifier =
@@ -237,17 +259,20 @@ export async function getEvolutionChain(
      */
     if (value.startsWith('http')) {
 
-        const response =
-            await fetch(value);
+        return cachedRequest(
+            value,
+            async () => {
+                const response = await fetch(value);
 
-        if (!response.ok) {
+                if (!response.ok) {
+                    throw new Error(
+                        `Evolution chain request failed: ${response.status} ${response.statusText}`
+                    );
+                }
 
-            throw new Error(
-                `Evolution chain request failed: ${response.status} ${response.statusText}`
-            );
-        }
-
-        return response.json();
+                return response.json();
+            }
+        );
     }
 
     const identifier =
