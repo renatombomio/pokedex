@@ -35,7 +35,7 @@ function renderRegionCards() {
                     <span class="region-orbit region-orbit-two" aria-hidden="true"></span>
                     <span
                         class="region-map-card"
-                        style="background-image: url('${region.map}')"
+                        style="display:block;width:100%;min-height:230px;flex:1;border:1px solid rgba(255,255,255,.08);border-radius:18px;background-color:#101010;background-image:url('${region.map}');background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 18px 40px rgba(0,0,0,.32);"
                         role="img"
                         aria-label="Mapa de la región de ${region.name}"
                     ></span>
