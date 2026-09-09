@@ -4,16 +4,13 @@ import { getPokemon } from '../api/pokemon.js';
 const section = document.querySelector('#generations');
 const grid = document.querySelector('#generations-grid');
 
-export async function initializeGenerations() {
+const hydratedGenerations = new Set();
+
+export function initializeGenerations() {
     if (!section || !grid) return;
 
     renderGenerationCards();
-
-    try {
-        await hydrateStarters();
-    } catch (error) {
-        console.error('Failed to load generation starters:', error);
-    }
+    initializeStarterHydration();
 }
 
 function renderGenerationCards() {
@@ -50,29 +47,55 @@ function renderGenerationCards() {
     grid.onclick = handleGenerationClick;
 }
 
-async function hydrateStarters() {
-    const requests = GENERATIONS.flatMap((generation) =>
-        generation.starters.map((starter) => getPokemon(starter))
+function initializeStarterHydration() {
+    const cards = grid.querySelectorAll('.generation-card');
+
+    if (!('IntersectionObserver' in window)) {
+        cards.forEach((card) => {
+            hydrateGenerationStarters(Number(card.dataset.generationId));
+        });
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            const generationId = Number(entry.target.dataset.generationId);
+            hydrateGenerationStarters(generationId);
+            observer.unobserve(entry.target);
+        });
+    }, {
+        rootMargin: '240px 0px'
+    });
+
+    cards.forEach((card) => observer.observe(card));
+}
+
+async function hydrateGenerationStarters(generationId) {
+    if (hydratedGenerations.has(generationId)) return;
+
+    const generation = GENERATIONS.find((item) => item.id === generationId);
+    const container = grid.querySelector(
+        `[data-generation-id="${generationId}"] [data-generation-starters]`
     );
 
-    const starters = await Promise.all(requests);
-    const byName = new Map(starters.map((pokemon) => [pokemon.name, pokemon]));
+    if (!generation || !container) return;
 
-    GENERATIONS.forEach((generation) => {
-        const container = grid.querySelector(
-            `[data-generation-id="${generation.id}"] [data-generation-starters]`
+    hydratedGenerations.add(generationId);
+
+    try {
+        const starters = await Promise.all(
+            generation.starters.map((starter) => getPokemon(starter))
         );
-
-        if (!container) return;
 
         const fragment = document.createDocumentFragment();
 
-        generation.starters.forEach((name) => {
-            const pokemon = byName.get(name);
-            if (!pokemon) return;
-
+        starters.forEach((pokemon) => {
             const image = document.createElement('img');
-            image.src = pokemon.sprites?.other?.['official-artwork']?.front_default || pokemon.sprites?.front_default || '';
+            image.src = pokemon.sprites?.other?.['official-artwork']?.front_default
+                || pokemon.sprites?.front_default
+                || '';
             image.alt = pokemon.name;
             image.loading = 'lazy';
             image.decoding = 'async';
@@ -80,7 +103,10 @@ async function hydrateStarters() {
         });
 
         container.replaceChildren(fragment);
-    });
+    } catch (error) {
+        hydratedGenerations.delete(generationId);
+        throw error;
+    }
 }
 
 function handleGenerationClick(event) {
