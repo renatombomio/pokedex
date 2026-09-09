@@ -6,6 +6,7 @@ import {
 } from '../api/pokemon.js';
 
 const HYDRATION_CONCURRENCY = 8;
+const SEARCH_RESULT_LIMIT = 24;
 
 /**
  * Hydrate a list of PokéAPI references without opening an unbounded number
@@ -90,7 +91,9 @@ export async function searchPokemonList(query) {
     });
 
     return hydratePokemon(
-        matches.map(({ name }) => name)
+        matches
+            .slice(0, SEARCH_RESULT_LIMIT)
+            .map(({ name }) => name)
     );
 }
 
