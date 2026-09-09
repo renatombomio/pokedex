@@ -139,7 +139,10 @@ function intersectReferences(datasets) {
 
 export async function searchPokemon(query) {
     const searchQuery = query.trim().toLowerCase();
-    if (!searchQuery) return applyFilters();
+    if (!searchQuery) {
+        searchRequestId += 1;
+        return applyFilters();
+    }
 
     filterRequestId += 1;
     const currentRequest = ++searchRequestId;
