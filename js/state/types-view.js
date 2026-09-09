@@ -25,12 +25,14 @@ const TYPE_REPRESENTATIVES = {
     fairy: 700
 };
 
+const hydratedTypes = new Set();
+
 export function initializeTypes() {
     if (!grid) return;
 
     removeLegacyTypeControls();
     renderTypeCards();
-    hydrateTypeCounts();
+    initializeTypeCountHydration();
 }
 
 function removeLegacyTypeControls() {
@@ -75,26 +77,47 @@ function renderTypeCards() {
     grid.replaceChildren(fragment);
 }
 
-async function hydrateTypeCounts() {
-    const requests = POKEMON_TYPES.map(async (type) => {
-        try {
-            const response = await getPokemonByType(type.id);
-            return [type.id, response.pokemon?.length ?? 0];
-        } catch (error) {
-            console.warn(`Could not load count for type ${type.id}:`, error);
-            return [type.id, null];
-        }
+function initializeTypeCountHydration() {
+    const cards = grid.querySelectorAll('.type-card');
+
+    if (!('IntersectionObserver' in window)) {
+        cards.forEach((card) => hydrateTypeCount(card.dataset.type));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            const typeId = entry.target.dataset.type;
+            hydrateTypeCount(typeId);
+            observer.unobserve(entry.target);
+        });
+    }, {
+        rootMargin: '240px 0px'
     });
 
-    const results = await Promise.all(requests);
+    cards.forEach((card) => observer.observe(card));
+}
 
-    results.forEach(([typeId, count]) => {
-        const card = grid?.querySelector(`[data-type="${typeId}"]`);
-        const countElement = card?.querySelector('[data-type-count]');
+async function hydrateTypeCount(typeId) {
+    if (!typeId || hydratedTypes.has(typeId)) return;
 
-        if (!countElement || count === null) return;
-        countElement.textContent = `${count} Pokémon`;
-    });
+    const countElement = grid.querySelector(
+        `[data-type="${typeId}"] [data-type-count]`
+    );
+
+    if (!countElement) return;
+
+    hydratedTypes.add(typeId);
+
+    try {
+        const response = await getPokemonByType(typeId);
+        countElement.textContent = `${response.pokemon?.length ?? 0} Pokémon`;
+    } catch (error) {
+        hydratedTypes.delete(typeId);
+        console.warn(`Could not load count for type ${typeId}:`, error);
+    }
 }
 
 grid?.addEventListener('click', (event) => {
