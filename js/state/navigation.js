@@ -5,6 +5,7 @@ const elements = {
     hero: document.querySelector('.hero'),
     regions: document.querySelector('#regions'),
     types: document.querySelector('#types'),
+    generations: document.querySelector('#generations'),
     pokedex: document.querySelector('#pokedex'),
     detail: document.querySelector('#pokemon-detail'),
     favorites: document.querySelector('#favorites'),
@@ -21,6 +22,7 @@ export function initializeNavigation() {
     document.addEventListener('click', handleNavigationClick);
     document.addEventListener('navigation:back-requested', handleBackRequest);
     document.addEventListener('region:open-detail', handleRegionOpenRequest);
+    document.addEventListener('generation:open-detail', handleGenerationOpenRequest);
     window.addEventListener('popstate', handleHistoryChange);
 
     const route = readRoute();
@@ -28,9 +30,7 @@ export function initializeNavigation() {
     restoreRoute(route);
 }
 
-export function getActiveView() {
-    return activeView;
-}
+export function getActiveView() { return activeView; }
 
 export function showHome(target = 'pokedex', options = {}) {
     activeView = 'home';
@@ -41,16 +41,11 @@ export function showHome(target = 'pokedex', options = {}) {
     if (options.pushHistory !== false) pushRoute(target);
 
     requestAnimationFrame(() => {
-        const targetElement = target === 'types'
-            ? elements.types
-            : target === 'regions'
-                ? elements.regions
-                : elements.pokedex;
-
-        targetElement?.scrollIntoView({
-            behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-            block: 'start'
-        });
+        const targetElement = target === 'types' ? elements.types
+            : target === 'regions' ? elements.regions
+                : target === 'generations' ? elements.generations
+                    : elements.pokedex;
+        targetElement?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
     });
 }
 
@@ -58,296 +53,173 @@ export async function showFavorites(options = {}) {
     activeView = 'favorites';
     setHeaderView('favorites');
     setActiveNav('favorites');
-
     elements.hero?.classList.add('hidden');
     elements.regions?.classList.add('hidden');
     elements.types?.classList.add('hidden');
+    elements.generations?.classList.add('hidden');
     elements.pokedex?.classList.add('hidden');
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
-    getTypeDetailElement()?.classList.add('hidden');
-    getTypeDetailElement()?.setAttribute('aria-hidden', 'true');
-    getRegionDetailElement()?.classList.add('hidden');
-    getRegionDetailElement()?.setAttribute('aria-hidden', 'true');
     elements.favorites?.classList.remove('hidden');
-
+    getTypeDetailElement()?.classList.add('hidden');
+    getRegionDetailElement()?.classList.add('hidden');
+    getGenerationDetailElement()?.classList.add('hidden');
     if (options.pushHistory !== false) pushRoute('favorites');
-
-    window.scrollTo({
-        top: 0,
-        behavior: prefersReducedMotion() ? 'auto' : 'smooth'
-    });
-
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     await renderFavoritesView();
 }
 
 export function showTypeDetail(typeId, options = {}) {
     const typeDetail = getTypeDetailElement();
     if (!typeDetail || !typeId) return;
-
     activeView = 'type';
     setHeaderView('detail');
     setActiveNav('types');
-
-    elements.hero?.classList.add('hidden');
-    elements.regions?.classList.add('hidden');
-    elements.types?.classList.add('hidden');
-    elements.pokedex?.classList.add('hidden');
+    hideHomeViews();
     elements.detail?.classList.add('hidden');
-    elements.detail?.setAttribute('aria-hidden', 'true');
     elements.favorites?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
-    getRegionDetailElement()?.setAttribute('aria-hidden', 'true');
+    getGenerationDetailElement()?.classList.add('hidden');
     typeDetail.classList.remove('hidden');
     typeDetail.setAttribute('aria-hidden', 'false');
-
     if (options.pushHistory !== false) pushRoute(`type/${typeId}`);
-
-    window.scrollTo({
-        top: 0,
-        behavior: prefersReducedMotion() ? 'auto' : 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
 }
 
 export async function showRegionDetailView(regionId, options = {}) {
     if (!regionId) return;
-
     activeView = 'region';
     setHeaderView('detail');
     setActiveNav('regions');
-
-    elements.hero?.classList.add('hidden');
-    elements.regions?.classList.add('hidden');
-    elements.types?.classList.add('hidden');
-    elements.pokedex?.classList.add('hidden');
+    hideHomeViews();
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
     elements.favorites?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
-    getTypeDetailElement()?.setAttribute('aria-hidden', 'true');
-
+    getGenerationDetailElement()?.classList.add('hidden');
     const { initializeRegionDetail, showRegionDetail } = await import('./regions-detail.js');
     initializeRegionDetail();
     await showRegionDetail(regionId, options);
+}
+
+export async function showGenerationDetailView(generationId, options = {}) {
+    if (!generationId) return;
+    activeView = 'generation';
+    setHeaderView('detail');
+    setActiveNav('generations');
+    hideHomeViews();
+    elements.detail?.classList.add('hidden');
+    elements.detail?.setAttribute('aria-hidden', 'true');
+    elements.favorites?.classList.add('hidden');
+    getTypeDetailElement()?.classList.add('hidden');
+    getRegionDetailElement()?.classList.add('hidden');
+    const { initializeGenerationDetail, showGenerationDetail } = await import('./generations-detail.js');
+    initializeGenerationDetail();
+    await showGenerationDetail(generationId, options);
 }
 
 export function setDetailView(id = null, options = {}) {
     activeView = 'detail';
     setHeaderView('detail');
     setActiveNav('pokedex');
-
     getRegionDetailElement()?.classList.add('hidden');
-    getRegionDetailElement()?.setAttribute('aria-hidden', 'true');
-
-    if (options.pushHistory !== false && Number.isInteger(id)) {
-        pushRoute(`pokemon/${id}`);
-    }
+    getGenerationDetailElement()?.classList.add('hidden');
+    if (options.pushHistory !== false && Number.isInteger(id)) pushRoute(`pokemon/${id}`);
 }
 
 export function navigateBack() {
-    if (window.history.state?.view === 'region') {
-        showHome('regions', { pushHistory: false });
-        window.history.replaceState(
-            { view: 'regions' },
-            '',
-            '#regions'
-        );
-        return;
-    }
-
-    if (window.history.state?.view === 'type') {
-        showHome('types', { pushHistory: false });
-        window.history.replaceState(
-            { view: 'types' },
-            '',
-            '#types'
-        );
-        return;
-    }
-
-    if (window.history.state?.view === 'pokemon') {
-        window.history.back();
-        return;
-    }
-
+    const view = window.history.state?.view;
+    if (view === 'region') { showHome('regions', { pushHistory: false }); window.history.replaceState({ view: 'regions' }, '', '#regions'); return; }
+    if (view === 'type') { showHome('types', { pushHistory: false }); window.history.replaceState({ view: 'types' }, '', '#types'); return; }
+    if (view === 'generation') { showHome('generations', { pushHistory: false }); window.history.replaceState({ view: 'generations' }, '', '#generations'); return; }
+    if (view === 'pokemon') { window.history.back(); return; }
     showHome('pokedex');
 }
 
-function handleBackRequest() {
-    navigateBack();
-}
+function handleBackRequest() { navigateBack(); }
 
 async function handleRegionOpenRequest(event) {
     const regionId = event.detail?.region;
     if (!regionId) return;
+    await showRegionDetailView(regionId, { pushHistory: event.detail?.fromHistory !== true });
+}
 
-    await showRegionDetailView(regionId, {
-        pushHistory: event.detail?.fromHistory !== true
-    });
+async function handleGenerationOpenRequest(event) {
+    const generationId = Number(event.detail?.generation);
+    if (!Number.isInteger(generationId)) return;
+    await showGenerationDetailView(generationId, { pushHistory: event.detail?.fromHistory !== true });
 }
 
 function showHomeElements() {
     elements.hero?.classList.remove('hidden');
     elements.regions?.classList.remove('hidden');
     elements.types?.classList.remove('hidden');
+    elements.generations?.classList.remove('hidden');
     elements.pokedex?.classList.remove('hidden');
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
     elements.favorites?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
-    getTypeDetailElement()?.setAttribute('aria-hidden', 'true');
     getRegionDetailElement()?.classList.add('hidden');
-    getRegionDetailElement()?.setAttribute('aria-hidden', 'true');
+    getGenerationDetailElement()?.classList.add('hidden');
+}
+
+function hideHomeViews() {
+    elements.hero?.classList.add('hidden');
+    elements.regions?.classList.add('hidden');
+    elements.types?.classList.add('hidden');
+    elements.generations?.classList.add('hidden');
 }
 
 function pushRoute(route) {
     const url = route === 'pokedex' ? '#pokedex' : `#${route}`;
-
-    window.history.pushState(
-        {
-            view: route.split('/')[0],
-            id: getRouteId(route),
-            type: getRouteType(route),
-            region: getRouteRegion(route)
-        },
-        '',
-        url
-    );
+    window.history.pushState({ view: route.split('/')[0], id: getRouteId(route), type: getRouteType(route), region: getRouteRegion(route), generation: getRouteGeneration(route) }, '', url);
 }
 
-function handleHistoryChange(event) {
-    restoreRoute(
-        event.state?.view
-            ? { state: event.state }
-            : readRoute()
-    );
-}
+function handleHistoryChange(event) { restoreRoute(event.state?.view ? { state: event.state } : readRoute()); }
 
 function restoreRoute(route) {
     const view = route.state?.view ?? 'home';
-
-    if (view === 'pokemon' && Number.isInteger(route.state.id)) {
-        requestAnimationFrame(() => {
-            document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
-                detail: { id: route.state.id, fromHistory: true }
-            }));
-        });
-        return;
-    }
-
-    if (view === 'type' && route.state.type) {
-        requestAnimationFrame(() => {
-            document.dispatchEvent(new CustomEvent('type:open-detail', {
-                detail: { type: route.state.type, fromHistory: true }
-            }));
-        });
-        return;
-    }
-
-    if (view === 'region' && route.state.region) {
-        requestAnimationFrame(() => {
-            document.dispatchEvent(new CustomEvent('region:open-detail', {
-                detail: { region: route.state.region, fromHistory: true }
-            }));
-        });
-        return;
-    }
-
-    if (view === 'favorites') {
-        showFavorites({ pushHistory: false });
-        return;
-    }
-
-    showHome(
-        view === 'types' || view === 'regions' ? view : 'pokedex',
-        { pushHistory: false }
-    );
+    if (view === 'pokemon' && Number.isInteger(route.state.id)) { requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('pokemon:open-detail', { detail: { id: route.state.id, fromHistory: true } }))); return; }
+    if (view === 'type' && route.state.type) { requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('type:open-detail', { detail: { type: route.state.type, fromHistory: true } }))); return; }
+    if (view === 'region' && route.state.region) { requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('region:open-detail', { detail: { region: route.state.region, fromHistory: true } }))); return; }
+    if (view === 'generation' && Number.isInteger(route.state.generation)) { requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('generation:open-detail', { detail: { generation: route.state.generation, fromHistory: true } }))); return; }
+    if (view === 'favorites') { showFavorites({ pushHistory: false }); return; }
+    showHome(view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex', { pushHistory: false });
 }
 
 function readRoute() {
     const hash = window.location.hash.replace(/^#/, '');
-
     if (hash === 'favorites') return { state: { view: 'favorites' }, url: '#favorites' };
     if (hash === 'types') return { state: { view: 'types' }, url: '#types' };
     if (hash === 'regions') return { state: { view: 'regions' }, url: '#regions' };
-
-    if (hash.startsWith('type/')) {
-        const type = hash.split('/')[1]?.toLowerCase();
-        if (type) return { state: { view: 'type', type }, url: `#type/${type}` };
-    }
-
-    if (hash.startsWith('region/')) {
-        const region = hash.split('/')[1]?.toLowerCase();
-        if (region) return { state: { view: 'region', region }, url: `#region/${region}` };
-    }
-
-    if (hash.startsWith('pokemon/')) {
-        const id = Number(hash.split('/')[1]);
-        if (Number.isInteger(id)) {
-            return { state: { view: 'pokemon', id }, url: `#pokemon/${id}` };
-        }
-    }
-
+    if (hash === 'generations') return { state: { view: 'generations' }, url: '#generations' };
+    if (hash.startsWith('type/')) { const type = hash.split('/')[1]?.toLowerCase(); if (type) return { state: { view: 'type', type }, url: `#type/${type}` }; }
+    if (hash.startsWith('region/')) { const region = hash.split('/')[1]?.toLowerCase(); if (region) return { state: { view: 'region', region }, url: `#region/${region}` }; }
+    if (hash.startsWith('generation/')) { const generation = Number(hash.split('/')[1]); if (Number.isInteger(generation)) return { state: { view: 'generation', generation }, url: `#generation/${generation}` }; }
+    if (hash.startsWith('pokemon/')) { const id = Number(hash.split('/')[1]); if (Number.isInteger(id)) return { state: { view: 'pokemon', id }, url: `#pokemon/${id}` }; }
     return { state: { view: 'pokedex' }, url: '#pokedex' };
 }
 
-function setHeaderView(view) {
-    elements.header?.setAttribute('data-view', view);
-}
-
+function setHeaderView(view) { elements.header?.setAttribute('data-view', view); }
 function setActiveNav(target) {
-    const navTarget = ['types', 'regions', 'favorites'].includes(target)
-        ? target
-        : 'pokedex';
-
-    elements.navLinks.forEach((link) => {
-        const isActive = link.getAttribute('href') === `#${navTarget}`;
-        link.classList.toggle('is-active', isActive);
-
-        if (isActive) link.setAttribute('aria-current', 'page');
-        else link.removeAttribute('aria-current');
-    });
+    const navTarget = ['types', 'regions', 'generations', 'favorites'].includes(target) ? target : 'pokedex';
+    elements.navLinks.forEach((link) => { const active = link.getAttribute('href') === `#${navTarget}`; link.classList.toggle('is-active', active); if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
 }
-
 function handleNavigationClick(event) {
     const link = event.target.closest('.main-nav a');
-
     if (link) {
         const hash = link.getAttribute('href');
-
         if (hash === '#favorites') { event.preventDefault(); showFavorites(); return; }
-        if (hash === '#types') { event.preventDefault(); showHome('types'); return; }
-        if (hash === '#regions') { event.preventDefault(); showHome('regions'); return; }
-        if (hash === '#pokedex') { event.preventDefault(); showHome('pokedex'); return; }
+        if (hash === '#types' || hash === '#regions' || hash === '#generations' || hash === '#pokedex') { event.preventDefault(); showHome(hash.slice(1)); return; }
     }
-
-    if (event.target.closest('[data-open-pokedex]')) {
-        event.preventDefault();
-        showHome('pokedex');
-    }
+    if (event.target.closest('[data-open-pokedex]')) { event.preventDefault(); showHome('pokedex'); }
 }
-
-function getRouteId(route) {
-    const id = Number(route.split('/')[1]);
-    return Number.isInteger(id) ? id : null;
-}
-
-function getRouteType(route) {
-    return route.startsWith('type/') ? route.split('/')[1] : null;
-}
-
-function getRouteRegion(route) {
-    return route.startsWith('region/') ? route.split('/')[1] : null;
-}
-
-function getTypeDetailElement() {
-    return document.querySelector('#type-detail');
-}
-
-function getRegionDetailElement() {
-    return document.querySelector('#region-detail');
-}
-
-function prefersReducedMotion() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+function getRouteId(route) { const id = Number(route.split('/')[1]); return Number.isInteger(id) ? id : null; }
+function getRouteType(route) { return route.startsWith('type/') ? route.split('/')[1] : null; }
+function getRouteRegion(route) { return route.startsWith('region/') ? route.split('/')[1] : null; }
+function getRouteGeneration(route) { if (!route.startsWith('generation/')) return null; const id = Number(route.split('/')[1]); return Number.isInteger(id) ? id : null; }
+function getTypeDetailElement() { return document.querySelector('#type-detail'); }
+function getRegionDetailElement() { return document.querySelector('#region-detail'); }
+function getGenerationDetailElement() { return document.querySelector('#generation-detail'); }
+function prefersReducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
