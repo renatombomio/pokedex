@@ -1,4 +1,4 @@
-import { GENERATIONS, getGenerationById } from './generations.js';
+import { getGenerationById } from './generations.js';
 import { getPokemon } from '../api/pokemon.js';
 import { filterByGeneration } from './app.js';
 import { showHome } from './navigation.js';
@@ -14,15 +14,7 @@ export function initializeGenerationDetail() {
     detailElement.className = 'generation-detail hidden';
     detailElement.setAttribute('aria-hidden', 'true');
 
-    const generationsSection = document.querySelector('#generations');
-    generationsSection?.after(detailElement);
-
-    document.addEventListener('generation:open-detail', (event) => {
-        showGenerationDetail(event.detail?.generation, {
-            pushHistory: event.detail?.fromHistory !== true
-        });
-    });
-
+    document.querySelector('#generations')?.after(detailElement);
     return detailElement;
 }
 
@@ -54,6 +46,7 @@ export async function showGenerationDetail(generationId, options = {}) {
                 <div class="generation-detail-error"><h2>No pudimos cargar esta generación.</h2><p>Inténtalo de nuevo.</p></div>
             </div>
         `;
+        bindBackButton();
         console.error('Failed to load generation detail:', error);
     }
 }
@@ -105,6 +98,7 @@ function renderDetail(generation, starters) {
     `;
 
     bindBackButton();
+
     detailElement.querySelector('[data-generation-filter]')?.addEventListener('click', async () => {
         await filterByGeneration(generation);
         showHome('pokedex');
@@ -128,5 +122,3 @@ function bindBackButton() {
 export function getGenerationDetailElement() {
     return detailElement;
 }
-
-void GENERATIONS;
