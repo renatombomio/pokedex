@@ -102,7 +102,11 @@ export async function applyFilters() {
 
         references = references.filter(({ id }) => Number.isInteger(id));
 
-        const result = await hydratePokemonReferences(references);
+        const result = await hydratePokemonReferences(
+            references,
+            () => currentRequest === filterRequestId
+        );
+
         if (currentRequest !== filterRequestId) return getState();
 
         state.filteredPokemon = result;
