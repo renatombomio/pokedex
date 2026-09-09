@@ -1,8 +1,5 @@
 import {
     loadPokemonCollection,
-    loadPokemonByType,
-    loadPokemonByPokedex,
-    loadPokemonByGeneration,
     loadPokemonReferencesByType,
     loadPokemonReferencesByPokedex,
     loadPokemonReferencesByGeneration,
