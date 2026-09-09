@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/detail-mobile.css">
     <link rel="stylesheet" href="css/detail-stats.css">
     <link rel="stylesheet" href="css/gamedex.css">
+    <link rel="stylesheet" href="css/gamedex-2.css">
     <link rel="stylesheet" href="css/evolution.css">
     <link rel="stylesheet" href="css/view-transitions.css">
     <link rel="stylesheet" href="css/menu.css">
@@ -69,39 +70,28 @@
 
         <section class="regions-section" id="regions" aria-labelledby="regions-title">
             <div class="container">
-                <header class="section-header">
-                    <div><p class="eyebrow">Mundo Pokémon</p><h2 id="regions-title">Regiones</h2></div>
-                </header>
+                <header class="section-header"><div><p class="eyebrow">Mundo Pokémon</p><h2 id="regions-title">Regiones</h2></div></header>
                 <div class="regions-grid" id="regions-grid" aria-live="polite"></div>
             </div>
         </section>
 
         <section class="generations-section" id="generations" aria-labelledby="generations-title">
             <div class="container">
-                <header class="generations-header">
-                    <div><p class="eyebrow">Historia Pokémon</p><h2 id="generations-title">Generaciones</h2></div>
-                    <p class="generations-intro">Recorre las nueve generaciones, descubre sus Pokémon iniciales y entra directamente en su Pokédex.</p>
-                </header>
+                <header class="generations-header"><div><p class="eyebrow">Historia Pokémon</p><h2 id="generations-title">Generaciones</h2></div><p class="generations-intro">Recorre las nueve generaciones, descubre sus Pokémon iniciales y entra directamente en su Pokédex.</p></header>
                 <div class="generations-grid" id="generations-grid" aria-live="polite"></div>
             </div>
         </section>
 
         <section class="types-section" id="types" aria-labelledby="types-title">
             <div class="container">
-                <header class="types-header">
-                    <div><p class="eyebrow">Afinidades</p><h2 id="types-title">Tipos Pokémon</h2></div>
-                    <p class="types-intro">Explora las 18 afinidades elementales y descubre los Pokémon que pertenecen a cada una.</p>
-                </header>
+                <header class="types-header"><div><p class="eyebrow">Afinidades</p><h2 id="types-title">Tipos Pokémon</h2></div><p class="types-intro">Explora las 18 afinidades elementales y descubre los Pokémon que pertenecen a cada una.</p></header>
                 <div class="types-grid" id="types-grid" aria-label="Tipos Pokémon"></div>
             </div>
         </section>
 
         <section class="pokedex-section" id="pokedex" aria-labelledby="pokedex-title">
             <div class="container">
-                <header class="section-header">
-                    <div><p class="eyebrow">Pokédex</p><h2 id="pokedex-title">Descubre Pokémon</h2></div>
-                    <p class="pokemon-count"><strong id="pokemon-count">0</strong> Pokémon</p>
-                </header>
+                <header class="section-header"><div><p class="eyebrow">Pokédex</p><h2 id="pokedex-title">Descubre Pokémon</h2></div><p class="pokemon-count"><strong id="pokemon-count">0</strong> Pokémon</p></header>
                 <div class="loading-state" id="loading-state" aria-live="polite">
                     <p>Cargando Pokémon...</p>
                     <div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div>
@@ -121,20 +111,11 @@
         </section>
 
         <section class="pokemon-detail hidden" id="pokemon-detail" aria-hidden="true">
-            <div class="container">
-                <button class="detail-back" id="detail-back" type="button">← Volver a la Pokédex</button>
-                <div class="detail-content" id="detail-content"></div>
-            </div>
+            <div class="container"><button class="detail-back" id="detail-back" type="button">← Volver a la Pokédex</button><div class="detail-content" id="detail-content"></div></div>
         </section>
 
         <section class="favorites-section hidden" id="favorites" aria-labelledby="favorites-title">
-            <div class="container">
-                <header class="favorites-header">
-                    <div><p class="eyebrow">Tu colección</p><h2 id="favorites-title">Favoritos</h2></div>
-                    <p class="favorites-count"><strong id="favorites-count">0</strong> Pokémon guardados</p>
-                </header>
-                <div class="favorites-grid" id="favorites-content" aria-live="polite"></div>
-            </div>
+            <div class="container"><header class="favorites-header"><div><p class="eyebrow">Tu colección</p><h2 id="favorites-title">Favoritos</h2></div><p class="favorites-count"><strong id="favorites-count">0</strong> Pokémon guardados</p></header><div class="favorites-grid" id="favorites-content" aria-live="polite"></div></div>
         </section>
     </main>
 
