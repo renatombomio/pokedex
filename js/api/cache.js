@@ -8,6 +8,11 @@ function isFresh(entry, now = Date.now()) {
     return now - entry.createdAt < entry.ttl;
 }
 
+function touchCacheEntry(key, entry) {
+    cache.delete(key);
+    cache.set(key, entry);
+}
+
 function trimCache() {
     while (cache.size > MAX_ENTRIES) {
         const oldestKey = cache.keys().next().value;
@@ -19,8 +24,9 @@ function trimCache() {
  * Resolve a request through the shared in-memory API cache.
  *
  * Completed responses are cached for a short session TTL and concurrent
- * requests for the same key share one promise. Failed requests are never
- * cached, so a later attempt can recover normally.
+ * requests for the same key share one promise. Cache hits are promoted to
+ * the most-recently-used position so frequently reused data survives longer
+ * when the cache reaches its entry limit. Failed requests are never cached.
  */
 export function cachedRequest(key, loader, ttl = DEFAULT_TTL) {
     if (!key || typeof loader !== 'function') {
@@ -32,6 +38,7 @@ export function cachedRequest(key, loader, ttl = DEFAULT_TTL) {
 
     if (cached) {
         if (isFresh(cached, now)) {
+            touchCacheEntry(key, cached);
             return Promise.resolve(cached.value);
         }
 
