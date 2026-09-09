@@ -3,6 +3,10 @@ import {
     loadPokemonByType,
     loadPokemonByPokedex,
     loadPokemonByGeneration,
+    loadPokemonReferencesByType,
+    loadPokemonReferencesByPokedex,
+    loadPokemonReferencesByGeneration,
+    hydratePokemonReferences,
     searchPokemonList
 } from './api.js';
 
@@ -79,19 +83,33 @@ export async function applyFilters() {
     setState({ loading: true, error: null, hasMore: false });
     try {
         const datasets = [];
-        if (state.filters.type !== 'all') datasets.push(loadPokemonByType(state.filters.type));
-        if (state.filters.region) datasets.push(loadPokemonByPokedex(state.filters.region.pokedex));
-        if (state.filters.generation) datasets.push(loadPokemonByGeneration(state.filters.generation));
+
+        if (state.filters.type !== 'all') {
+            datasets.push(loadPokemonReferencesByType(state.filters.type));
+        }
+
+        if (state.filters.region) {
+            datasets.push(loadPokemonReferencesByPokedex(state.filters.region.pokedex));
+        }
+
+        if (state.filters.generation) {
+            datasets.push(loadPokemonReferencesByGeneration(state.filters.generation));
+        }
 
         const resolved = await Promise.all(datasets);
         if (currentRequest !== filterRequestId) return getState();
 
-        let result = resolved.length === 0
-            ? [...state.pokemon]
+        let references = resolved.length === 0
+            ? state.pokemon.map(({ name, id }) => ({ name, id }))
             : resolved.reduce((intersection, dataset) => {
                 const ids = new Set(dataset.map(({ id }) => id));
                 return intersection.filter(({ id }) => ids.has(id));
-            }, resolved[0].map((pokemon) => pokemon));
+            }, resolved[0]);
+
+        references = references.filter(({ id }) => Number.isInteger(id));
+
+        const result = await hydratePokemonReferences(references);
+        if (currentRequest !== filterRequestId) return getState();
 
         state.filteredPokemon = result;
         setState({ loading: false, error: null, hasMore: false });
