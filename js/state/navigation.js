@@ -128,8 +128,6 @@ export function setDetailView(id = null, options = {}) {
     setHeaderView('detail');
     setActiveNav('pokedex');
 
-    // A Pokémon detail is a standalone view. Hide every home/detail sibling
-    // so the page cannot scroll into Regions/Types while the card is open.
     hideHomeViews();
     elements.pokedex?.classList.add('hidden');
     elements.favorites?.classList.add('hidden');
@@ -140,7 +138,7 @@ export function setDetailView(id = null, options = {}) {
     getGenerationDetailElement()?.classList.add('hidden');
 
     if (options.pushHistory !== false && Number.isInteger(id)) {
-        pushRoute(`pokemon/${id}`);
+        pushRoute(`pokemon/${id}`, options.form ?? null);
     }
 }
 
@@ -205,14 +203,20 @@ function hideHomeViews() {
     elements.generations?.classList.add('hidden');
 }
 
-function pushRoute(route) {
-    const url = route === 'pokedex' ? '#pokedex' : `#${route}`;
+function pushRoute(route, form = null) {
+    const url = route === 'pokedex'
+        ? '#pokedex'
+        : form
+            ? `#${route}?form=${encodeURIComponent(form)}`
+            : `#${route}`;
+
     window.history.pushState({
         view: route.split('/')[0],
         id: getRouteId(route),
         type: getRouteType(route),
         region: getRouteRegion(route),
-        generation: getRouteGeneration(route)
+        generation: getRouteGeneration(route),
+        form: form || null
     }, '', url);
 }
 
@@ -224,7 +228,11 @@ function restoreRoute(route) {
     const view = route.state?.view ?? 'home';
     if (view === 'pokemon' && Number.isInteger(route.state.id)) {
         requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
-            detail: { id: route.state.id, fromHistory: true }
+            detail: {
+                id: route.state.id,
+                form: route.state.form || null,
+                fromHistory: true
+            }
         })));
         return;
     }
@@ -258,25 +266,34 @@ function restoreRoute(route) {
 
 function readRoute() {
     const hash = window.location.hash.replace(/^#/, '');
-    if (hash === 'favorites') return { state: { view: 'favorites' }, url: '#favorites' };
-    if (hash === 'types') return { state: { view: 'types' }, url: '#types' };
-    if (hash === 'regions') return { state: { view: 'regions' }, url: '#regions' };
-    if (hash === 'generations') return { state: { view: 'generations' }, url: '#generations' };
-    if (hash.startsWith('type/')) {
-        const type = hash.split('/')[1]?.toLowerCase();
+    const [route, query = ''] = hash.split('?');
+    const params = new URLSearchParams(query);
+    const form = params.get('form') || null;
+
+    if (route === 'favorites') return { state: { view: 'favorites' }, url: '#favorites' };
+    if (route === 'types') return { state: { view: 'types' }, url: '#types' };
+    if (route === 'regions') return { state: { view: 'regions' }, url: '#regions' };
+    if (route === 'generations') return { state: { view: 'generations' }, url: '#generations' };
+    if (route.startsWith('type/')) {
+        const type = route.split('/')[1]?.toLowerCase();
         if (type) return { state: { view: 'type', type }, url: `#type/${type}` };
     }
-    if (hash.startsWith('region/')) {
-        const region = hash.split('/')[1]?.toLowerCase();
+    if (route.startsWith('region/')) {
+        const region = route.split('/')[1]?.toLowerCase();
         if (region) return { state: { view: 'region', region }, url: `#region/${region}` };
     }
-    if (hash.startsWith('generation/')) {
-        const generation = Number(hash.split('/')[1]);
+    if (route.startsWith('generation/')) {
+        const generation = Number(route.split('/')[1]);
         if (Number.isInteger(generation)) return { state: { view: 'generation', generation }, url: `#generation/${generation}` };
     }
-    if (hash.startsWith('pokemon/')) {
-        const id = Number(hash.split('/')[1]);
-        if (Number.isInteger(id)) return { state: { view: 'pokemon', id }, url: `#pokemon/${id}` };
+    if (route.startsWith('pokemon/')) {
+        const id = Number(route.split('/')[1]);
+        if (Number.isInteger(id)) {
+            return {
+                state: { view: 'pokemon', id, form },
+                url: form ? `#pokemon/${id}?form=${encodeURIComponent(form)}` : `#pokemon/${id}`
+            };
+        }
     }
     return { state: { view: 'pokedex' }, url: '#pokedex' };
 }
