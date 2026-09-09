@@ -16,20 +16,35 @@ const elements = {
 
 /**
  * Render the current Pokémon collection.
+ *
+ * Existing cards are reused by Pokémon ID whenever possible. This keeps
+ * already-loaded image nodes and their browser state alive when a filter
+ * changes, while still removing cards that are no longer part of the result.
  */
 export function renderPokemon(pokemon) {
     hideAllStates();
     elements.count.textContent = pokemon.length;
 
     if (pokemon.length === 0) {
+        elements.grid.replaceChildren();
         elements.empty.classList.remove('hidden');
         return;
     }
 
+    const existingCards = new Map(
+        [...elements.grid.querySelectorAll('.pokemon-card')]
+            .map((card) => [String(card.dataset.pokemonId), card])
+    );
+
     const fragment = document.createDocumentFragment();
 
     pokemon.forEach((entry) => {
-        fragment.appendChild(createPokemonCard(entry));
+        const key = String(entry.id);
+        const existingCard = existingCards.get(key);
+
+        fragment.appendChild(
+            existingCard ?? createPokemonCard(entry)
+        );
     });
 
     elements.grid.replaceChildren(fragment);
