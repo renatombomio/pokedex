@@ -1,0 +1,194 @@
+/* ========================================
+   LIGHT PAGE THEME + HORIZONTAL EXPLORERS
+======================================== */
+
+:root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f5f5f5;
+    --white: #171717;
+    --muted: #686868;
+    --line: #e4e4e4;
+}
+
+body {
+    background: #ffffff;
+    color: #171717;
+}
+
+.site-header {
+    background: rgba(255,255,255,.88);
+    border-bottom-color: rgba(20,20,20,.08);
+}
+
+.pokedex-wordmark {
+    color: #171717;
+}
+
+.logo-divider {
+    background: #d8d8d8;
+}
+
+.main-nav {
+    color: #666;
+}
+
+.main-nav a:hover {
+    color: #171717;
+}
+
+.menu-toggle {
+    border-color: #d9d9d9;
+    background: #fff;
+}
+
+.menu-toggle span {
+    background: #171717;
+}
+
+.pokedex-section,
+.types-section,
+.favorites-section {
+    background: #fff;
+    color: #171717;
+}
+
+.pokedex-section:before {
+    background: linear-gradient(90deg, transparent, #e2e2e2, transparent);
+}
+
+.section-header h2,
+.favorites-section h2,
+.types-header h2 {
+    color: #171717;
+}
+
+.pokemon-count strong {
+    color: #171717;
+}
+
+.types-intro,
+.pokemon-count,
+.favorites-count {
+    color: #707070;
+}
+
+/* Keep Pokémon cards as dark collectible surfaces for strong contrast. */
+
+/* Horizontal explorer rails */
+.regions-grid,
+.generations-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: 18px;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 4px 4px 22px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: #c9c9c9 transparent;
+}
+
+.regions-grid::-webkit-scrollbar,
+.generations-grid::-webkit-scrollbar {
+    height: 7px;
+}
+
+.regions-grid::-webkit-scrollbar-track,
+.generations-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.regions-grid::-webkit-scrollbar-thumb,
+.generations-grid::-webkit-scrollbar-thumb {
+    background: #c9c9c9;
+    border-radius: 999px;
+}
+
+.region-card,
+.generation-card-button {
+    flex: 0 0 360px;
+    scroll-snap-align: start;
+}
+
+/* Region cards remain visually rich, but sit cleanly on the white page. */
+.regions-section {
+    background:
+        radial-gradient(circle at 18% 20%, rgba(239,63,34,.055), transparent 28%),
+        #fff;
+    border-bottom-color: #e7e7e7;
+}
+
+.regions-section::before {
+    background-image:
+        linear-gradient(rgba(20,20,20,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20,20,20,.035) 1px, transparent 1px);
+}
+
+.regions-header h2,
+.generations-header h2 {
+    color: #171717;
+}
+
+.regions-intro,
+.generations-intro {
+    color: #707070;
+}
+
+/* Generation cards */
+.generations-section {
+    background: #fff;
+    border-top-color: #e7e7e7;
+    border-bottom-color: #e7e7e7;
+}
+
+.generation-number {
+    color: #171717;
+}
+
+.generation-region {
+    color: #777;
+}
+
+/* Light surfaces for the sections that are not intentionally collectible cards. */
+.filters {
+    scrollbar-color: #c9c9c9 transparent;
+}
+
+.filter-button {
+    --type-bg: #f2f2f2;
+    --type-text: #333;
+}
+
+.filter-button[data-type="all"] { --type-bg: #fff0ec; --type-text: #b82f18; }
+.filter-button[data-type="normal"] { --type-bg: #f0f0f0; --type-text: #444; }
+.filter-button[data-type="fire"] { --type-bg: #fff0eb; --type-text: #b83a20; }
+.filter-button[data-type="water"] { --type-bg: #edf6ff; --type-text: #2369a8; }
+.filter-button[data-type="electric"] { --type-bg: #fffbe3; --type-text: #776100; }
+.filter-button[data-type="grass"] { --type-bg: #edf9ee; --type-text: #2e7735; }
+.filter-button[data-type="ice"] { --type-bg: #ebfbfc; --type-text: #287a83; }
+.filter-button[data-type="fighting"] { --type-bg: #fff0ec; --type-text: #963722; }
+.filter-button[data-type="poison"] { --type-bg: #f8effb; --type-text: #743a8c; }
+.filter-button[data-type="ground"] { --type-bg: #fbf2e7; --type-text: #795323; }
+.filter-button[data-type="flying"] { --type-bg: #f1f2ff; --type-text: #4e56a1; }
+.filter-button[data-type="psychic"] { --type-bg: #fff0f6; --type-text: #9d416b; }
+.filter-button[data-type="bug"] { --type-bg: #f5f9e9; --type-text: #587222; }
+.filter-button[data-type="rock"] { --type-bg: #f5f0e7; --type-text: #6f5734; }
+.filter-button[data-type="ghost"] { --type-bg: #f4effa; --type-text: #65458f; }
+.filter-button[data-type="dragon"] { --type-bg: #eff0ff; --type-text: #4c55a0; }
+.filter-button[data-type="dark"] { --type-bg: #f0f0f0; --type-text: #444; }
+.filter-button[data-type="steel"] { --type-bg: #eef2f4; --type-text: #53646e; }
+.filter-button[data-type="fairy"] { --type-bg: #fff0f6; --type-text: #974568; }
+
+@media (max-width: 768px) {
+    .regions-grid,
+    .generations-grid {
+        gap: 14px;
+        padding-bottom: 18px;
+    }
+
+    .region-card,
+    .generation-card-button {
+        flex-basis: min(84vw, 330px);
+    }
+}
