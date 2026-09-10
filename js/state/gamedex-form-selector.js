@@ -1,7 +1,6 @@
 let desiredShiny = false;
 let releasingShinyClick = false;
 let restoringShinyClick = false;
-let transitionTimer = null;
 
 const detailContent = document.querySelector('#detail-content');
 
@@ -16,20 +15,20 @@ function syncHistoryState() {
     );
 }
 
-function setTransition(className, duration) {
-    if (!detailContent) return;
+function animateSprite(image, keyframes, duration, easing = 'ease-out') {
+    if (!image?.animate) return;
 
-    window.clearTimeout(transitionTimer);
-    detailContent.classList.remove(
-        'is-shiny-transition-out',
-        'is-shiny-transition-in',
-        'is-normal-transition'
-    );
-    void detailContent.offsetWidth;
-    detailContent.classList.add(className);
-    transitionTimer = window.setTimeout(() => {
-        detailContent.classList.remove(className);
-    }, duration);
+    image.style.transformStyle = 'preserve-3d';
+    image.style.backfaceVisibility = 'hidden';
+    image.animate(keyframes, {
+        duration,
+        easing,
+        fill: 'both'
+    });
+}
+
+function getSprite() {
+    return detailContent?.querySelector('.gamedex-artwork img');
 }
 
 function restoreDesiredShiny() {
@@ -62,23 +61,49 @@ document.addEventListener('click', (event) => {
     desiredShiny = nextShiny;
     syncHistoryState();
 
+    const currentSprite = getSprite();
+
     if (nextShiny) {
-        setTransition('is-shiny-transition-out', 300);
+        animateSprite(currentSprite, [
+            { opacity: 1, transform: 'perspective(900px) rotateY(0deg) scale(1)' },
+            { opacity: 1, transform: 'perspective(900px) rotateY(82deg) scale(.96)' },
+            { opacity: 0, transform: 'perspective(900px) rotateY(90deg) scale(.94)' }
+        ], 220, 'cubic-bezier(.62,.08,.42,.92)');
+
         window.setTimeout(() => {
             if (!document.contains(shinyButton)) return;
             releasingShinyClick = true;
             shinyButton.click();
             releasingShinyClick = false;
-            requestAnimationFrame(() => setTransition('is-shiny-transition-in', 430));
-        }, 290);
+
+            requestAnimationFrame(() => {
+                animateSprite(getSprite(), [
+                    { opacity: 0, transform: 'perspective(900px) rotateY(-90deg) scale(.94)' },
+                    { opacity: 1, transform: 'perspective(900px) rotateY(-18deg) scale(1.02)', offset: .62 },
+                    { opacity: 1, transform: 'perspective(900px) rotateY(0deg) scale(1)' }
+                ], 320, 'cubic-bezier(.16,.82,.25,1)');
+            });
+        }, 205);
     } else {
-        setTransition('is-normal-transition', 240);
+        animateSprite(currentSprite, [
+            { opacity: 1, transform: 'perspective(900px) rotateY(0deg) scale(1)' },
+            { opacity: .35, transform: 'perspective(900px) rotateY(48deg) scale(.98)' },
+            { opacity: 0, transform: 'perspective(900px) rotateY(90deg) scale(.97)' }
+        ], 150, 'cubic-bezier(.55,.05,.45,.95)');
+
         window.setTimeout(() => {
             if (!document.contains(shinyButton)) return;
             releasingShinyClick = true;
             shinyButton.click();
             releasingShinyClick = false;
-        }, 120);
+
+            requestAnimationFrame(() => {
+                animateSprite(getSprite(), [
+                    { opacity: 0, transform: 'perspective(900px) rotateY(-55deg) scale(.97)' },
+                    { opacity: 1, transform: 'perspective(900px) rotateY(0deg) scale(1)' }
+                ], 190, 'cubic-bezier(.2,.75,.25,1)');
+            });
+        }, 135);
     }
 }, true);
 
