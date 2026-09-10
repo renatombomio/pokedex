@@ -29,18 +29,7 @@ export async function showGenerationDetail(generationId, options = {}) {
     detailElement.dataset.generationId = String(generation.id);
     renderLoading(generation);
 
-    if (options.pushHistory !== false) {
-        window.history.pushState(
-            {
-                view: 'generation',
-                generation: generation.id,
-                contextLabel: generation.name,
-                context: options.context || null
-            },
-            '',
-            `#generation/${generation.id}`
-        );
-    }
+    // History is owned by navigation.js. This view only renders the generation.
 
     try {
         const starters = await Promise.all(generation.starters.map((name) => getPokemon(name)));
