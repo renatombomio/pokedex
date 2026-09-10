@@ -93,30 +93,19 @@ async function renderTypeEffectiveness() {
         for (const data of typeData) {
             for (const [relation, multiplier] of Object.entries(RELATION_KEYS)) {
                 for (const target of data.damage_relations?.[relation] ?? []) {
-                    if (multipliers[target.name] !== undefined) {
-                        multipliers[target.name] *= multiplier;
-                    }
+                    if (multipliers[target.name] !== undefined) multipliers[target.name] *= multiplier;
                 }
             }
         }
 
-        const weaknesses = Object.entries(multipliers)
-            .filter(([, value]) => value > 1)
-            .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-        const resistances = Object.entries(multipliers)
-            .filter(([, value]) => value > 0 && value < 1)
-            .sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
-        const immunities = Object.entries(multipliers)
-            .filter(([, value]) => value === 0)
-            .sort(([a], [b]) => a.localeCompare(b));
+        const weaknesses = Object.entries(multipliers).filter(([, value]) => value > 1).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+        const resistances = Object.entries(multipliers).filter(([, value]) => value > 0 && value < 1).sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
+        const immunities = Object.entries(multipliers).filter(([, value]) => value === 0).sort(([a], [b]) => a.localeCompare(b));
 
         loading.className = 'gamedex-effectiveness';
         loading.innerHTML = `
             <div class="gamedex-effectiveness-header">
-                <div>
-                    <span>Inteligencia de combate</span>
-                    <h2>Efectividad de tipos</h2>
-                </div>
+                <div><span>Inteligencia de combate</span><h2>Efectividad de tipos</h2></div>
                 <p>Cómo afectan los 18 tipos a este Pokémon.</p>
             </div>
             <div class="gamedex-effectiveness-groups">
@@ -151,3 +140,5 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+import './gamedex-intelligence-advanced-loader.js';
