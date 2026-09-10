@@ -1,39 +1,27 @@
-/* TYPE BACKGROUNDS — ONLY the user's artwork is added behind the existing card */
+/* TYPE BACKGROUNDS — add the user's type artwork without changing the existing card layout */
 
-/* The page itself remains white outside the detail card. */
 .pokemon-detail {
     background: #ffffff !important;
     color: #171717;
 }
 
-/* Do not change the existing GAMEDEX card styles. */
+/* Keep every existing GAMEDEX card property intact. Only add the type artwork as a background layer. */
 .gamedex-card {
     cursor: pointer;
 }
 
-/* Background artwork sits behind every existing card element. */
-.gamedex-type-background {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background-position: center;
-    background-size: cover;
+.gamedex-card.has-type-background {
+    background-image:
+        var(--gamedex-type-background-image),
+        radial-gradient(circle at 50% 43%, var(--gamedex-glow), transparent 27%),
+        radial-gradient(circle at 0 100%, color-mix(in srgb, var(--gamedex-accent) 13%, transparent), transparent 36%),
+        linear-gradient(150deg, #1c1c1c 0%, #171717 52%, #101010 100%);
+    background-position: center, center, center, center;
+    background-size: cover, auto, auto, auto;
     background-repeat: no-repeat;
-    opacity: 0;
-    transform: scale(1.04);
-    filter: saturate(.9) contrast(.95);
-    transition: opacity .7s cubic-bezier(.2,.75,.25,1), transform 1.1s cubic-bezier(.2,.75,.25,1);
 }
 
-/* The old card remains the visual base; the artwork is revealed over it. */
-.gamedex-card.has-type-background .gamedex-type-background {
-    opacity: .42;
-    transform: scale(1);
-}
-
-/* A restrained overlay keeps the original card contrast and readability. */
+/* The artwork is slightly softened so it becomes part of the original card rather than replacing it. */
 .gamedex-card.has-type-background::after {
     content: "";
     position: absolute;
@@ -41,22 +29,18 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(7,7,7,.34), rgba(7,7,7,.12) 45%, rgba(7,7,7,.38) 100%);
+    background: linear-gradient(180deg, rgba(7,7,7,.34), rgba(7,7,7,.10) 45%, rgba(7,7,7,.38) 100%);
+    opacity: .72;
 }
 
 @media (max-width: 760px) {
-    .gamedex-type-background {
-        background-position: center;
-    }
-
-    .gamedex-card.has-type-background .gamedex-type-background {
-        opacity: .40;
+    .gamedex-card.has-type-background {
+        background-position: center, center, center, center;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .gamedex-type-background {
+    .gamedex-card.has-type-background::after {
         transition: none;
-        transform: none;
     }
 }
