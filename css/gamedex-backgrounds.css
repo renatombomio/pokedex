@@ -1,27 +1,25 @@
-/* TYPE BACKGROUNDS — add the user's type artwork without changing the existing card layout */
+/* TYPE BACKGROUNDS — add the user's type artwork without changing the existing card */
 
+/* The detail page stays white outside the main card. */
 .pokemon-detail {
     background: #ffffff !important;
     color: #171717;
 }
 
-/* Keep every existing GAMEDEX card property intact. Only add the type artwork as a background layer. */
+/* Keep the existing GAMEDEX card structure and functionality untouched. */
 .gamedex-card {
     cursor: pointer;
 }
 
+/* The user's type artwork is the card background layer. */
 .gamedex-card.has-type-background {
-    background-image:
-        var(--gamedex-type-background-image),
-        radial-gradient(circle at 50% 43%, var(--gamedex-glow), transparent 27%),
-        radial-gradient(circle at 0 100%, color-mix(in srgb, var(--gamedex-accent) 13%, transparent), transparent 36%),
-        linear-gradient(150deg, #1c1c1c 0%, #171717 52%, #101010 100%);
-    background-position: center, center, center, center;
-    background-size: cover, auto, auto, auto;
-    background-repeat: no-repeat;
+    background-image: var(--gamedex-type-background-image), var(--gamedex-card-original-background, none);
+    background-position: center, center;
+    background-size: cover, auto;
+    background-repeat: no-repeat, no-repeat;
 }
 
-/* The artwork is slightly softened so it becomes part of the original card rather than replacing it. */
+/* Readability overlay only. It does not alter the card's controls or layout. */
 .gamedex-card.has-type-background::after {
     content: "";
     position: absolute;
@@ -29,13 +27,148 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(7,7,7,.34), rgba(7,7,7,.10) 45%, rgba(7,7,7,.38) 100%);
-    opacity: .72;
+    background: linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.04) 45%, rgba(0,0,0,.22) 100%);
+}
+
+/* Keep all existing card content above the artwork and overlay. */
+.gamedex-card > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Subtle text shadow keeps the original white card typography readable over artwork. */
+.gamedex-card.has-type-background .gamedex-title h1,
+.gamedex-card.has-type-background .gamedex-number,
+.gamedex-card.has-type-background .gamedex-types,
+.gamedex-card.has-type-background .gamedex-meta,
+.gamedex-card.has-type-background .gamedex-meta-item,
+.gamedex-card.has-type-background .gamedex-meta-item span,
+.gamedex-card.has-type-background .gamedex-meta-item strong,
+.gamedex-card.has-type-background .gamedex-stat,
+.gamedex-card.has-type-background .gamedex-stat-top,
+.gamedex-card.has-type-background .gamedex-stat-top span,
+.gamedex-card.has-type-background .gamedex-stat-top strong,
+.gamedex-card.has-type-background .gamedex-form-label,
+.gamedex-card.has-type-background .gamedex-badge {
+    text-shadow: 0 1px 3px rgba(0,0,0,.55);
+}
+
+/* The controls keep their existing appearance and behavior. */
+.gamedex-card.has-type-background .gamedex-media-button,
+.gamedex-card.has-type-background .favorite-toggle,
+.gamedex-card.has-type-background .gamedex-form-select {
+    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
+
+/* White content surfaces outside the card. The footer intentionally stays black. */
+.pokemon-about,
+.gamedex-species {
+    background: #ffffff !important;
+    color: #171717 !important;
+    border-color: #e7e7e7 !important;
+    box-shadow: 0 18px 45px rgba(20,20,20,.08) !important;
+}
+
+.pokemon-about-header span,
+.gamedex-species-header span,
+.gamedex-species-item span,
+.gamedex-forms-title {
+    color: #777777 !important;
+}
+
+.pokemon-about h2,
+.gamedex-species-header h2,
+.gamedex-species-item strong {
+    color: #171717 !important;
+}
+
+.pokemon-about p {
+    color: #555555 !important;
+}
+
+.gamedex-species-item {
+    background: #f8f8f8 !important;
+    border-color: #e5e5e5 !important;
+}
+
+.gamedex-form-chip {
+    background: #f8f8f8 !important;
+    border-color: #e5e5e5 !important;
+    color: #444444 !important;
+}
+
+/* Evolution chain becomes readable on the white page. */
+.evolution-section h2,
+.evolution-card-button strong {
+    color: #171717 !important;
+    text-shadow: none !important;
+}
+
+.evolution-number,
+.evolution-card-condition {
+    color: #777777 !important;
+    text-shadow: none !important;
+}
+
+.evolution-arrow::before {
+    background: #c7c7c7 !important;
+}
+
+.evolution-arrow::after {
+    border-color: #c7c7c7 !important;
+}
+
+.evolution-subbranches {
+    border-color: #dddddd !important;
 }
 
 @media (max-width: 760px) {
-    .gamedex-card.has-type-background {
-        background-position: center, center, center, center;
+    /* Compact mobile card: remove the fixed empty space below the stats. */
+    .gamedex-card {
+        min-height: 0 !important;
+        padding-bottom: 16px;
+    }
+
+    /* Preserve the artwork/card proportions while making the mobile composition tighter. */
+    .gamedex-artwork {
+        height: 258px;
+    }
+
+    .gamedex-artwork img.is-animated {
+        width: min(225px, 62vw);
+        height: min(225px, 62vw);
+    }
+
+    .gamedex-artwork img:not(.is-animated) {
+        width: min(225px, 62vw);
+        height: min(225px, 62vw);
+    }
+
+    .gamedex-card.has-type-background::after {
+        background: linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,.04) 46%, rgba(0,0,0,.20) 100%);
+    }
+
+    .gamedex-card.has-type-background .gamedex-title h1,
+    .gamedex-card.has-type-background .gamedex-number,
+    .gamedex-card.has-type-background .gamedex-meta-item strong,
+    .gamedex-card.has-type-background .gamedex-stat-top strong {
+        text-shadow: 0 1px 4px rgba(0,0,0,.65);
+    }
+}
+
+@media (max-width: 380px) {
+    .gamedex-card {
+        padding-bottom: 14px;
+    }
+
+    .gamedex-artwork {
+        height: 238px;
+    }
+
+    .gamedex-artwork img.is-animated,
+    .gamedex-artwork img:not(.is-animated) {
+        width: min(205px, 58vw);
+        height: min(205px, 58vw);
     }
 }
 
