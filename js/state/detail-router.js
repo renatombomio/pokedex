@@ -15,6 +15,7 @@ let activeRequestId = 0;
 document.addEventListener('pokemon:open-detail', async (event) => {
     const id = Number(event.detail?.id);
     const form = event.detail?.form || null;
+    const context = event.detail?.context || window.history.state?.context || null;
 
     if (!Number.isInteger(id)) {
         return;
@@ -23,7 +24,8 @@ document.addEventListener('pokemon:open-detail', async (event) => {
     await openPokemonDetail(
         form || id,
         event.detail?.fromHistory === true,
-        form
+        form,
+        context
     );
 });
 
@@ -31,7 +33,7 @@ document.addEventListener('pokemon:open-form', async (event) => {
     const form = event.detail?.form;
     if (!form) return;
 
-    await openPokemonDetail(form, false, form);
+    await openPokemonDetail(form, false, form, window.history.state?.context || null);
 });
 
 /* ========================================
@@ -53,10 +55,10 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    openPokemonDetail(id);
+    openPokemonDetail(id, false, null, window.history.state?.context || null);
 });
 
-async function openPokemonDetail(identifier, fromHistory = false, form = null) {
+async function openPokemonDetail(identifier, fromHistory = false, form = null, context = null) {
     const requestId = ++activeRequestId;
 
     try {
@@ -68,7 +70,8 @@ async function openPokemonDetail(identifier, fromHistory = false, form = null) {
 
         setDetailView(details.pokemon.id, {
             pushHistory: !fromHistory,
-            form
+            form,
+            context
         });
 
         renderPokemonDetails(details);
