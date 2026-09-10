@@ -201,7 +201,8 @@ function performShakeCheck(a) {
 function getShakeCount(result) {
     if (result.captured) return 3;
     if (result.shakes.length === 1) return 0;
-    return 1;
+    if (result.shakes.length === 2) return 1;
+    return 3;
 }
 
 function playCaptureAnimation({ artwork, image, ball, result, requestId }) {
