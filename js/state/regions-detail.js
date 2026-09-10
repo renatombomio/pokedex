@@ -1,8 +1,10 @@
 import { getRegionById } from './regions.js';
+import { getGenerationById } from './generations.js';
 import { filterByRegion } from './app.js';
 import { renderPokemon, showError, showLoading } from './ui.js';
 import { getRegion, getPokedex, getPokemon } from '../api/pokemon.js';
 import { showHome } from './navigation.js';
+import { mountWorldBreadcrumb } from './world-navigation.js';
 
 const MAX_FEATURED_LOCATIONS = 5;
 
@@ -31,13 +33,14 @@ export async function showRegionDetail(regionId, options = {}) {
     if (!region || !detailElement) return;
 
     const currentRequest = ++requestId;
+    detailElement.dataset.regionId = region.id;
     renderLoadingShell(region);
     detailElement.classList.remove('hidden');
     detailElement.setAttribute('aria-hidden', 'false');
 
     if (options.pushHistory !== false) {
         window.history.pushState(
-            { view: 'region', region: region.id },
+            { view: 'region', region: region.id, contextLabel: region.name },
             '',
             `#region/${region.id}`
         );
@@ -76,12 +79,19 @@ function renderLoadingShell(region) {
             </div>
         </div>
     `;
+    mountWorldBreadcrumb(detailElement.querySelector('.region-detail-container'), [
+        { label: 'Mundo Pokémon', action: () => window.location.hash = '#pokedex' },
+        { label: 'Regiones', action: () => window.location.hash = '#regions' },
+        { label: region.name }
+    ]);
 }
 
 function renderRegionDetail(region, apiRegion, pokedex, starters) {
     const locations = apiRegion.locations ?? [];
     const featuredLocations = getFeaturedLocations(locations, region);
     const count = pokedex.pokemon_entries?.length ?? 0;
+    const generationId = Number(String(region.generation).replace(/\D/g, ''));
+    const generation = getGenerationById(generationId);
 
     detailElement.innerHTML = `
         <div class="container region-detail-container">
@@ -96,6 +106,11 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
                         <span><strong>${count}</strong> Pokémon</span>
                         <span><strong>${locations.length || '—'}</strong> localizaciones</span>
                     </div>
+                    ${generation ? `
+                        <button class="world-context-link" type="button" data-generation-link="${generation.id}">
+                            Ver ${generation.name} →
+                        </button>
+                    ` : ''}
                 </div>
 
                 ${createRegionMap(region)}
@@ -134,6 +149,12 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
             </section>
         </div>
     `;
+
+    mountWorldBreadcrumb(detailElement.querySelector('.region-detail-container'), [
+        { label: 'Mundo Pokémon', action: () => window.location.hash = '#pokedex' },
+        { label: 'Regiones', action: () => window.location.hash = '#regions' },
+        { label: region.name }
+    ]);
 }
 
 function createRegionMap(region) {
@@ -223,12 +244,25 @@ function renderError(region) {
             </div>
         </div>
     `;
+    mountWorldBreadcrumb(detailElement.querySelector('.region-detail-container'), [
+        { label: 'Mundo Pokémon', action: () => window.location.hash = '#pokedex' },
+        { label: 'Regiones', action: () => window.location.hash = '#regions' },
+        { label: region.name }
+    ]);
 }
 
 async function handleDetailClick(event) {
     const backButton = event.target.closest('[data-region-back]');
     if (backButton) {
         document.dispatchEvent(new CustomEvent('navigation:back-requested'));
+        return;
+    }
+
+    const generationLink = event.target.closest('[data-generation-link]');
+    if (generationLink) {
+        document.dispatchEvent(new CustomEvent('generation:open-detail', {
+            detail: { generation: Number(generationLink.dataset.generationLink) }
+        }));
         return;
     }
 
@@ -243,7 +277,14 @@ async function handleDetailClick(event) {
         const id = Number(pokemonCard.dataset.pokemonId);
         if (Number.isInteger(id)) {
             document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
-                detail: { id }
+                detail: {
+                    id,
+                    context: {
+                        view: 'region',
+                        id: detailElement.dataset.regionId,
+                        label: detailElement.querySelector('#region-detail-title')?.textContent?.trim() || 'Región'
+                    }
+                }
             }));
         }
         return;
