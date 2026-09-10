@@ -26,10 +26,13 @@ function installStyles() {
             opacity: 0 !important;
             visibility: hidden !important;
             pointer-events: none !important;
+            animation: none !important;
         }
         .gamedex-artwork.is-capture-persisted .gamedex-capture-ball {
             opacity: 1 !important;
+            visibility: visible !important;
             animation: none !important;
+            transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(.9) !important;
         }
         .gamedex-artwork.is-capture-persisted .gamedex-capture-stars {
             opacity: 0;
@@ -51,7 +54,12 @@ function syncCapturedVisual() {
     artwork.classList.toggle('is-capture-persisted', captured);
 
     if (!captured) {
-        image.classList.remove('is-capture-target');
+        image.style.opacity = '';
+        image.style.visibility = '';
+        image.style.pointerEvents = '';
+        image.classList.remove('is-capture-target', 'is-capture-absorbing', 'is-capture-escape');
+        ball.classList.remove('is-success', 'is-failed', 'is-at-target', 'is-opening', 'is-absorbing');
+        ball.style.transform = '';
         return;
     }
 
@@ -62,6 +70,10 @@ function syncCapturedVisual() {
 
     artwork.style.setProperty('--capture-target-x', `${targetX}px`);
     artwork.style.setProperty('--capture-target-y', `${targetY}px`);
+    image.style.opacity = '0';
+    image.style.visibility = 'hidden';
+    image.style.pointerEvents = 'none';
     ball.style.transform = `translate(${targetX}px, ${targetY}px) scale(.9)`;
+    ball.classList.remove('is-failed', 'is-shaking', 'is-opening', 'is-absorbing');
     ball.classList.add('is-success');
 }
