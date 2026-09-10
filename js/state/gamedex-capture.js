@@ -1,5 +1,6 @@
 import { getDetailsState } from './details.js';
 import { getCapturedPokemon, isPokemonCaptured, saveCapturedPokemon } from './captured.js';
+import './gamedex-capture-persistence.js';
 
 const CAPTURE_BUTTON_SELECTOR = '[data-gamedex-capture]';
 const BALL_BONUS = { Poke: 1 };
@@ -223,6 +224,9 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
     artwork.classList.remove('is-capturing', 'is-captured', 'is-escaped', 'is-impact');
     ball.classList.remove('is-throwing', 'is-shaking', 'is-success', 'is-failed', 'is-at-target', 'is-opening', 'is-absorbing');
     image.classList.remove('is-capture-target', 'is-capture-absorbing', 'is-capture-escape');
+    image.style.opacity = '';
+    image.style.visibility = '';
+    image.style.pointerEvents = '';
     ball.querySelector('.gamedex-capture-stars')?.classList.remove('is-active');
 
     artwork.style.setProperty('--capture-start-x', `${startX}px`);
