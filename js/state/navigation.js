@@ -37,12 +37,19 @@ export function getActiveView() {
 }
 
 export function showHome(target = 'pokedex', options = {}) {
+    const inheritedContext = options.context || (
+        target === 'pokedex' &&
+        ['region', 'type', 'generation'].includes(activeView)
+            ? window.history.state?.context || null
+            : null
+    );
+
     activeView = 'home';
     setHeaderView('home');
     setActiveNav(target);
     showHomeElements();
 
-    if (options.pushHistory !== false) pushRoute(target, null, options.context || null);
+    if (options.pushHistory !== false) pushRoute(target, null, inheritedContext);
 
     requestAnimationFrame(() => {
         const targetElement = target === 'types' ? elements.types
