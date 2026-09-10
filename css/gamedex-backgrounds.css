@@ -7,7 +7,7 @@
     color: #171717;
 }
 
-/* Keep the existing GAMEDEX card structure, dimensions and functionality untouched. */
+/* Keep the existing GAMEDEX card structure and functionality. */
 .gamedex-card {
     cursor: pointer;
 }
@@ -132,6 +132,11 @@
 }
 
 @media (max-width: 760px) {
+    /* The mobile card must end with the stats, without the desktop min-height. */
+    .gamedex-card {
+        min-height: 0 !important;
+    }
+
     .gamedex-card .gamedex-media-tools {
         top: 12px !important;
         right: 12px !important;
