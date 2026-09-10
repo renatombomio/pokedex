@@ -11,6 +11,21 @@
     overflow: visible;
 }
 
+.gamedex-capture-impact {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    aspect-ratio: 1;
+    border: 3px solid rgb(255 255 255 / 90%);
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(var(--capture-target-x), var(--capture-target-y)) translate(-50%, -50%) scale(.15);
+    box-shadow:
+        0 0 0 5px rgb(255 255 255 / 20%),
+        0 0 28px 8px rgb(255 255 255 / 35%);
+}
+
 .gamedex-capture-ball {
     --ball-size: clamp(52px, 9vw, 82px);
     position: absolute;
@@ -21,6 +36,7 @@
     opacity: 0;
     transform-origin: center;
     filter: drop-shadow(0 10px 14px rgb(0 0 0 / 18%));
+    will-change: transform, opacity;
 }
 
 .gamedex-capture-ball-top,
@@ -73,6 +89,7 @@
     position: absolute;
     inset: 0;
     z-index: 5;
+    opacity: 0;
 }
 
 .gamedex-capture-stars span {
@@ -135,28 +152,41 @@
     opacity: 1;
 }
 
+.gamedex-artwork.is-impact .gamedex-capture-impact {
+    animation: gamedex-capture-impact .5s cubic-bezier(.16, .84, .35, 1) forwards;
+}
+
 .gamedex-capture-ball.is-throwing {
-    animation: gamedex-capture-throw .85s cubic-bezier(.2, .78, .24, 1) forwards;
+    animation: gamedex-capture-throw .82s cubic-bezier(.16, .78, .2, 1) forwards;
+}
+
+.gamedex-capture-ball.is-at-target {
+    animation: gamedex-capture-arrive .18s ease-out forwards;
 }
 
 .gamedex-capture-ball.is-shaking {
-    animation: gamedex-capture-shake .65s ease-in-out var(--shake-count, 1) both;
+    animation: gamedex-capture-shake .56s cubic-bezier(.45, .05, .55, .95) both;
 }
 
 .gamedex-capture-ball.is-success {
-    animation: gamedex-capture-success .55s ease-out forwards;
+    animation: gamedex-capture-success .52s cubic-bezier(.2, .8, .2, 1) forwards;
 }
 
 .gamedex-capture-ball.is-failed {
-    animation: gamedex-capture-fail .55s ease-out forwards;
+    animation: gamedex-capture-fail .52s cubic-bezier(.2, .8, .2, 1) forwards;
 }
 
 .gamedex-artwork img.is-capture-target {
-    animation: gamedex-capture-target .42s ease-in forwards;
+    animation: gamedex-capture-target .43s cubic-bezier(.4, 0, .8, .2) forwards;
+    transform-origin: center;
+}
+
+.gamedex-capture-ball.is-success .gamedex-capture-stars {
+    opacity: 1;
 }
 
 .gamedex-capture-ball.is-success .gamedex-capture-stars span {
-    animation: gamedex-capture-star .55s ease-out forwards;
+    animation: gamedex-capture-star .6s cubic-bezier(.2, .8, .2, 1) forwards;
 }
 
 .gamedex-capture-ball.is-success .gamedex-capture-stars span:nth-child(2) { animation-delay: .04s; }
@@ -183,54 +213,149 @@
 .gamedex-capture-message.is-failed { background: rgb(135 48 48 / 92%); }
 
 @keyframes gamedex-capture-throw {
-    0% { transform: translate(var(--capture-start-x), var(--capture-start-y)) scale(.55) rotate(-25deg); }
-    48% { transform: translate(calc(var(--capture-target-x) - 10px), calc(var(--capture-target-y) - 12px)) scale(1.12) rotate(360deg); }
-    64% { transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1.18) rotate(540deg); }
-    100% { transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1) rotate(720deg); }
+    0% {
+        transform: translate(var(--capture-start-x), var(--capture-start-y)) scale(.52) rotate(-25deg);
+    }
+    42% {
+        transform: translate(calc(var(--capture-target-x) - 24px), calc(var(--capture-target-y) - 28px)) scale(.94) rotate(300deg);
+    }
+    72% {
+        transform: translate(calc(var(--capture-target-x) + 8px), calc(var(--capture-target-y) + 5px)) scale(1.16) rotate(520deg);
+    }
+    100% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1) rotate(720deg);
+    }
+}
+
+@keyframes gamedex-capture-arrive {
+    0% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1.12);
+    }
+    65% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(.94);
+    }
+    100% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1);
+    }
+}
+
+@keyframes gamedex-capture-impact {
+    0% {
+        opacity: 0;
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) translate(-50%, -50%) scale(.15);
+    }
+    22% { opacity: 1; }
+    100% {
+        opacity: 0;
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) translate(-50%, -50%) scale(2.8);
+    }
 }
 
 @keyframes gamedex-capture-target {
-    0% { opacity: 1; transform: scale(1); }
-    45% { opacity: .85; transform: scale(.72); }
-    100% { opacity: 0; transform: scale(.08); }
+    0% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1.08);
+        filter: brightness(1.7);
+    }
+    48% {
+        opacity: .78;
+        transform: scale(.64);
+        filter: brightness(1.25);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(.04);
+        filter: brightness(1);
+    }
 }
 
 @keyframes gamedex-capture-shake {
-    0%, 100% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(0); }
-    18% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(-17deg); }
-    36% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(17deg); }
-    54% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(-14deg); }
-    72% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(14deg); }
+    0%, 100% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(0) scale(1);
+    }
+    18% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(-18deg) scale(1.03);
+    }
+    36% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(18deg) scale(1.03);
+    }
+    54% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(-14deg) scale(1.01);
+    }
+    72% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(14deg) scale(1.01);
+    }
+    86% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(-4deg) scale(1);
+    }
 }
 
 @keyframes gamedex-capture-success {
-    from { transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1); opacity: 1; }
-    to { transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(.92); opacity: 1; }
+    0% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1);
+        opacity: 1;
+        filter: drop-shadow(0 10px 14px rgb(0 0 0 / 18%));
+    }
+    55% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1.08);
+        filter: drop-shadow(0 0 20px rgb(255 220 80 / 75%));
+    }
+    100% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(.9);
+        opacity: 1;
+        filter: drop-shadow(0 0 12px rgb(255 220 80 / 45%));
+    }
 }
 
 @keyframes gamedex-capture-fail {
-    from { transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1); opacity: 1; }
-    to { transform: translate(var(--capture-target-x), calc(var(--capture-target-y) - 20px)) scale(.8); opacity: 0; }
+    0% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1);
+        opacity: 1;
+    }
+    28% {
+        transform: translate(var(--capture-target-x), calc(var(--capture-target-y) - 7px)) scale(1.08);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--capture-target-x), calc(var(--capture-target-y) - 54px)) scale(.72);
+        opacity: 0;
+    }
 }
 
 @keyframes gamedex-capture-star {
-    0% { opacity: 0; transform: scale(.4) translateY(10px); }
-    35% { opacity: 1; transform: scale(1.15) translateY(-8px); }
-    100% { opacity: 0; transform: scale(.9) translateY(-35px); }
+    0% {
+        opacity: 0;
+        transform: scale(.3) rotate(-15deg) translateY(8px);
+    }
+    35% {
+        opacity: 1;
+        transform: scale(1.15) rotate(8deg) translateY(-7px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(.85) rotate(22deg) translateY(-38px);
+    }
 }
 
 @keyframes gamedex-capture-message {
-    from { opacity: 0; transform: translate(-50%, 8px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
+    from { opacity: 0; transform: translate(-50%, 8px) scale(.96); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .gamedex-capture-ball.is-throwing,
+    .gamedex-capture-ball.is-at-target,
     .gamedex-capture-ball.is-shaking,
     .gamedex-capture-ball.is-success,
     .gamedex-capture-ball.is-failed,
     .gamedex-artwork img.is-capture-target,
     .gamedex-capture-ball.is-success .gamedex-capture-stars span,
+    .gamedex-capture-impact,
     .gamedex-capture-message {
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
