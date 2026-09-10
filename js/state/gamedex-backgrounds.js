@@ -1,6 +1,6 @@
 const detailContent = document.querySelector('#detail-content');
 
-const TYPE_BACKGROUND_PATH = 'assets/type-backgrounds';
+const TYPE_BACKGROUND_PATH = '../assets/type-backgrounds';
 
 const TYPE_COLORS = {
     normal: '#a8a29e',
