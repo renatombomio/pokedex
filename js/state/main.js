@@ -292,7 +292,10 @@ pokemonGrid.addEventListener(
 
         document.dispatchEvent(
             new CustomEvent('pokemon:open-detail', {
-                detail: { id: pokemonId }
+                detail: {
+                    id: pokemonId,
+                    context: window.history.state?.context || null
+                }
             })
         );
     }
@@ -579,30 +582,25 @@ searchModalStyles.textContent = `
     }
 
     .search-result-image img {
-        width: min(100%, 210px);
-        height: 210px;
+        width: min(100%, 220px);
+        height: 220px;
         object-fit: contain;
-        filter: drop-shadow(0 18px 14px rgba(0,0,0,.13));
-        transition: transform .25s ease;
-    }
-
-    .search-result-button:hover .search-result-image img {
-        transform: scale(1.07) translateY(-3px);
+        filter: drop-shadow(0 18px 18px rgba(0,0,0,.12));
     }
 
     .search-result-content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
         margin-top: auto;
-        padding: 18px 20px 20px;
-        background: rgba(255,255,255,.92);
-        border-top: 1px solid rgba(23,23,23,.08);
+        padding: 18px 20px 22px;
+        background: rgba(255,255,255,.55);
+        backdrop-filter: blur(6px);
     }
 
     .search-result-content strong {
-        display: block;
-        margin-bottom: 10px;
-        font-size: 22px;
+        font-size: 24px;
         line-height: 1;
-        letter-spacing: -.035em;
     }
 
     .search-result-content .pokemon-types {
@@ -614,59 +612,46 @@ searchModalStyles.textContent = `
     .search-modal-empty {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 280px;
+        gap: 8px;
+        padding: 40px 10px;
+        color: #171717;
         text-align: center;
     }
 
-    .search-modal-empty strong {
-        font-size: 22px;
-    }
-
     .search-modal-empty span {
-        margin-top: 8px;
         color: #737373;
-        font-size: 14px;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 720px) {
         .search-modal {
-            padding: 14px;
+            padding: 12px;
         }
 
         .search-modal-panel {
-            max-height: calc(100vh - 28px);
-            padding: 20px;
+            max-height: calc(100vh - 24px);
+            padding: 18px;
             border-radius: 22px;
         }
 
         .search-modal-results {
-            grid-auto-columns: minmax(78vw, 1fr);
-            gap: 12px;
+            grid-auto-columns: minmax(230px, 84vw);
         }
 
         .search-result-button {
-            min-height: 430px;
-            border-radius: 20px;
+            min-height: 340px;
         }
 
         .search-result-image {
-            min-height: 280px;
+            min-height: 205px;
         }
 
         .search-result-image img {
-            width: min(100%, 270px);
-            height: 270px;
+            height: 185px;
         }
     }
 `;
 
 document.head.appendChild(searchModalStyles);
 
-
-/* ========================================
-   INITIALIZE
-======================================== */
 
 start();
