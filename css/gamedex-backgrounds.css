@@ -1,17 +1,14 @@
-/* TYPE BACKGROUNDS — add the user's type artwork without changing the existing card */
+/* TYPE BACKGROUNDS — add the user's type artwork without changing existing card functionality */
 
-/* The detail page stays white outside the main card. */
 .pokemon-detail {
     background: #ffffff !important;
     color: #171717;
 }
 
-/* Keep the existing GAMEDEX card structure, dimensions and functionality untouched. */
 .gamedex-card {
     cursor: pointer;
 }
 
-/* The user's type artwork is the card background layer. */
 .gamedex-card.has-type-background {
     background-image: var(--gamedex-type-background-image), var(--gamedex-card-original-background, none);
     background-position: center, center;
@@ -19,7 +16,6 @@
     background-repeat: no-repeat, no-repeat;
 }
 
-/* Readability overlay only. It does not alter the card's controls or layout. */
 .gamedex-card.has-type-background::after {
     content: "";
     position: absolute;
@@ -30,13 +26,11 @@
     background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.06) 45%, rgba(0,0,0,.24) 100%);
 }
 
-/* Keep existing card content above the artwork and overlay. */
 .gamedex-card > * {
     position: relative;
     z-index: 2;
 }
 
-/* Keep the media controls fixed in their original top-right position. */
 .gamedex-card .gamedex-media-tools {
     position: absolute !important;
     top: 18px !important;
@@ -44,7 +38,6 @@
     z-index: 10 !important;
 }
 
-/* Stronger text shadow only for readability over the user's artwork. */
 .gamedex-card.has-type-background .gamedex-title h1,
 .gamedex-card.has-type-background .gamedex-number,
 .gamedex-card.has-type-background .gamedex-types,
@@ -67,7 +60,6 @@
     text-shadow: 0 1px 3px rgba(0,0,0,.65);
 }
 
-/* White content surfaces outside the card. The footer intentionally stays black. */
 .pokemon-about,
 .gamedex-species {
     background: #ffffff !important;
@@ -104,7 +96,6 @@
     color: #444444 !important;
 }
 
-/* Evolution chain becomes readable on the white page. */
 .evolution-section h2,
 .evolution-card-button strong {
     color: #171717 !important;
@@ -129,10 +120,16 @@
     border-color: #dddddd !important;
 }
 
-/* Mobile: deliberately no card dimension overrides here. The existing mobile
-   GAMEDEX layout remains the sole owner of the card size and proportions. */
 @media (max-width: 760px) {
+    /* Compact the card by removing the fixed minimum height from the original card.
+       Do not change artwork, controls, spacing logic or functionality. */
+    .gamedex-card {
+        min-height: 0 !important;
+    }
+
+    /* The controls remain fixed to the card's top-right corner. */
     .gamedex-card .gamedex-media-tools {
+        position: absolute !important;
         top: 12px !important;
         right: 12px !important;
     }
@@ -145,7 +142,7 @@
     .gamedex-card.has-type-background .gamedex-number,
     .gamedex-card.has-type-background .gamedex-meta-item strong,
     .gamedex-card.has-type-background .gamedex-stat-top strong {
-        text-shadow: 0 2px 5px rgba(0,0,0,.82), 0 1px 2px rgba(0,0,0,.72);
+        text-shadow: 0 2px 5px rgba(0,0,0,.86), 0 1px 2px rgba(0,0,0,.75);
     }
 }
 
