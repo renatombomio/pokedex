@@ -38,8 +38,6 @@ export async function showRegionDetail(regionId, options = {}) {
     detailElement.classList.remove('hidden');
     detailElement.setAttribute('aria-hidden', 'false');
 
-    // History is owned by navigation.js. This view only renders the region.
-
     window.scrollTo({
         top: 0,
         behavior: prefersReducedMotion() ? 'auto' : 'smooth'
@@ -149,21 +147,6 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
         { label: 'Regiones', action: () => window.location.hash = '#regions' },
         { label: region.name }
     ]);
-
-    bindPokemonCards(region);
-}
-
-function bindPokemonCards(region) {
-    detailElement.querySelectorAll('[data-pokemon-id]').forEach((button) => {
-        button.addEventListener('click', () => {
-            document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
-                detail: {
-                    id: Number(button.dataset.pokemonId),
-                    context: { view: 'region', id: region.id, label: region.name }
-                }
-            }));
-        });
-    });
 }
 
 function createRegionMap(region) {
@@ -264,6 +247,21 @@ async function handleDetailClick(event) {
     const backButton = event.target.closest('[data-region-back]');
     if (backButton) {
         document.dispatchEvent(new CustomEvent('navigation:back-requested'));
+        return;
+    }
+
+    const card = event.target.closest('[data-pokemon-id]');
+    if (card) {
+        const id = Number(card.dataset.pokemonId);
+        if (Number.isInteger(id)) {
+            const region = getRegionById(detailElement.dataset.regionId);
+            document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
+                detail: {
+                    id,
+                    context: region ? { view: 'region', id: region.id, label: region.name } : null
+                }
+            }));
+        }
         return;
     }
 
