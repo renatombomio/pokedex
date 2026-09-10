@@ -1,5 +1,6 @@
 let desiredShiny = false;
 let releasingShinyClick = false;
+let restoringShinyClick = false;
 let transitionTimer = null;
 
 const detailContent = document.querySelector('#detail-content');
@@ -37,7 +38,9 @@ function restoreDesiredShiny() {
     const shinyButton = detailContent?.querySelector('[data-gamedex-shiny]');
     if (!shinyButton || shinyButton.getAttribute('aria-pressed') === 'true') return;
 
+    restoringShinyClick = true;
     shinyButton.click();
+    restoringShinyClick = false;
 }
 
 document.addEventListener('pokemon:open-detail', () => {
@@ -50,7 +53,7 @@ window.addEventListener('popstate', (event) => {
 
 document.addEventListener('click', (event) => {
     const shinyButton = event.target.closest('[data-gamedex-shiny]');
-    if (!shinyButton || releasingShinyClick) return;
+    if (!shinyButton || releasingShinyClick || restoringShinyClick) return;
 
     event.preventDefault();
     event.stopImmediatePropagation();
