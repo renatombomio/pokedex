@@ -55,7 +55,7 @@ function syncShinyAnimatedSprite() {
     const shinyButton = detailContent?.querySelector('[data-gamedex-shiny]');
     const sprite = getSprite();
     if (!shinyButton || !sprite || shinyButton.getAttribute('aria-pressed') !== 'true') return;
-    if (localStorage.getItem(ANIMATION_PREFERENCE_KEY) !== 'true') return;
+    if (localStorage.getItem(ANIMATION_PREFERENCE_KEY) === 'false') return;
 
     const id = getCurrentPokemonId();
     const gifUrl = getShinyGifImage(id);
