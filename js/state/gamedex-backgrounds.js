@@ -32,25 +32,23 @@ function revealTypeBackground(card) {
     if (!card || card.classList.contains('has-type-background')) return;
 
     const type = getCardType(card);
-    const backgroundUrl = `${TYPE_BACKGROUND_PATH}/${type}.png`;
-    const accent = TYPE_COLORS[type] ?? TYPE_COLORS.normal;
-
     const background = document.createElement('div');
     background.className = 'gamedex-type-background';
     background.setAttribute('aria-hidden', 'true');
-    background.style.backgroundImage = `url("${backgroundUrl}")`;
 
-    card.style.setProperty('--gamedex-type-color', accent);
-    card.style.setProperty('--gamedex-type-background', `url("${backgroundUrl}")`);
-    card.dataset.typeBackground = type;
+    const typeColor = TYPE_COLORS[type] ?? TYPE_COLORS.normal;
+    card.style.setProperty('--gamedex-type-color', typeColor);
+
+    // Load the type artwork only when the detail card is opened/clicked.
+    background.style.backgroundImage = `url("${TYPE_BACKGROUND_PATH}/${type}.png")`;
+
     card.prepend(background);
-
     requestAnimationFrame(() => card.classList.add('has-type-background'));
 }
 
 detailContent?.addEventListener('click', (event) => {
     const card = event.target.closest('.gamedex-card');
-    if (!card) return;
+    if (!card || !detailContent.contains(card)) return;
 
     if (event.target.closest('button, a, select, input, textarea, option')) return;
 
