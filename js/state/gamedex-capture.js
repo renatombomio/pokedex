@@ -1,88 +1,37 @@
 import { getDetailsState } from './details.js';
+import { getCapturedPokemon, isPokemonCaptured, saveCapturedPokemon } from './captured.js';
 
-const CAPTURED_KEY = 'gamedex-captured';
 const CAPTURE_BUTTON_SELECTOR = '[data-gamedex-capture]';
-const BALL_BONUS = {
-    Poke: 1
-};
-
+const BALL_BONUS = { Poke: 1 };
 const detailContent = document.querySelector('#detail-content');
 let captureRequestId = 0;
 
 if (detailContent) {
-    const observer = new MutationObserver(() => {
-        window.requestAnimationFrame(ensureCaptureControls);
-    });
-
+    const observer = new MutationObserver(() => window.requestAnimationFrame(ensureCaptureControls));
     observer.observe(detailContent, { childList: true, subtree: true });
     window.requestAnimationFrame(ensureCaptureControls);
     detailContent.addEventListener('click', handleCaptureClick);
 }
 
-export function isPokemonCaptured(id) {
-    return getCapturedPokemon().includes(Number(id));
-}
-
-export function getCapturedPokemon() {
-    try {
-        const value = JSON.parse(localStorage.getItem(CAPTURED_KEY) || '[]');
-        return Array.isArray(value) ? value.map(Number).filter(Number.isInteger) : [];
-    } catch {
-        return [];
-    }
-}
-
-function saveCapturedPokemon(id) {
-    const captured = getCapturedPokemon();
-    const numericId = Number(id);
-
-    if (!Number.isInteger(numericId) || captured.includes(numericId)) return;
-
-    captured.push(numericId);
-
-    try {
-        localStorage.setItem(CAPTURED_KEY, JSON.stringify(captured));
-    } catch {
-        // Storage may be unavailable in restricted contexts.
-    }
-}
+export { getCapturedPokemon, isPokemonCaptured };
 
 function ensureCaptureControls() {
     const card = detailContent?.querySelector('.gamedex-card');
     const artwork = card?.querySelector('.gamedex-artwork');
-    if (!card || !artwork) return;
+    const button = card?.querySelector(CAPTURE_BUTTON_SELECTOR);
+    if (!card || !artwork || !button) return;
 
     const pokemon = getDetailsState().pokemon;
     if (!pokemon) return;
 
-    const existing = card.querySelector('.gamedex-capture-controls');
     const captured = isPokemonCaptured(pokemon.id);
-
-    if (!existing) {
-        const controls = document.createElement('div');
-        controls.className = 'gamedex-capture-controls';
-        controls.innerHTML = `
-            <button
-                class="gamedex-capture-button"
-                type="button"
-                data-gamedex-capture
-                ${captured ? 'disabled' : ''}
-                aria-pressed="${captured}"
-            >
-                <span class="gamedex-capture-ball-mini" aria-hidden="true"></span>
-                <span>${captured ? 'CAPTURADO' : 'CAPTURAR'}</span>
-            </button>
-        `;
-        const stats = card.querySelector('.gamedex-stats');
-        stats?.before(controls);
-    } else {
-        const button = existing.querySelector(CAPTURE_BUTTON_SELECTOR);
-        if (button && captured) {
-            button.disabled = true;
-            button.setAttribute('aria-pressed', 'true');
-            button.querySelector('span:last-child').textContent = 'CAPTURADO';
-        }
-    }
+    button.disabled = captured;
+    button.setAttribute('aria-pressed', String(captured));
+    button.setAttribute('aria-label', captured
+        ? `${displayPokemonName(pokemon)} ya está capturado`
+        : `Capturar ${displayPokemonName(pokemon)}`);
+    button.title = captured ? 'Pokémon capturado' : 'Lanzar Poké Ball';
+    button.classList.toggle('is-captured', captured);
 
     if (!artwork.querySelector('.gamedex-capture-layer')) {
         const layer = document.createElement('div');
@@ -114,7 +63,6 @@ async function handleCaptureClick(event) {
     const artwork = detailContent?.querySelector('.gamedex-artwork');
     const image = artwork?.querySelector('img');
     const ball = artwork?.querySelector('.gamedex-capture-ball');
-
     if (!pokemon || !species || !artwork || !image || !ball) return;
 
     const requestId = ++captureRequestId;
@@ -129,13 +77,15 @@ async function handleCaptureClick(event) {
     });
 
     await playCaptureAnimation({ artwork, image, ball, result, requestId });
-
     if (requestId !== captureRequestId) return;
 
     if (result.captured) {
         saveCapturedPokemon(pokemon.id);
         button.setAttribute('aria-pressed', 'true');
-        button.querySelector('span:last-child').textContent = 'CAPTURADO';
+        button.setAttribute('aria-label', `${displayPokemonName(pokemon)} ya está capturado`);
+        button.title = 'Pokémon capturado';
+        button.classList.add('is-captured');
+        document.dispatchEvent(new CustomEvent('captured:changed', { detail: { id: pokemon.id } }));
         showCaptureMessage(artwork, '¡Pokémon capturado!', true);
     } else {
         button.disabled = false;
@@ -149,39 +99,20 @@ function getBaseHp(pokemon) {
 }
 
 function simulateCapture({ maxHp, currentHp, captureRate, ballBonus, statusBonus }) {
-    const a = calculateCaptureValue({
-        maxHp,
-        currentHp,
-        captureRate,
-        ballBonus,
-        statusBonus
-    });
-
+    const a = calculateCaptureValue({ maxHp, currentHp, captureRate, ballBonus, statusBonus });
     const shakes = [];
-
     for (let index = 0; index < 3; index += 1) {
         const success = performShakeCheck(a);
         shakes.push(success);
-
-        if (!success) {
-            return { captured: false, shakes, a };
-        }
+        if (!success) return { captured: false, shakes, a };
     }
-
     return { captured: true, shakes, a };
 }
 
 function calculateCaptureValue({ maxHp, currentHp, captureRate, ballBonus, statusBonus }) {
-    const numerator =
-        (3 * maxHp - 2 * currentHp) *
-        captureRate *
-        ballBonus;
+    const numerator = (3 * maxHp - 2 * currentHp) * captureRate * ballBonus;
     const denominator = 3 * maxHp;
-
-    return Math.min(
-        255,
-        Math.max(0, Math.floor(floor4096(numerator / denominator) * statusBonus))
-    );
+    return Math.min(255, Math.max(0, Math.floor(floor4096(numerator / denominator) * statusBonus)));
 }
 
 function floor4096(value) {
@@ -191,11 +122,7 @@ function floor4096(value) {
 function performShakeCheck(a) {
     if (a >= 255) return true;
     if (a <= 0) return false;
-
-    const threshold = Math.floor(
-        65536 / Math.pow(255 / a, 0.25)
-    );
-
+    const threshold = Math.floor(65536 / Math.pow(255 / a, 0.25));
     return Math.floor(Math.random() * 65536) < threshold;
 }
 
@@ -218,7 +145,7 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
     const shakeCount = getShakeCount(result);
 
     artwork.classList.remove('is-capturing', 'is-captured', 'is-escaped', 'is-impact');
-    ball.classList.remove('is-throwing', 'is-shaking', 'is-success', 'is-failed');
+    ball.classList.remove('is-throwing', 'is-shaking', 'is-success', 'is-failed', 'is-at-target');
     image.classList.remove('is-capture-target');
     ball.querySelector('.gamedex-capture-stars')?.classList.remove('is-active');
 
@@ -226,7 +153,6 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
     artwork.style.setProperty('--capture-start-y', `${startY}px`);
     artwork.style.setProperty('--capture-target-x', `${targetX}px`);
     artwork.style.setProperty('--capture-target-y', `${targetY}px`);
-    ball.style.setProperty('--shake-count', String(shakeCount));
 
     artwork.classList.add('is-capturing');
     ball.classList.add('is-throwing');
@@ -247,25 +173,18 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
         void ball.offsetWidth;
         ball.classList.add('is-shaking');
         await wait(560);
-
         if (requestId !== captureRequestId) return;
-
-        if (index < shakeCount - 1) {
-            await wait(260);
-        }
+        if (index < shakeCount - 1) await wait(260);
     }
 
-    if (shakeCount > 0) {
-        await wait(180);
-    }
-
+    if (shakeCount > 0) await wait(180);
     if (requestId !== captureRequestId) return;
 
     artwork.classList.remove('is-impact');
     artwork.classList.add(result.captured ? 'is-captured' : 'is-escaped');
     ball.classList.remove('is-shaking', 'is-at-target');
     ball.classList.add(result.captured ? 'is-success' : 'is-failed');
-    image.classList.remove('is-capture-target');
+    if (!result.captured) image.classList.remove('is-capture-target');
 
     await wait(520);
 }
@@ -273,11 +192,13 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
 function showCaptureMessage(artwork, text, success) {
     const existing = artwork.querySelector('.gamedex-capture-message');
     existing?.remove();
-
     const message = document.createElement('div');
     message.className = `gamedex-capture-message${success ? ' is-success' : ' is-failed'}`;
     message.textContent = text;
     artwork.append(message);
-
     window.setTimeout(() => message.remove(), 2200);
+}
+
+function displayPokemonName(pokemon) {
+    return pokemon?.name ? pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1) : 'Pokémon';
 }
