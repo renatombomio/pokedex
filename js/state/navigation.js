@@ -1,4 +1,4 @@
-import { renderFavoritesView } from './favorites-view.js';
+import { renderCapturedView } from './captured-view.js';
 
 const elements = {
     header: document.querySelector('.site-header'),
@@ -9,7 +9,7 @@ const elements = {
     pokedex: document.querySelector('#pokedex'),
     pokemonGrid: document.querySelector('#pokemon-grid'),
     detail: document.querySelector('#pokemon-detail'),
-    favorites: document.querySelector('#favorites'),
+    captured: document.querySelector('#captured'),
     navLinks: [...document.querySelectorAll('.main-nav a')]
 };
 
@@ -19,7 +19,6 @@ let initialized = false;
 export function initializeNavigation() {
     if (initialized) return;
     initialized = true;
-
     document.addEventListener('click', handleNavigationClick);
     document.addEventListener('change', handleNavigationChange);
     document.addEventListener('navigation:back-requested', handleBackRequest);
@@ -27,48 +26,31 @@ export function initializeNavigation() {
     document.addEventListener('generation:open-detail', handleGenerationOpenRequest);
     window.addEventListener('popstate', handleHistoryChange);
     window.addEventListener('hashchange', handleHashChange);
-
     const route = readRoute();
     window.history.replaceState(route.state, '', route.url);
     restoreRoute(route);
 }
 
-export function getActiveView() {
-    return activeView;
-}
+export function getActiveView() { return activeView; }
 
 export function showHome(target = 'pokedex', options = {}) {
-    const inheritedContext = options.context || (
-        target === 'pokedex' &&
-        ['region', 'type', 'generation'].includes(activeView)
-            ? window.history.state?.context || null
-            : null
-    );
-
+    const inheritedContext = options.context || (target === 'pokedex' && ['region', 'type', 'generation'].includes(activeView) ? window.history.state?.context || null : null);
     activeView = 'home';
     setHeaderView('home');
     setActiveNav(target);
     showHomeElements();
     setPokemonGridContext(target === 'pokedex' ? inheritedContext : null);
-
     if (options.pushHistory !== false) pushRoute(target, null, inheritedContext);
-
     requestAnimationFrame(() => {
-        const targetElement = target === 'types' ? elements.types
-            : target === 'regions' ? elements.regions
-                : target === 'generations' ? elements.generations
-                    : elements.pokedex;
-        targetElement?.scrollIntoView({
-            behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-            block: 'start'
-        });
+        const targetElement = target === 'types' ? elements.types : target === 'regions' ? elements.regions : target === 'generations' ? elements.generations : elements.pokedex;
+        targetElement?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
     });
 }
 
-export async function showFavorites(options = {}) {
-    activeView = 'favorites';
-    setHeaderView('favorites');
-    setActiveNav('favorites');
+export async function showCaptured(options = {}) {
+    activeView = 'captured';
+    setHeaderView('captured');
+    setActiveNav('captured');
     elements.hero?.classList.add('hidden');
     elements.regions?.classList.add('hidden');
     elements.types?.classList.add('hidden');
@@ -76,14 +58,14 @@ export async function showFavorites(options = {}) {
     elements.pokedex?.classList.add('hidden');
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
-    elements.favorites?.classList.remove('hidden');
+    elements.captured?.classList.remove('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
     setPokemonGridContext(null);
-    if (options.pushHistory !== false) pushRoute('favorites');
+    if (options.pushHistory !== false) pushRoute('captured');
     window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
-    await renderFavoritesView();
+    await renderCapturedView();
 }
 
 export function showTypeDetail(typeId, options = {}) {
@@ -94,7 +76,7 @@ export function showTypeDetail(typeId, options = {}) {
     setActiveNav('types');
     hideHomeViews();
     elements.detail?.classList.add('hidden');
-    elements.favorites?.classList.add('hidden');
+    elements.captured?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
     setPokemonGridContext(null);
@@ -112,16 +94,11 @@ export async function showRegionDetailView(regionId, options = {}) {
     hideHomeViews();
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
-    elements.favorites?.classList.add('hidden');
+    elements.captured?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
     setPokemonGridContext(null);
-
-    // navigation.js is the single owner of world-detail history state.
-    if (options.pushHistory !== false) {
-        pushRoute(`region/${regionId}`, null, options.context || null);
-    }
-
+    if (options.pushHistory !== false) pushRoute(`region/${regionId}`, null, options.context || null);
     const { initializeRegionDetail, showRegionDetail } = await import('./regions-detail.js');
     initializeRegionDetail();
     await showRegionDetail(regionId, { ...options, pushHistory: false });
@@ -135,16 +112,11 @@ export async function showGenerationDetailView(generationId, options = {}) {
     hideHomeViews();
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
-    elements.favorites?.classList.add('hidden');
+    elements.captured?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     setPokemonGridContext(null);
-
-    // navigation.js is the single owner of world-detail history state.
-    if (options.pushHistory !== false) {
-        pushRoute(`generation/${generationId}`, null, options.context || null);
-    }
-
+    if (options.pushHistory !== false) pushRoute(`generation/${generationId}`, null, options.context || null);
     const { initializeGenerationDetail, showGenerationDetail } = await import('./generations-detail.js');
     initializeGenerationDetail();
     await showGenerationDetail(generationId, { ...options, pushHistory: false });
@@ -154,98 +126,71 @@ export function setDetailView(id = null, options = {}) {
     activeView = 'detail';
     setHeaderView('detail');
     setActiveNav('pokedex');
-
     hideHomeViews();
     elements.pokedex?.classList.add('hidden');
-    elements.favorites?.classList.add('hidden');
+    elements.captured?.classList.add('hidden');
     elements.detail?.classList.remove('hidden');
     elements.detail?.setAttribute('aria-hidden', 'false');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
-
     const context = options.context || null;
     const backButton = document.querySelector('#detail-back');
-    if (backButton) {
-        backButton.textContent = context?.label
-            ? `← Volver a ${context.label}`
-            : '← Volver a la Pokédex';
-    }
-
-    if (options.pushHistory !== false && Number.isInteger(id)) {
-        pushRoute(`pokemon/${id}`, options.form ?? null, context);
-    }
+    if (backButton) backButton.textContent = context?.label ? `← Volver a ${context.label}` : '← Volver a la Pokédex';
+    if (options.pushHistory !== false && Number.isInteger(id)) pushRoute(`pokemon/${id}`, options.form ?? null, context);
 }
 
 export function navigateBack() {
     const state = window.history.state;
     const view = state?.view;
-
-    if (view === 'pokemon' && state.context) {
-        window.history.back();
-        return;
-    }
+    if (view === 'pokemon' && state.context) { window.history.back(); return; }
     if (view === 'region') {
-        if (state.context) {
-            window.history.back();
-            return;
-        }
+        if (state.context) { window.history.back(); return; }
         showHome('regions', { pushHistory: false });
         window.history.replaceState({ view: 'regions' }, '', '#regions');
         return;
     }
     if (view === 'type') {
-        if (state.context) {
-            window.history.back();
-            return;
-        }
+        if (state.context) { window.history.back(); return; }
         showHome('types', { pushHistory: false });
         window.history.replaceState({ view: 'types' }, '', '#types');
         return;
     }
     if (view === 'generation') {
-        if (state.context) {
-            window.history.back();
-            return;
-        }
+        if (state.context) { window.history.back(); return; }
         showHome('generations', { pushHistory: false });
         window.history.replaceState({ view: 'generations' }, '', '#generations');
+        return;
+    }
+    if (view === 'captured') {
+        showHome('pokedex', { pushHistory: false });
+        window.history.replaceState({ view: 'pokedex' }, '', '#pokedex');
         return;
     }
     showHome('pokedex');
 }
 
-function handleBackRequest() {
-    navigateBack();
-}
+function handleBackRequest() { navigateBack(); }
 
 function handleNavigationChange(event) {
     const select = event.target.closest('[data-gamedex-form]');
     if (!select) return;
-
     const form = select.value?.trim();
     const id = Number(window.history.state?.id);
     if (!form || !Number.isInteger(id)) return;
-
     setDetailView(id, { form, context: window.history.state?.context || null });
 }
 
 async function handleRegionOpenRequest(event) {
     const regionId = event.detail?.region;
     if (!regionId) return;
-    await showRegionDetailView(regionId, {
-        pushHistory: event.detail?.fromHistory !== true,
-        context: event.detail?.context || null
-    });
+    await showRegionDetailView(regionId, { pushHistory: event.detail?.fromHistory !== true, context: event.detail?.context || null });
 }
 
 async function handleGenerationOpenRequest(event) {
     const generationId = Number(event.detail?.generation);
     if (!Number.isInteger(generationId)) return;
-    await showGenerationDetailView(generationId, {
-        pushHistory: event.detail?.fromHistory !== true,
-        context: event.detail?.context || null
-    });
+    await showGenerationDetailView(generationId, { pushHistory: event.detail?.fromHistory !== true, context: event.detail?.context || null });
 }
 
 function showHomeElements() {
@@ -256,7 +201,7 @@ function showHomeElements() {
     elements.pokedex?.classList.remove('hidden');
     elements.detail?.classList.add('hidden');
     elements.detail?.setAttribute('aria-hidden', 'true');
-    elements.favorites?.classList.add('hidden');
+    elements.captured?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
@@ -271,86 +216,38 @@ function hideHomeViews() {
 
 function setPokemonGridContext(context) {
     if (!elements.pokemonGrid) return;
-    if (context) {
-        elements.pokemonGrid.dataset.navigationContext = JSON.stringify(context);
-    } else {
-        delete elements.pokemonGrid.dataset.navigationContext;
-    }
+    if (context) elements.pokemonGrid.dataset.navigationContext = JSON.stringify(context);
+    else delete elements.pokemonGrid.dataset.navigationContext;
 }
 
 function pushRoute(route, form = null, context = null) {
-    const url = route === 'pokedex'
-        ? '#pokedex'
-        : form
-            ? `#${route}?form=${encodeURIComponent(form)}`
-            : `#${route}`;
-
-    window.history.pushState({
-        view: route.split('/')[0],
-        id: getRouteId(route),
-        type: getRouteType(route),
-        region: getRouteRegion(route),
-        generation: getRouteGeneration(route),
-        form: form || null,
-        context: context || null
-    }, '', url);
+    const url = route === 'pokedex' ? '#pokedex' : form ? `#${route}?form=${encodeURIComponent(form)}` : `#${route}`;
+    window.history.pushState({ view: route.split('/')[0], id: getRouteId(route), type: getRouteType(route), region: getRouteRegion(route), generation: getRouteGeneration(route), form: form || null, context: context || null }, '', url);
 }
 
-function handleHistoryChange(event) {
-    restoreRoute(event.state?.view ? { state: event.state } : readRoute());
-}
-
-function handleHashChange() {
-    restoreRoute(readRoute());
-}
+function handleHistoryChange(event) { restoreRoute(event.state?.view ? { state: event.state } : readRoute()); }
+function handleHashChange() { restoreRoute(readRoute()); }
 
 function restoreRoute(route) {
     const view = route.state?.view ?? 'home';
     if (view === 'pokemon' && Number.isInteger(route.state.id)) {
-        requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
-            detail: {
-                id: route.state.id,
-                form: route.state.form || null,
-                context: route.state.context || null,
-                fromHistory: true
-            }
-        })));
+        requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('pokemon:open-detail', { detail: { id: route.state.id, form: route.state.form || null, context: route.state.context || null, fromHistory: true } })));
         return;
     }
     if (view === 'type' && route.state.type) {
-        requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('type:open-detail', {
-            detail: { type: route.state.type, fromHistory: true }
-        })));
+        requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('type:open-detail', { detail: { type: route.state.type, fromHistory: true } })));
         return;
     }
     if (view === 'region' && route.state.region) {
-        requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('region:open-detail', {
-            detail: {
-                region: route.state.region,
-                context: route.state.context || null,
-                fromHistory: true
-            }
-        })));
+        requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('region:open-detail', { detail: { region: route.state.region, context: route.state.context || null, fromHistory: true } })));
         return;
     }
     if (view === 'generation' && Number.isInteger(route.state.generation)) {
-        requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('generation:open-detail', {
-            detail: {
-                generation: route.state.generation,
-                context: route.state.context || null,
-                fromHistory: true
-            }
-        })));
+        requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('generation:open-detail', { detail: { generation: route.state.generation, context: route.state.context || null, fromHistory: true } })));
         return;
     }
-    if (view === 'favorites') {
-        showFavorites({ pushHistory: false });
-        return;
-    }
-    showHome(
-        view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex',
-        { pushHistory: false, context: route.state?.context || null }
-    );
+    if (view === 'captured') { showCaptured({ pushHistory: false }); return; }
+    showHome(view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex', { pushHistory: false, context: route.state?.context || null });
 }
 
 function readRoute() {
@@ -358,46 +255,24 @@ function readRoute() {
     const [route, query = ''] = hash.split('?');
     const params = new URLSearchParams(query);
     const form = params.get('form') || null;
-
-    if (route === 'favorites') return { state: { view: 'favorites' }, url: '#favorites' };
+    if (route === 'captured') return { state: { view: 'captured' }, url: '#captured' };
     if (route === 'types') return { state: { view: 'types' }, url: '#types' };
     if (route === 'regions') return { state: { view: 'regions' }, url: '#regions' };
     if (route === 'generations') return { state: { view: 'generations' }, url: '#generations' };
-    if (route.startsWith('type/')) {
-        const type = route.split('/')[1]?.toLowerCase();
-        if (type) return { state: { view: 'type', type }, url: `#type/${type}` };
-    }
-    if (route.startsWith('region/')) {
-        const region = route.split('/')[1]?.toLowerCase();
-        if (region) return { state: { view: 'region', region }, url: `#region/${region}` };
-    }
-    if (route.startsWith('generation/')) {
-        const generation = Number(route.split('/')[1]);
-        if (Number.isInteger(generation)) return { state: { view: 'generation', generation }, url: `#generation/${generation}` };
-    }
-    if (route.startsWith('pokemon/')) {
-        const id = Number(route.split('/')[1]);
-        if (Number.isInteger(id)) {
-            return {
-                state: { view: 'pokemon', id, form, context: null },
-                url: form ? `#pokemon/${id}?form=${encodeURIComponent(form)}` : `#pokemon/${id}`
-            };
-        }
-    }
+    if (route.startsWith('type/')) { const type = route.split('/')[1]?.toLowerCase(); if (type) return { state: { view: 'type', type }, url: `#type/${type}` }; }
+    if (route.startsWith('region/')) { const region = route.split('/')[1]?.toLowerCase(); if (region) return { state: { view: 'region', region }, url: `#region/${region}` }; }
+    if (route.startsWith('generation/')) { const generation = Number(route.split('/')[1]); if (Number.isInteger(generation)) return { state: { view: 'generation', generation }, url: `#generation/${generation}` }; }
+    if (route.startsWith('pokemon/')) { const id = Number(route.split('/')[1]); if (Number.isInteger(id)) return { state: { view: 'pokemon', id, form, context: null }, url: form ? `#pokemon/${id}?form=${encodeURIComponent(form)}` : `#pokemon/${id}` }; }
     return { state: { view: 'pokedex' }, url: '#pokedex' };
 }
 
-function setHeaderView(view) {
-    elements.header?.setAttribute('data-view', view);
-}
-
+function setHeaderView(view) { elements.header?.setAttribute('data-view', view); }
 function setActiveNav(target) {
-    const navTarget = ['types', 'regions', 'generations', 'favorites'].includes(target) ? target : 'pokedex';
+    const navTarget = ['types', 'regions', 'generations', 'captured'].includes(target) ? target : 'pokedex';
     elements.navLinks.forEach((link) => {
         const active = link.getAttribute('href') === `#${navTarget}`;
         link.classList.toggle('is-active', active);
-        if (active) link.setAttribute('aria-current', 'page');
-        else link.removeAttribute('aria-current');
+        if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
     });
 }
 
@@ -405,50 +280,17 @@ function handleNavigationClick(event) {
     const link = event.target.closest('.main-nav a');
     if (link) {
         const hash = link.getAttribute('href');
-        if (hash === '#favorites') { event.preventDefault(); showFavorites(); return; }
-        if (hash === '#types' || hash === '#regions' || hash === '#generations' || hash === '#pokedex') {
-            event.preventDefault();
-            showHome(hash.slice(1));
-            return;
-        }
+        if (hash === '#captured') { event.preventDefault(); showCaptured(); return; }
+        if (hash === '#types' || hash === '#regions' || hash === '#generations' || hash === '#pokedex') { event.preventDefault(); showHome(hash.slice(1)); return; }
     }
-    if (event.target.closest('[data-open-pokedex]')) {
-        event.preventDefault();
-        showHome('pokedex');
-    }
+    if (event.target.closest('[data-open-pokedex]')) { event.preventDefault(); showHome('pokedex'); }
 }
 
-function getRouteId(route) {
-    const id = Number(route.split('/')[1]);
-    return Number.isInteger(id) ? id : null;
-}
-
-function getRouteType(route) {
-    return route.startsWith('type/') ? route.split('/')[1] : null;
-}
-
-function getRouteRegion(route) {
-    return route.startsWith('region/') ? route.split('/')[1] : null;
-}
-
-function getRouteGeneration(route) {
-    if (!route.startsWith('generation/')) return null;
-    const id = Number(route.split('/')[1]);
-    return Number.isInteger(id) ? id : null;
-}
-
-function getTypeDetailElement() {
-    return document.querySelector('#type-detail');
-}
-
-function getRegionDetailElement() {
-    return document.querySelector('#region-detail');
-}
-
-function getGenerationDetailElement() {
-    return document.querySelector('#generation-detail');
-}
-
-function prefersReducedMotion() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+function getRouteId(route) { const id = Number(route.split('/')[1]); return Number.isInteger(id) ? id : null; }
+function getRouteType(route) { return route.startsWith('type/') ? route.split('/')[1] : null; }
+function getRouteRegion(route) { return route.startsWith('region/') ? route.split('/')[1] : null; }
+function getRouteGeneration(route) { if (!route.startsWith('generation/')) return null; const id = Number(route.split('/')[1]); return Number.isInteger(id) ? id : null; }
+function getTypeDetailElement() { return document.querySelector('#type-detail'); }
+function getRegionDetailElement() { return document.querySelector('#region-detail'); }
+function getGenerationDetailElement() { return document.querySelector('#generation-detail'); }
+function prefersReducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
