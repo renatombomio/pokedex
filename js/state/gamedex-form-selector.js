@@ -1,8 +1,11 @@
+import { getDetailsState } from './details.js';
+
 let desiredShiny = false;
 let releasingShinyClick = false;
 let restoringShinyClick = false;
 
 const detailContent = document.querySelector('#detail-content');
+const ANIMATION_PREFERENCE_KEY = 'pokedex-gamedex-animated';
 
 function syncHistoryState() {
     const state = window.history.state;
@@ -31,6 +34,77 @@ function getSprite() {
     return detailContent?.querySelector('.gamedex-artwork img');
 }
 
+function getAnimationEnabled() {
+    try {
+        const stored = localStorage.getItem(ANIMATION_PREFERENCE_KEY);
+        return stored === null ? true : stored === 'true';
+    } catch {
+        return true;
+    }
+}
+
+function setAnimationEnabled(value) {
+    try {
+        localStorage.setItem(ANIMATION_PREFERENCE_KEY, String(value));
+    } catch {
+        // Ignore storage failures; the current session still works.
+    }
+}
+
+function getAnimatedImage(pokemon, shiny) {
+    const animated = pokemon?.sprites?.versions?.['generation-v']?.['black-white']?.animated;
+    return shiny ? animated?.front_shiny ?? '' : animated?.front_default ?? '';
+}
+
+function getStaticImage(pokemon, shiny) {
+    if (shiny) {
+        return pokemon?.sprites?.front_shiny
+            || pokemon?.sprites?.other?.['official-artwork']?.front_shiny
+            || '';
+    }
+
+    return pokemon?.sprites?.other?.['official-artwork']?.front_default
+        || pokemon?.sprites?.front_default
+        || '';
+}
+
+function applySpriteState({ shiny, animated }) {
+    const sprite = getSprite();
+    const pokemon = getDetailsState().pokemon;
+    if (!sprite || !pokemon) return false;
+
+    const animatedImage = getAnimatedImage(pokemon, shiny);
+    const staticImage = getStaticImage(pokemon, shiny);
+    const useAnimated = animated && Boolean(animatedImage);
+    const nextImage = useAnimated ? animatedImage : staticImage;
+    if (!nextImage) return false;
+
+    sprite.src = nextImage;
+    sprite.classList.toggle('is-shiny', shiny);
+    sprite.classList.toggle('is-animated', useAnimated);
+
+    return useAnimated;
+}
+
+function syncMediaButtons() {
+    const animationButton = detailContent?.querySelector('[data-gamedex-animation]');
+    const shinyButton = detailContent?.querySelector('[data-gamedex-shiny]');
+    const pokemon = getDetailsState().pokemon;
+    if (!pokemon) return;
+
+    const shiny = shinyButton?.getAttribute('aria-pressed') === 'true';
+    const animationEnabled = getAnimationEnabled();
+    const animatedAvailable = Boolean(getAnimatedImage(pokemon, shiny));
+
+    if (animationButton) {
+        animationButton.setAttribute('aria-pressed', String(animationEnabled && animatedAvailable));
+        animationButton.textContent = animationEnabled && animatedAvailable ? 'GIF' : 'IMG';
+        animationButton.title = animationEnabled && animatedAvailable
+            ? 'Mostrar imagen estática'
+            : 'Mostrar sprite animado';
+    }
+}
+
 function restoreDesiredShiny() {
     if (!desiredShiny) return;
 
@@ -49,6 +123,21 @@ document.addEventListener('pokemon:open-detail', () => {
 window.addEventListener('popstate', (event) => {
     desiredShiny = Boolean(event.state?.shiny);
 });
+
+document.addEventListener('click', (event) => {
+    const animationButton = event.target.closest('[data-gamedex-animation]');
+    if (!animationButton || !detailContent?.contains(animationButton)) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const nextAnimated = animationButton.getAttribute('aria-pressed') !== 'true';
+    setAnimationEnabled(nextAnimated);
+
+    const shiny = detailContent.querySelector('[data-gamedex-shiny]')?.getAttribute('aria-pressed') === 'true';
+    applySpriteState({ shiny, animated: nextAnimated });
+    syncMediaButtons();
+}, true);
 
 document.addEventListener('click', (event) => {
     const shinyButton = event.target.closest('[data-gamedex-shiny]');
@@ -72,9 +161,10 @@ document.addEventListener('click', (event) => {
 
         window.setTimeout(() => {
             if (!document.contains(shinyButton)) return;
-            releasingShinyClick = true;
-            shinyButton.click();
-            releasingShinyClick = false;
+            applySpriteState({ shiny: true, animated: getAnimationEnabled() });
+            shinyButton.setAttribute('aria-pressed', 'true');
+            shinyButton.textContent = 'NORMAL';
+            shinyButton.title = 'Cambiar entre normal y shiny';
 
             requestAnimationFrame(() => {
                 animateSprite(getSprite(), [
@@ -82,6 +172,7 @@ document.addEventListener('click', (event) => {
                     { opacity: 1, transform: 'perspective(900px) rotateY(-18deg) scale(1.02)', offset: .62 },
                     { opacity: 1, transform: 'perspective(900px) rotateY(0deg) scale(1)' }
                 ], 320, 'cubic-bezier(.16,.82,.25,1)');
+                syncMediaButtons();
             });
         }, 205);
     } else {
@@ -93,15 +184,17 @@ document.addEventListener('click', (event) => {
 
         window.setTimeout(() => {
             if (!document.contains(shinyButton)) return;
-            releasingShinyClick = true;
-            shinyButton.click();
-            releasingShinyClick = false;
+            applySpriteState({ shiny: false, animated: getAnimationEnabled() });
+            shinyButton.setAttribute('aria-pressed', 'false');
+            shinyButton.textContent = 'SHINY';
+            shinyButton.title = 'Cambiar entre normal y shiny';
 
             requestAnimationFrame(() => {
                 animateSprite(getSprite(), [
                     { opacity: 0, transform: 'perspective(900px) rotateY(-55deg) scale(.97)' },
                     { opacity: 1, transform: 'perspective(900px) rotateY(0deg) scale(1)' }
                 ], 190, 'cubic-bezier(.2,.75,.25,1)');
+                syncMediaButtons();
             });
         }, 135);
     }
@@ -127,7 +220,10 @@ document.addEventListener('click', (event) => {
 });
 
 const observer = new MutationObserver(() => {
-    window.requestAnimationFrame(restoreDesiredShiny);
+    window.requestAnimationFrame(() => {
+        restoreDesiredShiny();
+        syncMediaButtons();
+    });
 });
 
 if (detailContent) {
