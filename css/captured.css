@@ -1,0 +1,151 @@
+/* CAPTURADOS — GAMEDEX COLLECTION */
+.nav-captured-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 17px;
+    height: 17px;
+    margin-left: 4px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: rgba(239,63,34,.14);
+    color: #ff7157;
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 1;
+    vertical-align: 1px;
+}
+
+.captured-section {
+    min-height: calc(100vh - 72px);
+    padding: 88px 0 120px;
+    background: #070707;
+}
+
+.captured-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 34px;
+}
+
+.captured-header h2 { margin: 0; }
+.captured-count { color: #777; font-size: 13px; white-space: nowrap; }
+.captured-count strong { color: #fff; }
+
+.captured-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+    align-items: start;
+}
+
+.captured-loading,
+.captured-empty {
+    min-height: 360px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 10px;
+    padding: 48px 24px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 26px;
+    background: rgba(255,255,255,.025);
+    text-align: center;
+}
+
+.captured-loading { color: #888; }
+
+.captured-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(239,63,34,.3);
+    border-radius: 50%;
+    background: rgba(239,63,34,.08);
+}
+
+.captured-ball-icon,
+.captured-ball-badge {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border: 2px solid #151515;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, #e53935 0 46%, #151515 46% 54%, #f7f7f7 54%);
+}
+
+.captured-ball-icon { width: 30px; height: 30px; }
+.captured-ball-icon::after,
+.captured-ball-badge::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 30%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border: 2px solid #151515;
+    border-radius: 50%;
+    background: #f7f7f7;
+}
+
+.captured-empty-eyebrow {
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+}
+
+.captured-empty h3 {
+    color: #fff;
+    font-size: clamp(24px, 4vw, 38px);
+    line-height: 1;
+    letter-spacing: -.05em;
+}
+
+.captured-empty > p:not(.captured-empty-eyebrow) {
+    max-width: 430px;
+    color: #858585;
+    font-size: 14px;
+}
+
+.captured-explore {
+    margin-top: 10px;
+    padding: 12px 20px;
+    border: 1px solid rgba(239,63,34,.45);
+    border-radius: 999px;
+    background: rgba(239,63,34,.1);
+    color: #ffb9ab;
+    font-size: 12px;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.captured-explore:hover { background: rgba(239,63,34,.18); }
+.captured-notice { grid-column: 1 / -1; margin-top: -6px; color: #777; font-size: 12px; }
+
+.captured-pokemon-card .captured-ball-badge {
+    position: absolute;
+    z-index: 3;
+    top: 10px;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    box-shadow: 0 5px 12px rgba(0,0,0,.18);
+}
+
+@media (max-width: 900px) {
+    .captured-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+    .captured-section { min-height: calc(100vh - 60px); padding: 56px 0 80px; }
+    .captured-header { align-items: flex-start; margin-bottom: 24px; }
+    .captured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+}
+
+@media (max-width: 420px) { .captured-grid { grid-template-columns: 1fr; } }
