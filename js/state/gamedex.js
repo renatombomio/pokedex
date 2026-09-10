@@ -311,9 +311,13 @@ function getEvolutionImage(id) {
 
 function getCurrentImage(pokemon) {
     if (currentShiny) {
-        return getAnimatedImage(pokemon, true)
-            || getShinyImage(pokemon)
-            || getStaticImage(pokemon, true);
+        if (currentImageMode === 'animated') {
+            return getAnimatedImage(pokemon, true)
+                || getShinyImage(pokemon)
+                || getStaticImage(pokemon, true);
+        }
+
+        return getShinyImage(pokemon) || getStaticImage(pokemon, true);
     }
 
     if (currentImageMode === 'animated') {
