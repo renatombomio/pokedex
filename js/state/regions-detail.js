@@ -160,6 +160,21 @@ function renderRegionDetail(region, apiRegion, pokedex, starters) {
         { label: 'Regiones', action: () => window.location.hash = '#regions' },
         { label: region.name }
     ]);
+
+    bindPokemonCards(region);
+}
+
+function bindPokemonCards(region) {
+    detailElement.querySelectorAll('[data-pokemon-id]').forEach((button) => {
+        button.addEventListener('click', () => {
+            document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
+                detail: {
+                    id: Number(button.dataset.pokemonId),
+                    context: { view: 'region', id: region.id, label: region.name }
+                }
+            }));
+        });
+    });
 }
 
 function createRegionMap(region) {
@@ -279,24 +294,6 @@ async function handleDetailClick(event) {
     const retryButton = event.target.closest('[data-region-retry]');
     if (retryButton) {
         showRegionDetail(retryButton.dataset.regionRetry, { pushHistory: false });
-        return;
-    }
-
-    const pokemonCard = event.target.closest('[data-pokemon-id]');
-    if (pokemonCard) {
-        const id = Number(pokemonCard.dataset.pokemonId);
-        if (Number.isInteger(id)) {
-            document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
-                detail: {
-                    id,
-                    context: {
-                        view: 'region',
-                        id: detailElement.dataset.regionId,
-                        label: detailElement.querySelector('#region-detail-title')?.textContent?.trim() || 'Región'
-                    }
-                }
-            }));
-        }
         return;
     }
 
