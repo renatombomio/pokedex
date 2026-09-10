@@ -10,12 +10,16 @@ import {
     setDetailView
 } from './navigation.js';
 
+import {
+    getRegionById
+} from './regions.js';
+
 let activeRequestId = 0;
 
 document.addEventListener('pokemon:open-detail', async (event) => {
     const id = Number(event.detail?.id);
     const form = event.detail?.form || null;
-    const context = event.detail?.context || window.history.state?.context || null;
+    const context = getPokemonNavigationContext(event.detail?.context);
 
     if (!Number.isInteger(id)) {
         return;
@@ -33,7 +37,12 @@ document.addEventListener('pokemon:open-form', async (event) => {
     const form = event.detail?.form;
     if (!form) return;
 
-    await openPokemonDetail(form, false, form, window.history.state?.context || null);
+    await openPokemonDetail(
+        form,
+        false,
+        form,
+        getPokemonNavigationContext()
+    );
 });
 
 /* ========================================
@@ -55,8 +64,37 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    openPokemonDetail(id, false, null, window.history.state?.context || null);
+    openPokemonDetail(
+        id,
+        false,
+        null,
+        getPokemonNavigationContext()
+    );
 });
+
+function getPokemonNavigationContext(explicitContext = null) {
+    if (explicitContext) {
+        return explicitContext;
+    }
+
+    const state = window.history.state;
+    if (state?.context) {
+        return state.context;
+    }
+
+    if (state?.view === 'region' && state.region) {
+        const region = getRegionById(state.region);
+        if (region) {
+            return {
+                view: 'region',
+                id: region.id,
+                label: region.name
+            };
+        }
+    }
+
+    return null;
+}
 
 async function openPokemonDetail(identifier, fromHistory = false, form = null, context = null) {
     const requestId = ++activeRequestId;
