@@ -7,6 +7,7 @@ const MUSIC_TRACKS = [
 
 const MUSIC_VOLUME_KEY = 'pokedex-gamedex-music-volume';
 const MUSIC_ENABLED_KEY = 'pokedex-gamedex-music-enabled';
+const MUSIC_MUTED_KEY = 'pokedex-gamedex-music-muted';
 const MUSIC_TRACK_KEY = 'pokedex-gamedex-music-track';
 const MUSIC_POSITION_KEY = 'pokedex-gamedex-music-position';
 const FADE_DURATION = 900;
@@ -101,6 +102,7 @@ function createAudio() {
     audio.preload = 'auto';
     audio.loop = false;
     audio.volume = 0;
+    audio.muted = getStoredBoolean(MUSIC_MUTED_KEY, false);
     audio.addEventListener('ended', playNextTrack);
     audio.addEventListener('error', handleAudioError);
 }
@@ -109,6 +111,7 @@ function persistPosition() {
     if (!audio) return;
     setStoredNumber(MUSIC_TRACK_KEY, currentTrackIndex);
     setStoredNumber(MUSIC_POSITION_KEY, audio.currentTime || 0);
+    setStoredBoolean(MUSIC_MUTED_KEY, audio.muted);
 }
 
 function updatePlayer() {
@@ -185,6 +188,7 @@ function togglePlayback() {
 function toggleMute() {
     if (!audio) createAudio();
     audio.muted = !audio.muted;
+    setStoredBoolean(MUSIC_MUTED_KEY, audio.muted);
     updatePlayer();
 }
 
@@ -192,15 +196,19 @@ function handleVolumeChange(event) {
     const value = Number(event.target.value);
     setStoredNumber(MUSIC_VOLUME_KEY, value);
     if (!audio) createAudio();
-    if (value > 0 && audio.muted) audio.muted = false;
+    if (value > 0 && audio.muted) {
+        audio.muted = false;
+        setStoredBoolean(MUSIC_MUTED_KEY, false);
+    }
     audio.volume = value;
     updatePlayer();
 }
 
-function switchTrack(nextIndex, shouldPlay = true) {
+function switchTrack(nextIndex, shouldPlay) {
     if (!audio) createAudio();
 
-    const wasPlaying = shouldPlay && !audio.paused;
+    const wasPlaying = !audio.paused;
+    const resumePlayback = shouldPlay ?? wasPlaying;
     persistPosition();
 
     fadeTo(0, FADE_DURATION, () => {
@@ -210,7 +218,7 @@ function switchTrack(nextIndex, shouldPlay = true) {
         setStoredNumber(MUSIC_POSITION_KEY, 0);
         createAudio();
         updatePlayer();
-        if (wasPlaying || shouldPlay) startPlayback();
+        if (resumePlayback) startPlayback();
     });
 }
 
@@ -219,7 +227,7 @@ function playNextTrack() {
 }
 
 function skipToNextTrack() {
-    switchTrack(currentTrackIndex + 1, true);
+    switchTrack(currentTrackIndex + 1);
 }
 
 function handleAudioError() {
