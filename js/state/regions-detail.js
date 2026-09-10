@@ -38,18 +38,7 @@ export async function showRegionDetail(regionId, options = {}) {
     detailElement.classList.remove('hidden');
     detailElement.setAttribute('aria-hidden', 'false');
 
-    if (options.pushHistory !== false) {
-        window.history.pushState(
-            {
-                view: 'region',
-                region: region.id,
-                contextLabel: region.name,
-                context: options.context || null
-            },
-            '',
-            `#region/${region.id}`
-        );
-    }
+    // History is owned by navigation.js. This view only renders the region.
 
     window.scrollTo({
         top: 0,
