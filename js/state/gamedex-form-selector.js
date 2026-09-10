@@ -1,4 +1,5 @@
 import { getDetailsState } from './details.js';
+import './gamedex-capture-persistence.js';
 
 let desiredShiny = false;
 let releasingShinyClick = false;
