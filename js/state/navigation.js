@@ -7,6 +7,7 @@ const elements = {
     types: document.querySelector('#types'),
     generations: document.querySelector('#generations'),
     pokedex: document.querySelector('#pokedex'),
+    pokemonGrid: document.querySelector('#pokemon-grid'),
     detail: document.querySelector('#pokemon-detail'),
     favorites: document.querySelector('#favorites'),
     navLinks: [...document.querySelectorAll('.main-nav a')]
@@ -48,6 +49,7 @@ export function showHome(target = 'pokedex', options = {}) {
     setHeaderView('home');
     setActiveNav(target);
     showHomeElements();
+    setPokemonGridContext(target === 'pokedex' ? inheritedContext : null);
 
     if (options.pushHistory !== false) pushRoute(target, null, inheritedContext);
 
@@ -78,6 +80,7 @@ export async function showFavorites(options = {}) {
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
+    setPokemonGridContext(null);
     if (options.pushHistory !== false) pushRoute('favorites');
     window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     await renderFavoritesView();
@@ -94,6 +97,7 @@ export function showTypeDetail(typeId, options = {}) {
     elements.favorites?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
+    setPokemonGridContext(null);
     typeDetail.classList.remove('hidden');
     typeDetail.setAttribute('aria-hidden', 'false');
     if (options.pushHistory !== false) pushRoute(`type/${typeId}`, null, options.context || null);
@@ -111,6 +115,7 @@ export async function showRegionDetailView(regionId, options = {}) {
     elements.favorites?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
+    setPokemonGridContext(null);
     const { initializeRegionDetail, showRegionDetail } = await import('./regions-detail.js');
     initializeRegionDetail();
     await showRegionDetail(regionId, options);
@@ -127,6 +132,7 @@ export async function showGenerationDetailView(generationId, options = {}) {
     elements.favorites?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
+    setPokemonGridContext(null);
     const { initializeGenerationDetail, showGenerationDetail } = await import('./generations-detail.js');
     initializeGenerationDetail();
     await showGenerationDetail(generationId, options);
@@ -249,6 +255,15 @@ function hideHomeViews() {
     elements.regions?.classList.add('hidden');
     elements.types?.classList.add('hidden');
     elements.generations?.classList.add('hidden');
+}
+
+function setPokemonGridContext(context) {
+    if (!elements.pokemonGrid) return;
+    if (context) {
+        elements.pokemonGrid.dataset.navigationContext = JSON.stringify(context);
+    } else {
+        delete elements.pokemonGrid.dataset.navigationContext;
+    }
 }
 
 function pushRoute(route, form = null, context = null) {
