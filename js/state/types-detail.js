@@ -3,6 +3,7 @@ import { getPokemonType } from './types.js';
 import { filterByType } from './app.js';
 import { renderPokemon, showLoading, showError } from './ui.js';
 import { showHome, showTypeDetail } from './navigation.js';
+import { mountWorldBreadcrumb } from './world-navigation.js';
 
 const main = document.querySelector('#main-content');
 
@@ -60,6 +61,11 @@ async function loadTypeDetail(typeId) {
 
     section.dataset.type = type.id;
     content.innerHTML = createLoadingMarkup(type);
+    mountWorldBreadcrumb(section.querySelector('.container'), [
+        { label: 'Mundo Pokémon', action: () => window.location.hash = '#pokedex' },
+        { label: 'Tipos', action: () => window.location.hash = '#types' },
+        { label: type.name }
+    ]);
 
     try {
         const response = await getPokemonByType(type.id);
@@ -72,6 +78,11 @@ async function loadTypeDetail(typeId) {
         if (currentRequest !== requestId) return;
 
         content.innerHTML = createDetailMarkup(type, entries.length, pokemon);
+        mountWorldBreadcrumb(section.querySelector('.container'), [
+            { label: 'Mundo Pokémon', action: () => window.location.hash = '#pokedex' },
+            { label: 'Tipos', action: () => window.location.hash = '#types' },
+            { label: type.name }
+        ]);
     } catch (error) {
         if (currentRequest !== requestId) return;
 
@@ -184,11 +195,19 @@ async function handleTypeDetailClick(event) {
     if (card) {
         const id = Number(card.dataset.pokemonId);
         if (Number.isInteger(id)) {
+            const type = sectionType();
             document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
-                detail: { id }
+                detail: {
+                    id,
+                    context: type ? { view: 'type', id: type.id, label: type.name } : null
+                }
             }));
         }
     }
+}
+
+function sectionType() {
+    return getPokemonType(document.querySelector('#type-detail')?.dataset.type);
 }
 
 function capitalize(value) {
