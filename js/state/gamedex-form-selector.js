@@ -3,6 +3,8 @@ let releasingShinyClick = false;
 let restoringShinyClick = false;
 
 const detailContent = document.querySelector('#detail-content');
+const ANIMATION_PREFERENCE_KEY = 'pokedex-gamedex-animated';
+const failedShinyGifUrls = new Set();
 
 function syncHistoryState() {
     const state = window.history.state;
@@ -29,6 +31,51 @@ function animateSprite(image, keyframes, duration, easing = 'ease-out') {
 
 function getSprite() {
     return detailContent?.querySelector('.gamedex-artwork img');
+}
+
+function getCurrentPokemonId() {
+    const number = detailContent?.querySelector('.gamedex-number')?.textContent ?? '';
+    const id = Number.parseInt(number.replace(/\D/g, ''), 10);
+    return Number.isFinite(id) ? id : null;
+}
+
+function getShinyStaticImage(id) {
+    return id
+        ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}-shiny.png`
+        : '';
+}
+
+function getShinyGifImage(id) {
+    return id
+        ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${id}-shiny.gif`
+        : '';
+}
+
+function syncShinyAnimatedSprite() {
+    const shinyButton = detailContent?.querySelector('[data-gamedex-shiny]');
+    const sprite = getSprite();
+    if (!shinyButton || !sprite || shinyButton.getAttribute('aria-pressed') !== 'true') return;
+    if (localStorage.getItem(ANIMATION_PREFERENCE_KEY) !== 'true') return;
+
+    const id = getCurrentPokemonId();
+    const gifUrl = getShinyGifImage(id);
+    if (!gifUrl || failedShinyGifUrls.has(gifUrl)) return;
+
+    const staticUrl = sprite.currentSrc || sprite.src || getShinyStaticImage(id);
+    const probe = new Image();
+    probe.onload = () => {
+        if (!document.contains(sprite)) return;
+        sprite.src = gifUrl;
+        sprite.classList.add('is-animated');
+    };
+    probe.onerror = () => {
+        failedShinyGifUrls.add(gifUrl);
+        if (document.contains(sprite)) {
+            sprite.src = staticUrl || getShinyStaticImage(id);
+            sprite.classList.remove('is-animated');
+        }
+    };
+    probe.src = gifUrl;
 }
 
 function restoreDesiredShiny() {
@@ -127,7 +174,10 @@ document.addEventListener('click', (event) => {
 });
 
 const observer = new MutationObserver(() => {
-    window.requestAnimationFrame(restoreDesiredShiny);
+    window.requestAnimationFrame(() => {
+        restoreDesiredShiny();
+        syncShinyAnimatedSprite();
+    });
 });
 
 if (detailContent) {
