@@ -1,6 +1,5 @@
 import { getEvolutionTree } from './details.js';
 import { getPokemon } from '../api/pokemon.js';
-import { isFavorite } from './favorites.js';
 
 const detailContent = document.querySelector('#detail-content');
 const MAX_BASE_STAT = 255;
@@ -36,7 +35,6 @@ function renderCurrentGamedex() {
     `).join('');
     const evolutionTree = getEvolutionTree();
     const evolutionSection = evolutionTree?.children?.length ? createEvolutionSection(evolutionTree) : '';
-    const favorite = isFavorite(pokemon.id);
     const shinyAvailable = Boolean(getShinyImage(pokemon));
     const animatedAvailable = Boolean(getAnimatedImage(pokemon, currentShiny));
     const audioEnabled = getStoredBoolean(AUDIO_PREFERENCE_KEY, true);
@@ -86,8 +84,8 @@ function renderCurrentGamedex() {
                     <span>Habilidad</span>
                     <strong>${escapeHtml(getPrimaryAbility(pokemon))}</strong>
                 </div>
-                <button class="favorite-toggle${favorite ? ' is-favorite' : ''}" type="button" data-pokemon-id="${pokemon.id}" aria-pressed="${favorite}" aria-label="${favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}" title="${favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}">
-                    <span aria-hidden="true">♥</span>
+                <button class="gamedex-capture-launch" type="button" data-gamedex-capture aria-label="Capturar ${escapeAttribute(displayPokemonName(pokemon))}" title="Capturar Pokémon">
+                    <span class="gamedex-capture-launch-ball" aria-hidden="true"></span>
                 </button>
             </div>
 
@@ -258,7 +256,7 @@ function createLinearDescendant(node) {
         cards.push(`
             <div class="evolution-subbranches">
                 ${current.children.map((child) => `
-                    <div class="evolution-branch">
+                    <div class="evolution-subbranch">
                         <span class="evolution-arrow" aria-hidden="true"></span>
                         ${createLinearDescendant(child)}
                     </div>
@@ -270,43 +268,46 @@ function createLinearDescendant(node) {
     return cards.join('');
 }
 
-function createEvolutionCard(pokemon, details = []) {
-    const condition = formatEvolutionCondition(details);
+function createEvolutionCard(pokemon, evolutionDetails) {
+    const id = pokemon?.id;
+    const name = displayPokemonName(pokemon);
+    const image = getEvolutionImage(pokemon);
+    const conditions = formatEvolutionConditions(evolutionDetails);
 
     return `
-        <article class="evolution-card" data-pokemon-id="${pokemon.id}">
-            <button class="evolution-card-button" type="button" data-pokemon-id="${pokemon.id}" aria-label="Ver ${escapeHtml(capitalize(pokemon.name))}">
-                <span class="evolution-number">#${formatId(pokemon.id)}</span>
-                <img src="${escapeAttribute(getEvolutionImage(pokemon.id))}" alt="${escapeAttribute(capitalize(pokemon.name))}" loading="lazy">
-                <strong>${escapeHtml(capitalize(pokemon.name))}</strong>
-                ${condition ? `<small class="evolution-card-condition">${escapeHtml(condition)}</small>` : ''}
-            </button>
-        </article>
+        <button class="evolution-card-button" type="button" data-evolution-pokemon-id="${id}" aria-label="Ver ${escapeAttribute(name)}">
+            <span class="evolution-card-image"><img src="${escapeAttribute(image)}" alt="${escapeAttribute(name)}" loading="lazy"></span>
+            <span class="evolution-card-number">#${formatId(id)}</span>
+            <strong>${escapeHtml(name)}</strong>
+            ${conditions ? `<span class="evolution-card-condition">${escapeHtml(conditions)}</span>` : ''}
+        </button>
     `;
 }
 
-function formatEvolutionCondition(details) {
-    const detail = details?.[0];
-    if (!detail) return '';
-    if (detail.minLevel) return `Nivel ${detail.minLevel}`;
-    if (detail.item) return `Objeto: ${formatItem(detail.item)}`;
-    if (detail.heldItem) return `Objeto equipado: ${formatItem(detail.heldItem)}`;
-    if (detail.knownMove) return `Movimiento: ${capitalize(detail.knownMove.replaceAll('-', ' '))}`;
-    if (detail.location) return `Lugar: ${formatItem(detail.location)}`;
-    if (detail.timeOfDay) return `Momento: ${detail.timeOfDay}`;
-    if (detail.minHappiness) return `Amistad ${detail.minHappiness}`;
-    if (detail.minBeauty) return `Belleza ${detail.minBeauty}`;
-    if (detail.minAffection) return `Afecto ${detail.minAffection}`;
-    if (detail.trigger === 'trade') return 'Intercambio';
-    if (detail.needsOverworldRain) return 'Lluvia en el mapa';
-    if (detail.turnUpsideDown) return 'Consola invertida';
-    return detail.trigger ? translateEvolutionTrigger(detail.trigger) : '';
+function formatEvolutionConditions(details = []) {
+    if (!details.length) return '';
+    return details.map((detail) => {
+        if (detail.trigger?.name === 'level-up') {
+            if (detail.min_level) return `Nivel ${detail.min_level}`;
+            if (detail.time_of_day) return detail.time_of_day === 'day' ? 'De día' : 'De noche';
+            if (detail.known_move) return `Con ${formatMoveName(detail.known_move.name)}`;
+            if (detail.held_item) return `Con ${formatItemName(detail.held_item.name)}`;
+            return 'Al subir de nivel';
+        }
+        if (detail.trigger?.name === 'use-item') return `Usando ${formatItemName(detail.item?.name)}`;
+        if (detail.trigger?.name === 'trade') return 'Intercambio';
+        if (detail.trigger?.name === 'shed') return 'Al evolucionar';
+        if (detail.trigger?.name === 'spin') return 'Al girar';
+        if (detail.trigger?.name === 'tower-of-darkness') return 'Torre de la Oscuridad';
+        if (detail.trigger?.name === 'tower-of-waters') return 'Torre de las Aguas';
+        return detail.trigger?.name ? formatMoveName(detail.trigger.name) : '';
+    }).filter(Boolean).join(' · ');
 }
 
-function getEvolutionImage(id) {
-    return id
-        ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
-        : '';
+function getEvolutionImage(pokemon) {
+    return pokemon?.sprites?.other?.['official-artwork']?.front_default
+        || pokemon?.sprites?.front_default
+        || '';
 }
 
 function getCurrentImage(pokemon) {
@@ -316,224 +317,99 @@ function getCurrentImage(pokemon) {
                 || getShinyImage(pokemon)
                 || getStaticImage(pokemon, true);
         }
-
         return getShinyImage(pokemon) || getStaticImage(pokemon, true);
     }
-
     if (currentImageMode === 'animated') {
         return getAnimatedImage(pokemon, false)
             || getStaticImage(pokemon, false);
     }
-
     return getStaticImage(pokemon, false);
 }
 
-function getStaticImage(pokemon, shiny = false) {
-    const artwork = pokemon.sprites?.other?.['official-artwork'];
-    const key = shiny ? 'front_shiny' : 'front_default';
-    return artwork?.[key] || pokemon.sprites?.[key] || '';
+function getAnimatedImage(pokemon, shiny) {
+    const sprites = pokemon.sprites ?? {};
+    const animated = sprites.versions?.['generation-v']?.['black-white']?.animated;
+    return shiny ? animated?.front_shiny ?? '' : animated?.front_default ?? '';
 }
 
 function getShinyImage(pokemon) {
-    return pokemon.sprites?.other?.['official-artwork']?.front_shiny
-        || pokemon.sprites?.front_shiny
+    return pokemon.sprites?.front_shiny
+        || pokemon.sprites?.other?.['official-artwork']?.front_shiny
         || '';
 }
 
-function getAnimatedImage(pokemon, shiny = false) {
-    const showdown = pokemon.sprites?.other?.showdown;
-    const key = shiny ? 'front_shiny' : 'front_default';
-    return showdown?.[key] || '';
+function getStaticImage(pokemon, shiny = false) {
+    return shiny
+        ? getShinyImage(pokemon)
+        : pokemon.sprites?.other?.['official-artwork']?.front_default
+            || pokemon.sprites?.front_default
+            || '';
+}
+
+function displayPokemonName(pokemon) {
+    return pokemon?.name ? pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1) : 'Pokémon';
 }
 
 function getPrimaryAbility(pokemon) {
-    const ability = pokemon.abilities?.find(({ is_hidden }) => !is_hidden)?.ability?.name;
-    return ability ? translateAbility(ability) : '—';
-}
-
-function getDescription(species) {
-    const spanish = species.flavor_text_entries?.find(({ language }) => language.name === 'es');
-    const english = species.flavor_text_entries?.find(({ language }) => language.name === 'en');
-    const entry = spanish || english;
-    if (!entry) return 'No hay descripción disponible.';
-    return entry.flavor_text.replace(/\f/g, ' ').replace(/\n/g, ' ');
+    return pokemon.abilities?.[0]?.ability?.name
+        ? formatMoveName(pokemon.abilities[0].ability.name)
+        : 'Desconocida';
 }
 
 function formatHeight(height) {
-    return `${(height / 10).toFixed(1)} m`;
+    return `${(Number(height) / 10).toFixed(1)} m`;
 }
 
 function formatWeight(weight) {
-    return `${(weight / 10).toFixed(1)} kg`;
+    return `${(Number(weight) / 10).toFixed(1)} kg`;
 }
 
 function formatId(id) {
     return String(id).padStart(3, '0');
 }
 
-function capitalize(value) {
-    return value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
-}
-
-function displayPokemonName(pokemon) {
-    return pokemon.form_name
-        ? `${pokemon.species?.name ?? pokemon.name} · ${pokemon.form_name}`
-        : capitalize(pokemon.name);
-}
-
-function formatItem(value) {
-    return capitalize(String(value).replaceAll('-', ' '));
-}
-
-function formatVariantName(name, isDefault = false) {
-    if (isDefault) return 'Normal';
-    return capitalize(String(name).replaceAll('-', ' '));
-}
-
 function formatGeneration(value) {
-    const match = String(value).match(/generation-([ivx]+)/i);
-    return match
-        ? `Generación ${match[1].toUpperCase()}`
-        : capitalize(String(value).replaceAll('-', ' '));
-}
-
-function translateHabitat(value) {
-    const translations = {
-        cave: 'Cueva',
-        forest: 'Bosque',
-        grassland: 'Pradera',
-        mountain: 'Montaña',
-        rare: 'Raro',
-        roughTerrain: 'Terreno accidentado',
-        sea: 'Mar',
-        urban: 'Urbano',
-        watersEdge: 'Orilla del agua'
-    };
-    return translations[value] ?? formatItem(value);
-}
-
-function translateEvolutionTrigger(value) {
-    const translations = {
-        'level-up': 'Sube de nivel',
-        trade: 'Intercambio',
-        'use-item': 'Usar objeto',
-        shed: 'Muda',
-        spin: 'Girar',
-        'tower-of-darkness': 'Torre de la Oscuridad',
-        'tower-of-waters': 'Torre de las Aguas',
-        'three-critical-hits': 'Tres golpes críticos',
-        'take-damage': 'Recibir daño'
-    };
-    return translations[value] ?? formatItem(value);
+    const generation = value.replace('generation-', '');
+    const map = { i: 'I', ii: 'II', iii: 'III', iv: 'IV', v: 'V', vi: 'VI', vii: 'VII', viii: 'VIII', ix: 'IX' };
+    return `Gen. ${map[generation] ?? generation.toUpperCase()}`;
 }
 
 function translateType(type) {
     const translations = {
-        normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico',
-        grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno',
-        ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho',
-        rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro',
-        steel: 'Acero', fairy: 'Hada'
+        normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta',
+        ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador',
+        psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón',
+        dark: 'Siniestro', steel: 'Acero', fairy: 'Hada'
     };
-    return translations[type] ?? capitalize(type);
+    return translations[type] ?? type;
 }
 
-function translateAbility(ability) {
+function translateHabitat(habitat) {
     const translations = {
-        overgrow: 'Espesura',
-        blaze: 'Mar Llamas',
-        torrent: 'Torrente',
-        shield_dust: 'Polvo Escudo',
-        static: 'Electricidad Estática'
+        cave: 'Cueva', forest: 'Bosque', grassland: 'Pradera', mountain: 'Montaña',
+        rare: 'Raro', rough-terrain: 'Terreno escarpado', sea: 'Mar', urban: 'Urbano',
+        waters-edge: 'Orilla del agua'
     };
-    return translations[ability] ?? formatItem(ability);
+    return translations[habitat] ?? habitat;
 }
 
-function getStoredBoolean(key, fallback) {
-    try {
-        const value = localStorage.getItem(key);
-        return value === null ? fallback : value === 'true';
-    } catch {
-        return fallback;
-    }
+function formatVariantName(name, isDefault) {
+    if (isDefault) return 'Normal';
+    return name.replaceAll('-', ' ').replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-function setStoredBoolean(key, value) {
-    try {
-        localStorage.setItem(key, String(value));
-    } catch {
-        // Storage may be unavailable in private or restricted contexts.
-    }
+function formatMoveName(name) {
+    return name.replaceAll('-', ' ').replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-function scheduleCry(pokemon) {
-    window.setTimeout(() => playCry(pokemon), 180);
+function formatItemName(name) {
+    return formatMoveName(name);
 }
 
-function playCry(pokemon) {
-    const url = pokemon.cries?.latest || pokemon.cries?.legacy;
-    if (!url || !getStoredBoolean(AUDIO_PREFERENCE_KEY, true)) return;
-
-    const audio = new Audio(url);
-    audio.volume = 0.35;
-    audio.play().catch(() => {});
-}
-
-async function selectForm(identifier) {
-    const requestId = ++formRequestId;
-
-    try {
-        const pokemon = await getPokemon(identifier);
-        if (requestId !== formRequestId) return;
-
-        currentPokemon = pokemon;
-        currentShiny = false;
-        renderCurrentGamedex();
-        if (getStoredBoolean(AUDIO_PREFERENCE_KEY, true)) scheduleCry(pokemon);
-    } catch (error) {
-        console.error('Could not load Pokémon form:', error);
-    }
-}
-
-detailContent?.addEventListener('click', (event) => {
-    const formChip = event.target.closest('[data-gamedex-form-chip]');
-    if (formChip) {
-        event.preventDefault();
-        selectForm(formChip.dataset.gamedexFormChip);
-        return;
-    }
-
-    const animationButton = event.target.closest('[data-gamedex-animation]');
-    if (animationButton) {
-        const canAnimate = Boolean(getAnimatedImage(currentPokemon, currentShiny));
-        const next = currentImageMode !== 'animated' && canAnimate;
-        currentImageMode = next ? 'animated' : 'static';
-        setStoredBoolean(ANIMATION_PREFERENCE_KEY, next);
-        renderCurrentGamedex();
-        return;
-    }
-
-    const shinyButton = event.target.closest('[data-gamedex-shiny]');
-    if (shinyButton) {
-        currentShiny = !currentShiny;
-        renderCurrentGamedex();
-        if (getStoredBoolean(AUDIO_PREFERENCE_KEY, true)) playCry(currentPokemon);
-        return;
-    }
-
-    const audioButton = event.target.closest('[data-gamedex-audio]');
-    if (audioButton) {
-        const enabled = !getStoredBoolean(AUDIO_PREFERENCE_KEY, true);
-        setStoredBoolean(AUDIO_PREFERENCE_KEY, enabled);
-        renderCurrentGamedex();
-        if (enabled) playCry(currentPokemon);
-    }
-});
-
-export function hideGamedex() {
-    const detailSection = document.querySelector('#pokemon-detail');
-    detailSection?.classList.add('hidden');
-    detailSection?.setAttribute('aria-hidden', 'true');
+function getDescription(species) {
+    const entry = species.flavor_text_entries?.find(({ language }) => language.name === 'es')
+        || species.flavor_text_entries?.find(({ language }) => language.name === 'en');
+    return entry?.flavor_text?.replace(/[\n\f]/g, ' ') ?? 'Sin descripción disponible.';
 }
 
 function escapeHtml(value) {
@@ -547,4 +423,24 @@ function escapeHtml(value) {
 
 function escapeAttribute(value) {
     return escapeHtml(value);
+}
+
+function getStoredBoolean(key, fallback) {
+    try {
+        const stored = localStorage.getItem(key);
+        return stored === null ? fallback : stored === 'true';
+    } catch {
+        return fallback;
+    }
+}
+
+function scheduleCry(pokemon) {
+    const cry = pokemon.cries?.latest || pokemon.cries?.legacy;
+    if (!cry) return;
+    window.clearTimeout(scheduleCry.timeout);
+    scheduleCry.timeout = window.setTimeout(() => {
+        const audio = new Audio(cry);
+        audio.volume = 0.45;
+        audio.play().catch(() => {});
+    }, 120);
 }
