@@ -6,7 +6,7 @@
     color: #171717;
 }
 
-/* Keep the existing GAMEDEX card structure and functionality untouched. */
+/* Keep the existing GAMEDEX card structure, dimensions and functionality untouched. */
 .gamedex-card {
     cursor: pointer;
 }
@@ -27,7 +27,7 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.04) 45%, rgba(0,0,0,.22) 100%);
+    background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.06) 45%, rgba(0,0,0,.24) 100%);
 }
 
 /* Keep existing card content above the artwork and overlay. */
@@ -36,7 +36,7 @@
     z-index: 2;
 }
 
-/* The media controls must remain absolutely positioned in the top-right corner. */
+/* Keep the media controls fixed in their original top-right position. */
 .gamedex-card .gamedex-media-tools {
     position: absolute !important;
     top: 18px !important;
@@ -44,14 +44,7 @@
     z-index: 10 !important;
 }
 
-@media (max-width: 760px) {
-    .gamedex-card .gamedex-media-tools {
-        top: 12px !important;
-        right: 12px !important;
-    }
-}
-
-/* Stronger text shadow keeps the original white typography readable over every type artwork. */
+/* Stronger text shadow only for readability over the user's artwork. */
 .gamedex-card.has-type-background .gamedex-title h1,
 .gamedex-card.has-type-background .gamedex-number,
 .gamedex-card.has-type-background .gamedex-types,
@@ -65,14 +58,13 @@
 .gamedex-card.has-type-background .gamedex-stat-top strong,
 .gamedex-card.has-type-background .gamedex-form-label,
 .gamedex-card.has-type-background .gamedex-badge {
-    text-shadow: 0 2px 5px rgba(0,0,0,.78), 0 1px 2px rgba(0,0,0,.9);
+    text-shadow: 0 2px 4px rgba(0,0,0,.78), 0 1px 1px rgba(0,0,0,.65);
 }
 
-/* Keep the controls readable without changing their functionality or appearance. */
 .gamedex-card.has-type-background .gamedex-media-button,
 .gamedex-card.has-type-background .favorite-toggle,
 .gamedex-card.has-type-background .gamedex-form-select {
-    text-shadow: 0 2px 4px rgba(0,0,0,.72);
+    text-shadow: 0 1px 3px rgba(0,0,0,.65);
 }
 
 /* White content surfaces outside the card. The footer intentionally stays black. */
@@ -135,6 +127,26 @@
 
 .evolution-subbranches {
     border-color: #dddddd !important;
+}
+
+/* Mobile: deliberately no card dimension overrides here. The existing mobile
+   GAMEDEX layout remains the sole owner of the card size and proportions. */
+@media (max-width: 760px) {
+    .gamedex-card .gamedex-media-tools {
+        top: 12px !important;
+        right: 12px !important;
+    }
+
+    .gamedex-card.has-type-background::after {
+        background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.06) 46%, rgba(0,0,0,.24) 100%);
+    }
+
+    .gamedex-card.has-type-background .gamedex-title h1,
+    .gamedex-card.has-type-background .gamedex-number,
+    .gamedex-card.has-type-background .gamedex-meta-item strong,
+    .gamedex-card.has-type-background .gamedex-stat-top strong {
+        text-shadow: 0 2px 5px rgba(0,0,0,.82), 0 1px 2px rgba(0,0,0,.72);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
