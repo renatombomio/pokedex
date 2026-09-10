@@ -1,0 +1,256 @@
+.gamedex-artwork {
+    position: relative;
+    overflow: visible;
+}
+
+.gamedex-capture-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.gamedex-capture-ball {
+    --ball-size: clamp(52px, 9vw, 82px);
+    position: absolute;
+    width: var(--ball-size);
+    height: var(--ball-size);
+    left: 0;
+    top: 0;
+    opacity: 0;
+    transform-origin: center;
+    filter: drop-shadow(0 10px 14px rgb(0 0 0 / 18%));
+}
+
+.gamedex-capture-ball-top,
+.gamedex-capture-ball-bottom,
+.gamedex-capture-ball-band,
+.gamedex-capture-ball-button {
+    position: absolute;
+    display: block;
+}
+
+.gamedex-capture-ball-top {
+    inset: 0 0 50% 0;
+    background: #e53935;
+    border: 3px solid #151515;
+    border-bottom: 0;
+    border-radius: 999px 999px 0 0;
+}
+
+.gamedex-capture-ball-bottom {
+    inset: 50% 0 0 0;
+    background: #f7f7f7;
+    border: 3px solid #151515;
+    border-top: 0;
+    border-radius: 0 0 999px 999px;
+}
+
+.gamedex-capture-ball-band {
+    left: 0;
+    right: 0;
+    top: calc(50% - 3px);
+    height: 6px;
+    background: #151515;
+    z-index: 2;
+}
+
+.gamedex-capture-ball-button {
+    width: 34%;
+    aspect-ratio: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #f7f7f7;
+    border: 5px solid #151515;
+    box-shadow: inset 0 0 0 2px #bdbdbd;
+    z-index: 3;
+}
+
+.gamedex-capture-stars {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+}
+
+.gamedex-capture-stars span {
+    position: absolute;
+    opacity: 0;
+    color: #f0cf35;
+    font-size: clamp(18px, 3vw, 28px);
+    text-shadow: 0 2px 3px rgb(0 0 0 / 18%);
+}
+
+.gamedex-capture-stars span:nth-child(1) { left: -15%; top: 5%; }
+.gamedex-capture-stars span:nth-child(2) { left: 42%; top: -25%; }
+.gamedex-capture-stars span:nth-child(3) { right: -18%; top: 5%; }
+
+.gamedex-capture-button {
+    width: 100%;
+    min-height: 54px;
+    border: 1px solid rgb(20 20 20 / 12%);
+    border-radius: 16px;
+    background: rgb(255 255 255 / 88%);
+    color: #171717;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font: inherit;
+    font-weight: 800;
+    letter-spacing: .08em;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 8%);
+}
+
+.gamedex-capture-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgb(0 0 0 / 12%);
+}
+
+.gamedex-capture-button:disabled {
+    cursor: default;
+    opacity: .72;
+}
+
+.gamedex-capture-ball-mini {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 2px solid #151515;
+    background: linear-gradient(to bottom, #e53935 0 46%, #151515 46% 54%, #f7f7f7 54%);
+    flex: 0 0 auto;
+}
+
+.gamedex-capture-controls {
+    margin-top: 18px;
+    width: 100%;
+}
+
+.gamedex-artwork.is-capturing {
+    --capture-progress: 1;
+}
+
+.gamedex-artwork.is-capturing .gamedex-capture-ball {
+    opacity: 1;
+}
+
+.gamedex-capture-ball.is-throwing {
+    animation: gamedex-capture-throw .85s cubic-bezier(.2, .78, .24, 1) forwards;
+}
+
+.gamedex-capture-ball.is-shaking {
+    animation: gamedex-capture-shake 1.95s ease-in-out forwards;
+}
+
+.gamedex-capture-ball.is-success {
+    animation: gamedex-capture-success .55s ease-out forwards;
+}
+
+.gamedex-capture-ball.is-failed {
+    animation: gamedex-capture-fail .55s ease-out forwards;
+}
+
+.gamedex-artwork img.is-capture-target {
+    animation: gamedex-capture-target .42s ease-in forwards;
+}
+
+.gamedex-capture-ball.is-success .gamedex-capture-stars span {
+    animation: gamedex-capture-star .55s ease-out forwards;
+}
+
+.gamedex-capture-ball.is-success .gamedex-capture-stars span:nth-child(2) { animation-delay: .04s; }
+.gamedex-capture-ball.is-success .gamedex-capture-stars span:nth-child(3) { animation-delay: .08s; }
+
+.gamedex-capture-message {
+    position: absolute;
+    left: 50%;
+    bottom: 5%;
+    transform: translateX(-50%);
+    z-index: 10;
+    padding: 9px 15px;
+    border-radius: 999px;
+    background: rgb(17 17 17 / 88%);
+    color: #fff;
+    font-size: clamp(12px, 2vw, 15px);
+    font-weight: 800;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    animation: gamedex-capture-message .3s ease-out forwards;
+}
+
+.gamedex-capture-message.is-success {
+    background: rgb(26 120 70 / 92%);
+}
+
+.gamedex-capture-message.is-failed {
+    background: rgb(135 48 48 / 92%);
+}
+
+@keyframes gamedex-capture-throw {
+    0% {
+        transform: translate(var(--capture-start-x), var(--capture-start-y)) scale(.55) rotate(-25deg);
+    }
+    48% {
+        transform: translate(calc(var(--capture-target-x) - 10px), calc(var(--capture-target-y) - 12px)) scale(1.12) rotate(360deg);
+    }
+    64% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1.18) rotate(540deg);
+    }
+    100% {
+        transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1) rotate(720deg);
+    }
+}
+
+@keyframes gamedex-capture-target {
+    0% { opacity: 1; transform: scale(1); }
+    45% { opacity: .85; transform: scale(.72); }
+    100% { opacity: 0; transform: scale(.08); }
+}
+
+@keyframes gamedex-capture-shake {
+    0%, 100% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(0); }
+    8% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(-17deg); }
+    16% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(17deg); }
+    24% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(-14deg); }
+    32% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(14deg); }
+    40% { transform: translate(var(--capture-target-x), var(--capture-target-y)) rotate(0); }
+}
+
+@keyframes gamedex-capture-success {
+    from { transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1); opacity: 1; }
+    to { transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(.92); opacity: 1; }
+}
+
+@keyframes gamedex-capture-fail {
+    from { transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(1); opacity: 1; }
+    to { transform: translate(var(--capture-target-x), calc(var(--capture-target-y) - 20px)) scale(.8); opacity: 0; }
+}
+
+@keyframes gamedex-capture-star {
+    0% { opacity: 0; transform: scale(.4) translateY(10px); }
+    35% { opacity: 1; transform: scale(1.15) translateY(-8px); }
+    100% { opacity: 0; transform: scale(.9) translateY(-35px); }
+}
+
+@keyframes gamedex-capture-message {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gamedex-capture-ball.is-throwing,
+    .gamedex-capture-ball.is-shaking,
+    .gamedex-capture-ball.is-success,
+    .gamedex-capture-ball.is-failed,
+    .gamedex-artwork img.is-capture-target,
+    .gamedex-capture-ball.is-success .gamedex-capture-stars span,
+    .gamedex-capture-message {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
