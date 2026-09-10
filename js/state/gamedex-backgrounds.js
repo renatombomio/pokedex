@@ -28,29 +28,28 @@ function getCardType(card) {
     return typeClass ? typeClass.slice(5) : 'normal';
 }
 
-function revealTypeBackground(card) {
+function applyTypeBackground(card) {
     if (!card || card.classList.contains('has-type-background')) return;
 
     const type = getCardType(card);
-    const background = document.createElement('div');
-    background.className = 'gamedex-type-background';
-    background.setAttribute('aria-hidden', 'true');
-
     const typeColor = TYPE_COLORS[type] ?? TYPE_COLORS.normal;
+
     card.style.setProperty('--gamedex-type-color', typeColor);
-
-    // Load the type artwork only when the detail card is opened/clicked.
-    background.style.backgroundImage = `url("${TYPE_BACKGROUND_PATH}/${type}.png")`;
-
-    card.prepend(background);
-    requestAnimationFrame(() => card.classList.add('has-type-background'));
+    card.style.setProperty(
+        '--gamedex-type-background-image',
+        `url("${TYPE_BACKGROUND_PATH}/${type}.png")`
+    );
+    card.classList.add('has-type-background');
 }
 
-detailContent?.addEventListener('click', (event) => {
-    const card = event.target.closest('.gamedex-card');
-    if (!card || !detailContent.contains(card)) return;
+function applyBackgrounds() {
+    detailContent?.querySelectorAll('.gamedex-card').forEach(applyTypeBackground);
+}
 
-    if (event.target.closest('button, a, select, input, textarea, option')) return;
+/* The detail card is rendered dynamically, so attach the background as soon as it appears. */
+if (detailContent) {
+    applyBackgrounds();
 
-    revealTypeBackground(card);
-});
+    const observer = new MutationObserver(applyBackgrounds);
+    observer.observe(detailContent, { childList: true, subtree: true });
+}
