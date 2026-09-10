@@ -228,6 +228,8 @@ function playCaptureAnimation({ artwork, image, ball, result, requestId }) {
         const shakeDuration = 650;
         const totalDuration = impactDelay + (shakeCount * shakeDuration) + 500;
 
+        ball.style.setProperty('--shake-count', String(shakeCount));
+
         window.setTimeout(() => {
             if (requestId !== captureRequestId) return;
             image.classList.add('is-capture-target');
