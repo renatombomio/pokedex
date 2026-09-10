@@ -8,7 +8,6 @@ const detailContent = document.querySelector('#detail-content');
 let captureRequestId = 0;
 
 if (detailContent) {
-    installCaptureEffects();
     const observer = new MutationObserver(() => window.requestAnimationFrame(ensureCaptureControls));
     observer.observe(detailContent, { childList: true, subtree: true });
     window.requestAnimationFrame(ensureCaptureControls);
@@ -16,81 +15,6 @@ if (detailContent) {
 }
 
 export { getCapturedPokemon, isPokemonCaptured };
-
-function installCaptureEffects() {
-    const styleId = 'gamedex-capture-absorption-effects';
-    if (document.getElementById(styleId)) return;
-
-    const style = document.createElement('style');
-    style.id = styleId;
-    style.textContent = `
-        .gamedex-capture-ball.is-opening .gamedex-capture-ball-top {
-            animation: gamedex-ball-open-top .28s cubic-bezier(.2,.8,.2,1) both;
-            transform-origin: 50% 100%;
-        }
-        .gamedex-capture-ball.is-opening .gamedex-capture-ball-bottom {
-            animation: gamedex-ball-open-bottom .28s cubic-bezier(.2,.8,.2,1) both;
-            transform-origin: 50% 0%;
-        }
-        .gamedex-capture-ball.is-opening .gamedex-capture-ball-button {
-            animation: gamedex-ball-open-button .28s ease-out both;
-        }
-        .gamedex-capture-ball.is-absorbing {
-            box-shadow: 0 0 0 4px rgb(255 255 255 / 12%), 0 0 34px 12px rgb(255 225 110 / 42%);
-        }
-        .gamedex-capture-ball.is-absorbing::after {
-            content: '';
-            position: absolute;
-            inset: -18%;
-            border: 2px solid rgb(255 255 255 / 58%);
-            border-radius: 50%;
-            opacity: 0;
-            animation: gamedex-capture-vortex .56s cubic-bezier(.2,.75,.25,1) forwards;
-        }
-        .gamedex-artwork img.is-capture-absorbing {
-            animation: gamedex-capture-absorb .56s cubic-bezier(.28,.82,.2,1) forwards !important;
-            transform-origin: 50% 50%;
-            will-change: transform, opacity, filter;
-        }
-        .gamedex-artwork img.is-capture-escape {
-            animation: gamedex-capture-escape .62s cubic-bezier(.16,.82,.25,1) forwards !important;
-            transform-origin: 50% 55%;
-            will-change: transform, opacity, filter;
-        }
-        @keyframes gamedex-ball-open-top {
-            0% { transform: translateY(0) rotate(0); }
-            100% { transform: translateY(-9px) rotate(-8deg); }
-        }
-        @keyframes gamedex-ball-open-bottom {
-            0% { transform: translateY(0) rotate(0); }
-            100% { transform: translateY(9px) rotate(8deg); }
-        }
-        @keyframes gamedex-ball-open-button {
-            0% { transform: translate(-50%,-50%) scale(1); }
-            100% { transform: translate(-50%,-50%) scale(.72); }
-        }
-        @keyframes gamedex-capture-vortex {
-            0% { opacity: 0; transform: scale(.35); }
-            25% { opacity: 1; }
-            100% { opacity: 0; transform: scale(1.8); }
-        }
-        @keyframes gamedex-capture-absorb {
-            0% { opacity: 1; transform: scale(1.02); filter: brightness(1) blur(0); }
-            20% { opacity: 1; transform: scale(1.08); filter: brightness(1.8) blur(0); }
-            48% { opacity: .72; transform: scale(.55); filter: brightness(1.45) blur(1px); }
-            76% { opacity: .28; transform: scale(.18); filter: brightness(2) blur(4px); }
-            100% { opacity: 0; transform: scale(.025); filter: brightness(2.4) blur(7px); }
-        }
-        @keyframes gamedex-capture-escape {
-            0% { opacity: 0; transform: scale(.05) translateY(0); filter: brightness(2.2) blur(6px); }
-            22% { opacity: .9; transform: scale(.34) translateY(-2px); filter: brightness(1.5) blur(2px); }
-            58% { opacity: 1; transform: scale(1.06) translateY(-18px); filter: brightness(1.08) blur(0); }
-            78% { opacity: 1; transform: scale(.97) translateY(4px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); filter: brightness(1) blur(0); }
-        }
-    `;
-    document.head.append(style);
-}
 
 function ensureCaptureControls() {
     const card = detailContent?.querySelector('.gamedex-card');
@@ -222,8 +146,8 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
     const shakeCount = getShakeCount(result);
 
     artwork.classList.remove('is-capturing', 'is-captured', 'is-escaped', 'is-impact');
-    ball.classList.remove('is-throwing', 'is-shaking', 'is-success', 'is-failed', 'is-at-target', 'is-opening', 'is-absorbing');
-    image.classList.remove('is-capture-target', 'is-capture-absorbing', 'is-capture-escape');
+    ball.classList.remove('is-throwing', 'is-shaking', 'is-success', 'is-failed', 'is-at-target');
+    image.classList.remove('is-capture-target');
     image.style.opacity = '';
     image.style.visibility = '';
     image.style.pointerEvents = '';
@@ -243,18 +167,10 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
     artwork.classList.add('is-impact');
     image.classList.add('is-capture-target');
     ball.classList.remove('is-throwing');
-    ball.classList.add('is-at-target', 'is-opening');
+    ball.classList.add('is-at-target');
 
-    await wait(250);
+    await wait(430);
     if (requestId !== captureRequestId) return;
-
-    image.classList.add('is-capture-absorbing');
-    ball.classList.add('is-absorbing');
-
-    await wait(560);
-    if (requestId !== captureRequestId) return;
-
-    ball.classList.remove('is-opening', 'is-absorbing');
 
     for (let index = 0; index < shakeCount; index += 1) {
         ball.classList.remove('is-shaking');
@@ -274,19 +190,17 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
         artwork.classList.add('is-captured');
         ball.classList.remove('is-shaking', 'is-at-target');
         ball.classList.add('is-success');
-        image.classList.remove('is-capture-target', 'is-capture-absorbing');
+        image.classList.remove('is-capture-target');
         image.style.opacity = '0';
         image.style.visibility = 'hidden';
     } else {
         artwork.classList.add('is-escaped');
         ball.classList.remove('is-shaking', 'is-at-target');
-        ball.classList.add('is-failed', 'is-opening');
-        image.classList.remove('is-capture-target', 'is-capture-absorbing');
-        await wait(170);
-        image.classList.add('is-capture-escape');
+        ball.classList.add('is-failed');
+        image.classList.remove('is-capture-target');
     }
 
-    await wait(result.captured ? 520 : 650);
+    await wait(result.captured ? 520 : 520);
 }
 
 function showCaptureMessage(artwork, text, success) {
