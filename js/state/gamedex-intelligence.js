@@ -41,13 +41,6 @@ function formatMultiplier(value) {
     return `×${value}`;
 }
 
-function classify(value) {
-    if (value === 0) return 'immunity';
-    if (value < 1) return 'resistance';
-    if (value > 1) return 'weakness';
-    return 'neutral';
-}
-
 function createTypeChip(type, multiplier) {
     return `
         <div class="gamedex-effectiveness-chip type-${escapeHtml(type)}">
@@ -140,6 +133,8 @@ async function renderTypeEffectiveness() {
 }
 
 const observer = new MutationObserver(() => {
+    const detailContent = document.querySelector('#detail-content');
+    if (!detailContent?.querySelector('.gamedex-card') || detailContent.querySelector('[data-gamedex-effectiveness]')) return;
     window.clearTimeout(observer.renderTimer);
     observer.renderTimer = window.setTimeout(renderTypeEffectiveness, 40);
 });
