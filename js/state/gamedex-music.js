@@ -7,6 +7,8 @@ const MUSIC_TRACKS = [
 
 const MUSIC_VOLUME_KEY = 'pokedex-gamedex-music-volume';
 const MUSIC_ENABLED_KEY = 'pokedex-gamedex-music-enabled';
+const MUSIC_TRACK_KEY = 'pokedex-gamedex-music-track';
+const MUSIC_POSITION_KEY = 'pokedex-gamedex-music-position';
 const FADE_DURATION = 900;
 
 let currentTrackIndex = 0;
@@ -14,9 +16,10 @@ let audio = null;
 let fadeTimer = null;
 let player = null;
 let playButton = null;
+let nextButton = null;
 let muteButton = null;
 let volumeInput = null;
-let volumeValue = null;
+let trackLabel = null;
 
 function getStoredBoolean(key, fallback) {
     try {
@@ -27,13 +30,17 @@ function getStoredBoolean(key, fallback) {
     }
 }
 
-function getStoredVolume() {
+function getStoredNumber(key, fallback) {
     try {
-        const value = Number(localStorage.getItem(MUSIC_VOLUME_KEY));
-        return Number.isFinite(value) ? Math.min(Math.max(value, 0), 1) : 0.25;
+        const value = Number(localStorage.getItem(key));
+        return Number.isFinite(value) ? value : fallback;
     } catch {
-        return 0.25;
+        return fallback;
     }
+}
+
+function getStoredVolume() {
+    return Math.min(Math.max(getStoredNumber(MUSIC_VOLUME_KEY, 0.25), 0), 1);
 }
 
 function setStoredBoolean(key, value) {
@@ -44,9 +51,9 @@ function setStoredBoolean(key, value) {
     }
 }
 
-function setStoredVolume(value) {
+function setStoredNumber(key, value) {
     try {
-        localStorage.setItem(MUSIC_VOLUME_KEY, String(value));
+        localStorage.setItem(key, String(value));
     } catch {
         // Ignore storage failures; audio should still work for this session.
     }
@@ -61,6 +68,7 @@ function createPlayer() {
     player.setAttribute('aria-label', 'Reproductor de música');
     player.innerHTML = `
         <button class="gamedex-music-button" type="button" data-music-play aria-label="Reproducir música" title="Reproducir música">▶</button>
+        <button class="gamedex-music-button" type="button" data-music-next aria-label="Siguiente canción" title="Siguiente canción">⏭</button>
         <div class="gamedex-music-info" aria-live="polite">
             <span>Música GameDex</span>
             <strong data-music-track>Track 1</strong>
@@ -75,14 +83,15 @@ function createPlayer() {
     document.body.appendChild(player);
 
     playButton = player.querySelector('[data-music-play]');
+    nextButton = player.querySelector('[data-music-next]');
     muteButton = player.querySelector('[data-music-mute]');
     volumeInput = player.querySelector('[data-music-volume]');
-    volumeValue = player.querySelector('[data-music-track]');
+    trackLabel = player.querySelector('[data-music-track]');
 
-    const storedVolume = getStoredVolume();
-    volumeInput.value = String(storedVolume);
+    volumeInput.value = String(getStoredVolume());
 
     playButton.addEventListener('click', togglePlayback);
+    nextButton.addEventListener('click', skipToNextTrack);
     muteButton.addEventListener('click', toggleMute);
     volumeInput.addEventListener('input', handleVolumeChange);
 }
@@ -94,6 +103,12 @@ function createAudio() {
     audio.volume = 0;
     audio.addEventListener('ended', playNextTrack);
     audio.addEventListener('error', handleAudioError);
+}
+
+function persistPosition() {
+    if (!audio) return;
+    setStoredNumber(MUSIC_TRACK_KEY, currentTrackIndex);
+    setStoredNumber(MUSIC_POSITION_KEY, audio.currentTime || 0);
 }
 
 function updatePlayer() {
@@ -109,7 +124,7 @@ function updatePlayer() {
     muteButton.setAttribute('aria-label', muted ? 'Activar música' : 'Silenciar música');
     muteButton.title = muted ? 'Activar música' : 'Silenciar música';
 
-    volumeValue.textContent = `Track ${currentTrackIndex + 1}`;
+    trackLabel.textContent = `Track ${currentTrackIndex + 1}`;
 }
 
 function getTargetVolume() {
@@ -144,7 +159,6 @@ async function startPlayback() {
         setStoredBoolean(MUSIC_ENABLED_KEY, true);
         updatePlayer();
     } catch {
-        // Browsers may block playback until the user interacts with the page.
         setStoredBoolean(MUSIC_ENABLED_KEY, false);
         updatePlayer();
     }
@@ -152,6 +166,7 @@ async function startPlayback() {
 
 function pausePlayback() {
     if (!audio) return;
+    persistPosition();
     fadeTo(0, 350, () => {
         audio.pause();
         updatePlayer();
@@ -175,22 +190,36 @@ function toggleMute() {
 
 function handleVolumeChange(event) {
     const value = Number(event.target.value);
-    setStoredVolume(value);
+    setStoredNumber(MUSIC_VOLUME_KEY, value);
     if (!audio) createAudio();
     if (value > 0 && audio.muted) audio.muted = false;
     audio.volume = value;
     updatePlayer();
 }
 
-function playNextTrack() {
-    if (!audio) return;
+function switchTrack(nextIndex, shouldPlay = true) {
+    if (!audio) createAudio();
+
+    const wasPlaying = shouldPlay && !audio.paused;
+    persistPosition();
 
     fadeTo(0, FADE_DURATION, () => {
         audio.pause();
-        currentTrackIndex = (currentTrackIndex + 1) % MUSIC_TRACKS.length;
+        currentTrackIndex = (nextIndex + MUSIC_TRACKS.length) % MUSIC_TRACKS.length;
+        setStoredNumber(MUSIC_TRACK_KEY, currentTrackIndex);
+        setStoredNumber(MUSIC_POSITION_KEY, 0);
         createAudio();
-        startPlayback();
+        updatePlayer();
+        if (wasPlaying || shouldPlay) startPlayback();
     });
+}
+
+function playNextTrack() {
+    switchTrack(currentTrackIndex + 1, true);
+}
+
+function skipToNextTrack() {
+    switchTrack(currentTrackIndex + 1, true);
 }
 
 function handleAudioError() {
@@ -199,16 +228,37 @@ function handleAudioError() {
     updatePlayer();
 }
 
+function restoreAudioState() {
+    const savedTrack = getStoredNumber(MUSIC_TRACK_KEY, 0);
+    currentTrackIndex = Number.isInteger(savedTrack) && savedTrack >= 0 && savedTrack < MUSIC_TRACKS.length
+        ? savedTrack
+        : 0;
+
+    createAudio();
+
+    const savedPosition = Math.max(0, getStoredNumber(MUSIC_POSITION_KEY, 0));
+    if (savedPosition > 0) {
+        const restorePosition = () => {
+            if (Number.isFinite(audio.duration) && savedPosition < audio.duration) {
+                audio.currentTime = savedPosition;
+            }
+            audio.removeEventListener('loadedmetadata', restorePosition);
+        };
+        audio.addEventListener('loadedmetadata', restorePosition);
+    }
+}
+
 function init() {
     createPlayer();
-    createAudio();
+    restoreAudioState();
     updatePlayer();
 
-    // Attempt background playback when the saved preference allows it.
-    // If the browser blocks autoplay, the player remains available for a manual click.
     if (getStoredBoolean(MUSIC_ENABLED_KEY, false)) {
         startPlayback();
     }
+
+    window.addEventListener('pagehide', persistPosition);
+    window.addEventListener('beforeunload', persistPosition);
 }
 
 if (document.readyState === 'loading') {
