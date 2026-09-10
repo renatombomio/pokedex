@@ -1,5 +1,5 @@
 import { getGenerationById } from './generations.js';
-import { getRegionById } from './regions.js';
+import { REGIONS } from './regions.js';
 import { getPokemon } from '../api/pokemon.js';
 import { filterByGeneration } from './app.js';
 import { showHome } from './navigation.js';
@@ -71,7 +71,7 @@ function renderLoading(generation) {
 }
 
 function renderDetail(generation, starters) {
-    const region = getRegionById(getRegionId(generation));
+    const region = getRegionForGeneration(generation);
 
     detailElement.innerHTML = `
         <div class="container generation-detail-inner">
@@ -113,6 +113,7 @@ function renderDetail(generation, starters) {
     bindBackButton();
 
     detailElement.querySelector('[data-region-link]')?.addEventListener('click', () => {
+        if (!region) return;
         document.dispatchEvent(new CustomEvent('region:open-detail', {
             detail: { region: region.id }
         }));
@@ -143,9 +144,12 @@ function mountBreadcrumbs(generation) {
     ]);
 }
 
-function getRegionId(generation) {
-    const regionName = generation.region.split('/')[0].trim();
-    return regionName.toLowerCase();
+function getRegionForGeneration(generation) {
+    const normalized = generation.region.toLowerCase();
+    return REGIONS.find((region) => {
+        const regionName = region.name.toLowerCase();
+        return normalized === regionName || normalized.startsWith(regionName.split('/')[0].trim());
+    }) ?? null;
 }
 
 function bindBackButton() {
