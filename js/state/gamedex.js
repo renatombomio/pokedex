@@ -387,8 +387,8 @@ function translateType(type) {
 function translateHabitat(habitat) {
     const translations = {
         cave: 'Cueva', forest: 'Bosque', grassland: 'Pradera', mountain: 'Montaña',
-        rare: 'Raro', rough-terrain: 'Terreno escarpado', sea: 'Mar', urban: 'Urbano',
-        waters-edge: 'Orilla del agua'
+        rare: 'Raro', 'rough-terrain': 'Terreno escarpado', sea: 'Mar', urban: 'Urbano',
+        'waters-edge': 'Orilla del agua'
     };
     return translations[habitat] ?? habitat;
 }
