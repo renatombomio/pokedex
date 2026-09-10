@@ -40,7 +40,12 @@ export async function showRegionDetail(regionId, options = {}) {
 
     if (options.pushHistory !== false) {
         window.history.pushState(
-            { view: 'region', region: region.id, contextLabel: region.name },
+            {
+                view: 'region',
+                region: region.id,
+                contextLabel: region.name,
+                context: options.context || null
+            },
             '',
             `#region/${region.id}`
         );
@@ -260,8 +265,13 @@ async function handleDetailClick(event) {
 
     const generationLink = event.target.closest('[data-generation-link]');
     if (generationLink) {
+        const generationId = Number(generationLink.dataset.generationLink);
+        const generation = getGenerationById(generationId);
         document.dispatchEvent(new CustomEvent('generation:open-detail', {
-            detail: { generation: Number(generationLink.dataset.generationLink) }
+            detail: {
+                generation: generationId,
+                context: generation ? { view: 'region', id: detailElement.dataset.regionId, label: detailElement.querySelector('#region-detail-title')?.textContent?.trim() || 'Región' } : null
+            }
         }));
         return;
     }
