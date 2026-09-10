@@ -138,8 +138,16 @@ export function setDetailView(id = null, options = {}) {
     getRegionDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
 
+    const context = options.context || null;
+    const backButton = document.querySelector('#detail-back');
+    if (backButton) {
+        backButton.textContent = context?.label
+            ? `← Volver a ${context.label}`
+            : '← Volver a la Pokédex';
+    }
+
     if (options.pushHistory !== false && Number.isInteger(id)) {
-        pushRoute(`pokemon/${id}`, options.form ?? null);
+        pushRoute(`pokemon/${id}`, options.form ?? null, context);
     }
 }
 
@@ -179,7 +187,7 @@ function handleNavigationChange(event) {
     const id = Number(window.history.state?.id);
     if (!form || !Number.isInteger(id)) return;
 
-    setDetailView(id, { form });
+    setDetailView(id, { form, context: window.history.state?.context || null });
 }
 
 async function handleRegionOpenRequest(event) {
@@ -215,7 +223,7 @@ function hideHomeViews() {
     elements.generations?.classList.add('hidden');
 }
 
-function pushRoute(route, form = null) {
+function pushRoute(route, form = null, context = null) {
     const url = route === 'pokedex'
         ? '#pokedex'
         : form
@@ -228,7 +236,8 @@ function pushRoute(route, form = null) {
         type: getRouteType(route),
         region: getRouteRegion(route),
         generation: getRouteGeneration(route),
-        form: form || null
+        form: form || null,
+        context: context || null
     }, '', url);
 }
 
@@ -243,6 +252,7 @@ function restoreRoute(route) {
             detail: {
                 id: route.state.id,
                 form: route.state.form || null,
+                context: route.state.context || null,
                 fromHistory: true
             }
         })));
@@ -302,7 +312,7 @@ function readRoute() {
         const id = Number(route.split('/')[1]);
         if (Number.isInteger(id)) {
             return {
-                state: { view: 'pokemon', id, form },
+                state: { view: 'pokemon', id, form, context: null },
                 url: form ? `#pokemon/${id}?form=${encodeURIComponent(form)}` : `#pokemon/${id}`
             };
         }
