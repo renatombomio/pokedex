@@ -89,6 +89,7 @@ function ensureCaptureControls() {
         layer.className = 'gamedex-capture-layer';
         layer.setAttribute('aria-hidden', 'true');
         layer.innerHTML = `
+            <div class="gamedex-capture-impact"></div>
             <div class="gamedex-capture-ball">
                 <span class="gamedex-capture-ball-top"></span>
                 <span class="gamedex-capture-ball-bottom"></span>
@@ -200,58 +201,73 @@ function performShakeCheck(a) {
 
 function getShakeCount(result) {
     if (result.captured) return 3;
-    if (result.shakes.length === 1) return 0;
-    if (result.shakes.length === 2) return 1;
-    return 3;
+    return Math.max(0, result.shakes.length - 1);
 }
 
-function playCaptureAnimation({ artwork, image, ball, result, requestId }) {
-    return new Promise((resolve) => {
-        const rect = artwork.getBoundingClientRect();
-        const imageRect = image.getBoundingClientRect();
-        const startX = rect.width * -0.22;
-        const startY = rect.height * 0.85;
-        const targetX = imageRect.left + imageRect.width / 2 - rect.left;
-        const targetY = imageRect.top + imageRect.height / 2 - rect.top;
+function wait(duration) {
+    return new Promise((resolve) => window.setTimeout(resolve, duration));
+}
 
-        artwork.classList.remove('is-capturing', 'is-captured', 'is-escaped');
-        ball.classList.remove('is-throwing', 'is-shaking', 'is-success', 'is-failed');
-        artwork.style.setProperty('--capture-start-x', `${startX}px`);
-        artwork.style.setProperty('--capture-start-y', `${startY}px`);
-        artwork.style.setProperty('--capture-target-x', `${targetX}px`);
-        artwork.style.setProperty('--capture-target-y', `${targetY}px`);
-        artwork.classList.add('is-capturing');
-        ball.classList.add('is-throwing');
+async function playCaptureAnimation({ artwork, image, ball, result, requestId }) {
+    const rect = artwork.getBoundingClientRect();
+    const imageRect = image.getBoundingClientRect();
+    const startX = rect.width * -0.22;
+    const startY = rect.height * 0.85;
+    const targetX = imageRect.left + imageRect.width / 2 - rect.left;
+    const targetY = imageRect.top + imageRect.height / 2 - rect.top;
+    const shakeCount = getShakeCount(result);
 
-        const throwDuration = 850;
-        const impactDelay = throwDuration + 120;
-        const shakeCount = getShakeCount(result);
-        const shakeDuration = 650;
-        const totalDuration = impactDelay + (shakeCount * shakeDuration) + 500;
+    artwork.classList.remove('is-capturing', 'is-captured', 'is-escaped', 'is-impact');
+    ball.classList.remove('is-throwing', 'is-shaking', 'is-success', 'is-failed');
+    image.classList.remove('is-capture-target');
+    ball.querySelector('.gamedex-capture-stars')?.classList.remove('is-active');
 
-        ball.style.setProperty('--shake-count', String(shakeCount));
+    artwork.style.setProperty('--capture-start-x', `${startX}px`);
+    artwork.style.setProperty('--capture-start-y', `${startY}px`);
+    artwork.style.setProperty('--capture-target-x', `${targetX}px`);
+    artwork.style.setProperty('--capture-target-y', `${targetY}px`);
+    ball.style.setProperty('--shake-count', String(shakeCount));
 
-        window.setTimeout(() => {
-            if (requestId !== captureRequestId) return;
-            image.classList.add('is-capture-target');
-        }, impactDelay);
+    artwork.classList.add('is-capturing');
+    ball.classList.add('is-throwing');
 
-        window.setTimeout(() => {
-            if (requestId !== captureRequestId) return;
-            ball.classList.remove('is-throwing');
-            if (shakeCount > 0) ball.classList.add('is-shaking');
-        }, impactDelay);
+    await wait(820);
+    if (requestId !== captureRequestId) return;
 
-        window.setTimeout(() => {
-            if (requestId !== captureRequestId) return;
-            artwork.classList.remove('is-capturing');
-            artwork.classList.add(result.captured ? 'is-captured' : 'is-escaped');
-            ball.classList.remove('is-shaking');
-            ball.classList.add(result.captured ? 'is-success' : 'is-failed');
-            image.classList.remove('is-capture-target');
-            resolve();
-        }, totalDuration);
-    });
+    artwork.classList.add('is-impact');
+    image.classList.add('is-capture-target');
+    ball.classList.remove('is-throwing');
+    ball.classList.add('is-at-target');
+
+    await wait(430);
+    if (requestId !== captureRequestId) return;
+
+    for (let index = 0; index < shakeCount; index += 1) {
+        ball.classList.remove('is-shaking');
+        void ball.offsetWidth;
+        ball.classList.add('is-shaking');
+        await wait(560);
+
+        if (requestId !== captureRequestId) return;
+
+        if (index < shakeCount - 1) {
+            await wait(260);
+        }
+    }
+
+    if (shakeCount > 0) {
+        await wait(180);
+    }
+
+    if (requestId !== captureRequestId) return;
+
+    artwork.classList.remove('is-impact');
+    artwork.classList.add(result.captured ? 'is-captured' : 'is-escaped');
+    ball.classList.remove('is-shaking', 'is-at-target');
+    ball.classList.add(result.captured ? 'is-success' : 'is-failed');
+    image.classList.remove('is-capture-target');
+
+    await wait(520);
 }
 
 function showCaptureMessage(artwork, text, success) {
