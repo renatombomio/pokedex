@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="css/view-transitions.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/skeleton.css">
-    <link rel="stylesheet" href="css/favorites.css">
+    <link rel="stylesheet" href="css/captured.css">
     <link rel="stylesheet" href="css/regions.css">
     <link rel="stylesheet" href="css/region-detail.css">
     <link rel="stylesheet" href="css/region-assets.css">
@@ -39,7 +39,7 @@
         <div class="container header-content">
             <a href="/" class="logo" aria-label="Volver a la Pokédex"><img src="assets/images/pokemon-logo.png" alt="" class="pokemon-logo"><span class="logo-divider" aria-hidden="true"></span><span class="pokedex-wordmark">Pokédex</span></a>
             <nav class="main-nav" id="main-navigation" aria-label="Navegación principal">
-                <a href="#pokedex">Pokédex</a><a href="#types">Tipos</a><a href="#regions">Regiones</a><a href="#generations">Generaciones</a><a href="#favorites">Favoritos <span class="nav-favorites-count" data-favorites-count hidden>0</span></a>
+                <a href="#pokedex">Pokédex</a><a href="#types">Tipos</a><a href="#regions">Regiones</a><a href="#generations">Generaciones</a><a href="#captured">Capturados <span class="nav-captured-count" data-captured-count hidden>0</span></a>
             </nav>
             <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-navigation"><span></span><span></span><span></span></button>
         </div>
@@ -51,11 +51,12 @@
         <section class="types-section" id="types" aria-labelledby="types-title"><div class="container"><header class="types-header"><div><p class="eyebrow">Afinidades</p><h2 id="types-title">Tipos Pokémon</h2></div><p class="types-intro">Explora las 18 afinidades elementales y descubre los Pokémon que pertenecen a cada una.</p></header><div class="types-grid" id="types-grid" aria-label="Tipos Pokémon"></div></div></section>
         <section class="pokedex-section" id="pokedex" aria-labelledby="pokedex-title"><div class="container"><header class="section-header"><div><p class="eyebrow">Pokédex</p><h2 id="pokedex-title">Descubre Pokémon</h2></div><p class="pokemon-count"><strong id="pokemon-count">0</strong> Pokémon</p></header><div class="loading-state" id="loading-state" aria-live="polite"><p>Cargando Pokémon...</p><div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div><div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div><div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div><div class="skeleton-card" aria-hidden="true"><div class="skeleton-image"></div><div class="skeleton-content"><div class="skeleton-line title"></div><div class="skeleton-line type"></div><div class="skeleton-line type"></div></div></div></div><div class="error-state hidden" id="error-state" role="alert"><h3>Algo salió mal.</h3><p>No pudimos cargar los Pokémon. Inténtalo de nuevo.</p><button id="retry-button" type="button">Intentar otra vez</button></div><div class="pokemon-grid" id="pokemon-grid" aria-live="polite"></div><div class="load-more"><button id="load-more-button" type="button">Cargar más Pokémon</button></div><div class="empty-state hidden" id="empty-state"><h3>No encontramos ningún Pokémon.</h3><p>Prueba con otro filtro o cambia la búsqueda.</p></div></div></section>
         <section class="pokemon-detail hidden" id="pokemon-detail" aria-hidden="true"><div class="container"><button class="detail-back" id="detail-back" type="button">← Volver a la Pokédex</button><div class="detail-content" id="detail-content"></div></div></section>
-        <section class="favorites-section hidden" id="favorites" aria-labelledby="favorites-title"><div class="container"><header class="favorites-header"><div><p class="eyebrow">Tu colección</p><h2 id="favorites-title">Favoritos</h2></div><p class="favorites-count"><strong id="favorites-count">0</strong> Pokémon guardados</p></header><div class="favorites-grid" id="favorites-content" aria-live="polite"></div></div></section>
+        <section class="captured-section hidden" id="captured" aria-labelledby="captured-title"><div class="container"><header class="captured-header"><div><p class="eyebrow">Tu colección</p><h2 id="captured-title">Capturados</h2></div><p class="captured-count"><strong id="captured-count">0</strong> Pokémon capturados</p></header><div class="captured-grid" id="captured-content" aria-live="polite"></div></div></section>
     </main>
     <footer class="site-footer"><div class="container footer-content"><div class="footer-brand"><strong>Pokédex</strong><span>Explora. Descubre. Colecciona.</span></div><p class="footer-credit">Pokémon Encyclopedia Web App</p></div></footer>
     <script type="module" src="js/state/main.js"></script>
     <script type="module" src="js/state/gamedex.js"></script>
+    <script type="module" src="js/state/captured.js"></script>
     <script type="module" src="js/state/gamedex-capture.js"></script>
     <script type="module" src="js/state/gamedex-intelligence.js"></script>
     <script type="module" src="js/state/gamedex-form-selector.js"></script>
@@ -63,7 +64,7 @@
     <script type="module" src="js/state/gamedex-music.js"></script>
     <script type="module" src="js/state/search-carousel.js"></script>
     <script type="module" src="js/state/menu.js"></script>
-    <script type="module" src="js/state/favorites-init.js"></script>
+    <script type="module" src="js/state/captured-init.js"></script>
     <script type="module" src="js/state/navigation-init.js"></script>
     <script type="module" src="js/state/detail-router.js"></script>
     <script type="module" src="js/state/world-navigation-init.js"></script>
