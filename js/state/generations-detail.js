@@ -31,7 +31,12 @@ export async function showGenerationDetail(generationId, options = {}) {
 
     if (options.pushHistory !== false) {
         window.history.pushState(
-            { view: 'generation', generation: generation.id, contextLabel: generation.name },
+            {
+                view: 'generation',
+                generation: generation.id,
+                contextLabel: generation.name,
+                context: options.context || null
+            },
             '',
             `#generation/${generation.id}`
         );
@@ -115,7 +120,10 @@ function renderDetail(generation, starters) {
     detailElement.querySelector('[data-region-link]')?.addEventListener('click', () => {
         if (!region) return;
         document.dispatchEvent(new CustomEvent('region:open-detail', {
-            detail: { region: region.id }
+            detail: {
+                region: region.id,
+                context: { view: 'generation', id: generation.id, label: generation.name }
+            }
         }));
     });
 
