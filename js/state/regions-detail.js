@@ -311,7 +311,13 @@ async function handleDetailClick(event) {
         showLoading();
         const state = await filterByRegion(region);
         renderPokemon(state.filteredPokemon);
-        showHome('pokedex');
+        showHome('pokedex', {
+            context: {
+                view: 'region',
+                id: region.id,
+                label: region.name
+            }
+        });
     } catch (error) {
         console.error(`Could not explore region ${region.name}:`, error);
         showError();
