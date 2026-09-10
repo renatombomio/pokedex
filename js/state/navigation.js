@@ -116,9 +116,15 @@ export async function showRegionDetailView(regionId, options = {}) {
     getTypeDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
     setPokemonGridContext(null);
+
+    // navigation.js is the single owner of world-detail history state.
+    if (options.pushHistory !== false) {
+        pushRoute(`region/${regionId}`, null, options.context || null);
+    }
+
     const { initializeRegionDetail, showRegionDetail } = await import('./regions-detail.js');
     initializeRegionDetail();
-    await showRegionDetail(regionId, options);
+    await showRegionDetail(regionId, { ...options, pushHistory: false });
 }
 
 export async function showGenerationDetailView(generationId, options = {}) {
@@ -133,9 +139,15 @@ export async function showGenerationDetailView(generationId, options = {}) {
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     setPokemonGridContext(null);
+
+    // navigation.js is the single owner of world-detail history state.
+    if (options.pushHistory !== false) {
+        pushRoute(`generation/${generationId}`, null, options.context || null);
+    }
+
     const { initializeGenerationDetail, showGenerationDetail } = await import('./generations-detail.js');
     initializeGenerationDetail();
-    await showGenerationDetail(generationId, options);
+    await showGenerationDetail(generationId, { ...options, pushHistory: false });
 }
 
 export function setDetailView(id = null, options = {}) {
@@ -313,13 +325,21 @@ function restoreRoute(route) {
     }
     if (view === 'region' && route.state.region) {
         requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('region:open-detail', {
-            detail: { region: route.state.region, fromHistory: true }
+            detail: {
+                region: route.state.region,
+                context: route.state.context || null,
+                fromHistory: true
+            }
         })));
         return;
     }
     if (view === 'generation' && Number.isInteger(route.state.generation)) {
         requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('generation:open-detail', {
-            detail: { generation: route.state.generation, fromHistory: true }
+            detail: {
+                generation: route.state.generation,
+                context: route.state.context || null,
+                fromHistory: true
+            }
         })));
         return;
     }
