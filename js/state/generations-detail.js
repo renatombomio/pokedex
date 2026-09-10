@@ -1,7 +1,9 @@
 import { getGenerationById } from './generations.js';
+import { getRegionById } from './regions.js';
 import { getPokemon } from '../api/pokemon.js';
 import { filterByGeneration } from './app.js';
 import { showHome } from './navigation.js';
+import { mountWorldBreadcrumb } from './world-navigation.js';
 
 let detailElement = null;
 let requestId = 0;
@@ -24,11 +26,12 @@ export async function showGenerationDetail(generationId, options = {}) {
 
     initializeGenerationDetail();
     const currentRequest = ++requestId;
+    detailElement.dataset.generationId = String(generation.id);
     renderLoading(generation);
 
     if (options.pushHistory !== false) {
         window.history.pushState(
-            { view: 'generation', generation: generation.id },
+            { view: 'generation', generation: generation.id, contextLabel: generation.name },
             '',
             `#generation/${generation.id}`
         );
@@ -46,6 +49,7 @@ export async function showGenerationDetail(generationId, options = {}) {
                 <div class="generation-detail-error"><h2>No pudimos cargar esta generación.</h2><p>Inténtalo de nuevo.</p></div>
             </div>
         `;
+        mountBreadcrumbs(generation);
         bindBackButton();
         console.error('Failed to load generation detail:', error);
     }
@@ -61,11 +65,14 @@ function renderLoading(generation) {
             <h2>Cargando generación…</h2>
         </div>
     `;
+    mountBreadcrumbs(generation);
     bindBackButton();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function renderDetail(generation, starters) {
+    const region = getRegionById(getRegionId(generation));
+
     detailElement.innerHTML = `
         <div class="container generation-detail-inner">
             <button class="generation-back" type="button" data-generation-back>← Volver a Generaciones</button>
@@ -77,6 +84,11 @@ function renderDetail(generation, starters) {
                     <span>#${generation.start} — #${generation.end}</span>
                     <span>${generation.end - generation.start + 1} especies</span>
                 </div>
+                ${region ? `
+                    <button class="world-context-link" type="button" data-region-link="${region.id}">
+                        Ver región ${region.name} →
+                    </button>
+                ` : ''}
             </header>
             <section class="generation-starter-panel" aria-labelledby="generation-starters-title">
                 <div><p class="eyebrow">Pokémon iniciales</p><h3 id="generation-starters-title">Elige tu comienzo</h3></div>
@@ -97,7 +109,14 @@ function renderDetail(generation, starters) {
         </div>
     `;
 
+    mountBreadcrumbs(generation);
     bindBackButton();
+
+    detailElement.querySelector('[data-region-link]')?.addEventListener('click', () => {
+        document.dispatchEvent(new CustomEvent('region:open-detail', {
+            detail: { region: region.id }
+        }));
+    });
 
     detailElement.querySelector('[data-generation-filter]')?.addEventListener('click', async () => {
         await filterByGeneration(generation);
@@ -107,10 +126,26 @@ function renderDetail(generation, starters) {
     detailElement.querySelectorAll('[data-pokemon-id]').forEach((button) => {
         button.addEventListener('click', () => {
             document.dispatchEvent(new CustomEvent('pokemon:open-detail', {
-                detail: { id: Number(button.dataset.pokemonId) }
+                detail: {
+                    id: Number(button.dataset.pokemonId),
+                    context: { view: 'generation', id: generation.id, label: generation.name }
+                }
             }));
         });
     });
+}
+
+function mountBreadcrumbs(generation) {
+    mountWorldBreadcrumb(detailElement.querySelector('.generation-detail-inner'), [
+        { label: 'Mundo Pokémon', action: () => window.location.hash = '#pokedex' },
+        { label: 'Generaciones', action: () => window.location.hash = '#generations' },
+        { label: generation.name }
+    ]);
+}
+
+function getRegionId(generation) {
+    const regionName = generation.region.split('/')[0].trim();
+    return regionName.toLowerCase();
 }
 
 function bindBackButton() {
