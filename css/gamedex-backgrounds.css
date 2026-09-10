@@ -30,13 +30,28 @@
     background: linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.04) 45%, rgba(0,0,0,.22) 100%);
 }
 
-/* Keep all existing card content above the artwork and overlay. */
+/* Keep existing card content above the artwork and overlay. */
 .gamedex-card > * {
     position: relative;
     z-index: 2;
 }
 
-/* Subtle text shadow keeps the original white card typography readable over artwork. */
+/* The media controls must remain absolutely positioned in the top-right corner. */
+.gamedex-card .gamedex-media-tools {
+    position: absolute !important;
+    top: 18px !important;
+    right: 18px !important;
+    z-index: 10 !important;
+}
+
+@media (max-width: 760px) {
+    .gamedex-card .gamedex-media-tools {
+        top: 12px !important;
+        right: 12px !important;
+    }
+}
+
+/* Stronger text shadow keeps the original white typography readable over every type artwork. */
 .gamedex-card.has-type-background .gamedex-title h1,
 .gamedex-card.has-type-background .gamedex-number,
 .gamedex-card.has-type-background .gamedex-types,
@@ -50,14 +65,14 @@
 .gamedex-card.has-type-background .gamedex-stat-top strong,
 .gamedex-card.has-type-background .gamedex-form-label,
 .gamedex-card.has-type-background .gamedex-badge {
-    text-shadow: 0 1px 3px rgba(0,0,0,.55);
+    text-shadow: 0 2px 5px rgba(0,0,0,.78), 0 1px 2px rgba(0,0,0,.9);
 }
 
-/* The controls keep their existing appearance and behavior. */
+/* Keep the controls readable without changing their functionality or appearance. */
 .gamedex-card.has-type-background .gamedex-media-button,
 .gamedex-card.has-type-background .favorite-toggle,
 .gamedex-card.has-type-background .gamedex-form-select {
-    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+    text-shadow: 0 2px 4px rgba(0,0,0,.72);
 }
 
 /* White content surfaces outside the card. The footer intentionally stays black. */
@@ -120,56 +135,6 @@
 
 .evolution-subbranches {
     border-color: #dddddd !important;
-}
-
-@media (max-width: 760px) {
-    /* Compact mobile card: remove the fixed empty space below the stats. */
-    .gamedex-card {
-        min-height: 0 !important;
-        padding-bottom: 16px;
-    }
-
-    /* Preserve the artwork/card proportions while making the mobile composition tighter. */
-    .gamedex-artwork {
-        height: 258px;
-    }
-
-    .gamedex-artwork img.is-animated {
-        width: min(225px, 62vw);
-        height: min(225px, 62vw);
-    }
-
-    .gamedex-artwork img:not(.is-animated) {
-        width: min(225px, 62vw);
-        height: min(225px, 62vw);
-    }
-
-    .gamedex-card.has-type-background::after {
-        background: linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,.04) 46%, rgba(0,0,0,.20) 100%);
-    }
-
-    .gamedex-card.has-type-background .gamedex-title h1,
-    .gamedex-card.has-type-background .gamedex-number,
-    .gamedex-card.has-type-background .gamedex-meta-item strong,
-    .gamedex-card.has-type-background .gamedex-stat-top strong {
-        text-shadow: 0 1px 4px rgba(0,0,0,.65);
-    }
-}
-
-@media (max-width: 380px) {
-    .gamedex-card {
-        padding-bottom: 14px;
-    }
-
-    .gamedex-artwork {
-        height: 238px;
-    }
-
-    .gamedex-artwork img.is-animated,
-    .gamedex-artwork img:not(.is-animated) {
-        width: min(205px, 58vw);
-        height: min(205px, 58vw);
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
