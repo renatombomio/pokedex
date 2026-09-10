@@ -1,87 +1,108 @@
 .gamedex-advanced-panel {
     width: min(100%, 1120px);
-    margin: 22px auto 0;
-    padding: 26px;
+    margin: 18px auto 0;
+    padding: 22px 24px 24px;
     border: 1px solid rgba(255,255,255,.08);
-    border-radius: 24px;
-    background: linear-gradient(145deg, rgba(22,22,26,.96), rgba(12,12,15,.98));
-    box-shadow: 0 18px 50px rgba(0,0,0,.18);
+    border-radius: 22px;
+    background: linear-gradient(145deg,#151515,#0e0e0e);
+    color: #fff;
+    box-shadow: 0 18px 45px rgba(0,0,0,.2);
+}
+
+.gamedex-advanced-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
 }
 
 .gamedex-advanced-header span,
 .gamedex-modal-header span,
 .gamedex-related-header span {
     display: block;
-    margin-bottom: 5px;
-    font-size: .72rem;
-    font-weight: 800;
+    margin-bottom: 6px;
+    color: rgba(255,255,255,.34);
+    font-size: 8px;
+    font-weight: 900;
     letter-spacing: .16em;
     text-transform: uppercase;
-    opacity: .55;
 }
 
 .gamedex-advanced-header h2,
 .gamedex-modal-header h2 {
     margin: 0;
-    font-size: clamp(1.35rem, 2vw, 1.8rem);
+    color: #fff;
+    font-size: clamp(20px,3vw,30px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -.05em;
 }
 
+.gamedex-ability-panel { border-top: 1px solid rgba(255,255,255,.1); }
 .gamedex-ability-detail p {
     max-width: 850px;
-    margin: 16px 0;
-    line-height: 1.7;
-    opacity: .82;
+    margin: 14px 0 16px;
+    color: #a6a6a6;
+    font-size: 13px;
+    line-height: 1.65;
 }
 
 .gamedex-intelligence-action {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 11px 15px;
+    padding: 10px 14px;
     border: 1px solid rgba(255,255,255,.1);
-    border-radius: 12px;
-    background: rgba(255,255,255,.045);
-    color: inherit;
+    border-radius: 999px;
+    background: rgba(255,255,255,.035);
+    color: #fff;
     font: inherit;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 850;
     cursor: pointer;
     transition: transform .2s ease, background .2s ease, border-color .2s ease;
 }
 
 .gamedex-intelligence-action:hover { transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); }
-.gamedex-intelligence-action span { opacity: .6; }
-.gamedex-ability-detail small { display: block; margin-top: 10px; opacity: .5; }
+.gamedex-intelligence-action span { margin: 0; color: #fff; opacity: .6; }
+.gamedex-ability-detail small { display: block; margin-top: 10px; color: rgba(255,255,255,.4); font-size: 9px; }
 
 .gamedex-moves-panel { margin-top: 18px; }
 .gamedex-moves-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 9px;
-    margin-top: 18px;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 8px;
+    margin-top: 15px;
 }
 
 .gamedex-move-chip {
     min-width: 0;
-    padding: 12px 10px;
+    min-height: 42px;
+    padding: 10px 11px;
     border: 1px solid rgba(255,255,255,.07);
     border-radius: 12px;
-    background: rgba(255,255,255,.035);
-    color: inherit;
+    background: rgba(255,255,255,.025);
+    color: rgba(255,255,255,.78);
     font: inherit;
-    font-weight: 650;
+    font-size: 11px;
+    font-weight: 750;
+    line-height: 1.15;
     text-align: left;
     cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    transition: background .2s ease, transform .2s ease, border-color .2s ease;
+    transition: transform .2s ease,background .2s ease,border-color .2s ease,color .2s ease;
 }
 
-.gamedex-move-chip:hover { transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); }
-.gamedex-moves-note, .gamedex-related-note { margin: 14px 0 0; font-size: .82rem; opacity: .5; }
-.gamedex-advanced-loading, .gamedex-advanced-error { min-height: 110px; display: grid; align-content: center; }
-.gamedex-advanced-loading h2, .gamedex-advanced-error h2 { margin: 5px 0 0; }
-.gamedex-advanced-error p { margin: 8px 0 0; opacity: .6; }
+.gamedex-move-chip:hover { transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16); color: #fff; }
+.gamedex-moves-note,.gamedex-related-note { margin: 13px 0 0; color: rgba(255,255,255,.38); font-size: 9px; line-height: 1.5; }
+.gamedex-advanced-loading,.gamedex-advanced-error { min-height: 105px; display: grid; align-content: center; }
+.gamedex-advanced-loading h2,.gamedex-advanced-error h2 { margin: 4px 0 0; color: #fff; }
+.gamedex-advanced-error p { margin: 8px 0 0; color: rgba(255,255,255,.45); }
 
 .gamedex-modal-backdrop {
     position: fixed;
@@ -95,77 +116,97 @@
 }
 
 .gamedex-modal {
-    width: min(920px, 100%);
-    max-height: min(820px, calc(100vh - 40px));
+    width: min(920px,100%);
+    max-height: min(820px,calc(100vh - 40px));
     overflow: auto;
-    padding: 28px;
+    padding: 26px;
     border: 1px solid rgba(255,255,255,.1);
-    border-radius: 24px;
+    border-radius: 22px;
     background: #101014;
     color: #fff;
     box-shadow: 0 30px 100px rgba(0,0,0,.45);
 }
 
-.gamedex-modal-header { position: relative; padding-right: 50px; }
-.gamedex-modal-header p { margin: 16px 0 0; max-width: 780px; line-height: 1.65; opacity: .78; }
+.gamedex-modal-header { position: relative; padding: 0 50px 18px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+.gamedex-modal-header p { margin: 14px 0 0; max-width: 780px; color: #a6a6a6; font-size: 13px; line-height: 1.65; }
 .gamedex-modal-close {
     position: absolute;
-    top: -6px;
+    top: -4px;
     right: 0;
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border: 1px solid rgba(255,255,255,.1);
     border-radius: 50%;
     background: rgba(255,255,255,.05);
-    color: inherit;
-    font-size: 1.6rem;
+    color: #fff;
+    font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
 }
 
 .gamedex-move-stats {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin: 22px 0;
+    grid-template-columns: repeat(5,minmax(0,1fr));
+    gap: 8px;
+    margin: 18px 0 20px;
 }
-.gamedex-move-stats > div { padding: 13px; border-radius: 14px; background: rgba(255,255,255,.045); }
-.gamedex-move-stats span { display: block; margin-bottom: 6px; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; opacity: .5; }
-.gamedex-move-stats strong { font-size: .95rem; }
-.gamedex-move-stats .pokemon-type { display: inline-block; margin: 0; padding: 3px 8px; border-radius: 7px; }
+.gamedex-move-stats > div { min-width: 0; padding: 12px; border: 1px solid rgba(255,255,255,.06); border-radius: 14px; background: rgba(255,255,255,.025); }
+.gamedex-move-stats span { display: block; margin-bottom: 6px; color: rgba(255,255,255,.35); font-size: 7px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; }
+.gamedex-move-stats strong { color: #fff; font-size: 11px; font-weight: 850; }
+.gamedex-move-stats .pokemon-type { display: inline-block; margin: 0; padding: 4px 8px; border-radius: 7px; }
 
-.gamedex-related { margin-top: 24px; }
-.gamedex-related-header { display: flex; align-items: end; justify-content: space-between; gap: 15px; }
-.gamedex-related-header strong { font-size: .8rem; opacity: .5; }
-.gamedex-related-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
+.gamedex-related { margin-top: 22px; }
+.gamedex-related-header { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; margin-bottom: 10px; }
+.gamedex-related-header strong { color: rgba(255,255,255,.45); font-size: 9px; }
+.gamedex-related-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; }
 .gamedex-related-pokemon {
     display: flex;
     align-items: center;
     gap: 8px;
     min-width: 0;
-    padding: 8px;
+    padding: 7px;
     border: 1px solid rgba(255,255,255,.07);
     border-radius: 12px;
-    background: rgba(255,255,255,.035);
-    color: inherit;
+    background: rgba(255,255,255,.025);
+    color: rgba(255,255,255,.78);
     font: inherit;
-    font-weight: 650;
+    font-size: 10px;
+    font-weight: 750;
     cursor: pointer;
     text-align: left;
+    transition: background .2s ease,border-color .2s ease;
 }
-.gamedex-related-pokemon:hover { background: rgba(255,255,255,.08); }
+.gamedex-related-pokemon:hover { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.15); color: #fff; }
 .gamedex-related-pokemon img { width: 38px; height: 38px; object-fit: contain; flex: 0 0 auto; }
 .gamedex-related-pokemon span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+.gamedex-advanced-panel button:focus-visible { outline: 2px solid rgba(255,255,255,.7); outline-offset: 2px; }
+
 @media (max-width: 900px) {
-    .gamedex-moves-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .gamedex-related-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .gamedex-move-stats { grid-template-columns: repeat(3, 1fr); }
+    .gamedex-moves-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .gamedex-related-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    .gamedex-move-stats { grid-template-columns: repeat(3,minmax(0,1fr)); }
 }
 
 @media (max-width: 600px) {
-    .gamedex-advanced-panel, .gamedex-modal { padding: 20px; border-radius: 20px; }
-    .gamedex-moves-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .gamedex-related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .gamedex-move-stats { grid-template-columns: repeat(2, 1fr); }
+    .gamedex-advanced-panel { margin-top: 16px; padding: 17px 14px 18px; border-radius: 18px; }
+    .gamedex-advanced-header { align-items: start; margin-bottom: 12px; padding-bottom: 11px; }
+    .gamedex-advanced-header h2 { font-size: 20px; }
+    .gamedex-advanced-header span { font-size: 7px; }
+    .gamedex-ability-detail p { margin: 11px 0 14px; font-size: 11px; line-height: 1.6; }
+    .gamedex-intelligence-action { width: 100%; justify-content: space-between; padding: 10px 12px; font-size: 9px; }
+    .gamedex-moves-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; margin-top: 12px; }
+    .gamedex-move-chip { min-height: 40px; padding: 9px 9px; font-size: 10px; border-radius: 10px; }
+    .gamedex-moves-note,.gamedex-related-note { font-size: 8px; }
+    .gamedex-modal { padding: 19px 15px; border-radius: 19px; }
+    .gamedex-modal-header { padding-right: 44px; padding-bottom: 14px; }
+    .gamedex-modal-header h2 { font-size: 20px; }
+    .gamedex-modal-header p { margin-top: 11px; font-size: 11px; line-height: 1.55; }
+    .gamedex-modal-close { width: 34px; height: 34px; }
+    .gamedex-move-stats { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; margin: 14px 0 17px; }
+    .gamedex-move-stats > div { padding: 10px; }
+    .gamedex-move-stats strong { font-size: 10px; }
+    .gamedex-related-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+    .gamedex-related-pokemon { min-height: 52px; padding: 6px; font-size: 9px; }
+    .gamedex-related-pokemon img { width: 34px; height: 34px; }
 }
