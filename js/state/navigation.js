@@ -25,6 +25,7 @@ export function initializeNavigation() {
     document.addEventListener('region:open-detail', handleRegionOpenRequest);
     document.addEventListener('generation:open-detail', handleGenerationOpenRequest);
     window.addEventListener('popstate', handleHistoryChange);
+    window.addEventListener('hashchange', handleHashChange);
 
     const route = readRoute();
     window.history.replaceState(route.state, '', route.url);
@@ -88,7 +89,7 @@ export function showTypeDetail(typeId, options = {}) {
     getGenerationDetailElement()?.classList.add('hidden');
     typeDetail.classList.remove('hidden');
     typeDetail.setAttribute('aria-hidden', 'false');
-    if (options.pushHistory !== false) pushRoute(`type/${typeId}`);
+    if (options.pushHistory !== false) pushRoute(`type/${typeId}`, null, options.context || null);
     window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
 }
 
@@ -152,24 +153,38 @@ export function setDetailView(id = null, options = {}) {
 }
 
 export function navigateBack() {
-    const view = window.history.state?.view;
+    const state = window.history.state;
+    const view = state?.view;
+
+    if (view === 'pokemon' && state.context) {
+        window.history.back();
+        return;
+    }
     if (view === 'region') {
+        if (state.context) {
+            window.history.back();
+            return;
+        }
         showHome('regions', { pushHistory: false });
         window.history.replaceState({ view: 'regions' }, '', '#regions');
         return;
     }
     if (view === 'type') {
+        if (state.context) {
+            window.history.back();
+            return;
+        }
         showHome('types', { pushHistory: false });
         window.history.replaceState({ view: 'types' }, '', '#types');
         return;
     }
     if (view === 'generation') {
+        if (state.context) {
+            window.history.back();
+            return;
+        }
         showHome('generations', { pushHistory: false });
         window.history.replaceState({ view: 'generations' }, '', '#generations');
-        return;
-    }
-    if (view === 'pokemon') {
-        window.history.back();
         return;
     }
     showHome('pokedex');
@@ -193,13 +208,19 @@ function handleNavigationChange(event) {
 async function handleRegionOpenRequest(event) {
     const regionId = event.detail?.region;
     if (!regionId) return;
-    await showRegionDetailView(regionId, { pushHistory: event.detail?.fromHistory !== true });
+    await showRegionDetailView(regionId, {
+        pushHistory: event.detail?.fromHistory !== true,
+        context: event.detail?.context || null
+    });
 }
 
 async function handleGenerationOpenRequest(event) {
     const generationId = Number(event.detail?.generation);
     if (!Number.isInteger(generationId)) return;
-    await showGenerationDetailView(generationId, { pushHistory: event.detail?.fromHistory !== true });
+    await showGenerationDetailView(generationId, {
+        pushHistory: event.detail?.fromHistory !== true,
+        context: event.detail?.context || null
+    });
 }
 
 function showHomeElements() {
@@ -243,6 +264,10 @@ function pushRoute(route, form = null, context = null) {
 
 function handleHistoryChange(event) {
     restoreRoute(event.state?.view ? { state: event.state } : readRoute());
+}
+
+function handleHashChange() {
+    restoreRoute(readRoute());
 }
 
 function restoreRoute(route) {
