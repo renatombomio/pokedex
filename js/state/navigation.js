@@ -42,7 +42,7 @@ export function showHome(target = 'pokedex', options = {}) {
     setActiveNav(target);
     showHomeElements();
 
-    if (options.pushHistory !== false) pushRoute(target);
+    if (options.pushHistory !== false) pushRoute(target, null, options.context || null);
 
     requestAnimationFrame(() => {
         const targetElement = target === 'types' ? elements.types
@@ -307,7 +307,7 @@ function restoreRoute(route) {
     }
     showHome(
         view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex',
-        { pushHistory: false }
+        { pushHistory: false, context: route.state?.context || null }
     );
 }
 
