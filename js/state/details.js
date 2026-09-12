@@ -61,11 +61,22 @@ export function getEvolutionList() {
 function mapEvolutionNode(node) {
     if (!node?.species) return null;
 
+    const id = getIdFromUrl(node.species.url);
+
     return {
         pokemon: {
-            id: getIdFromUrl(node.species.url),
+            id,
             name: node.species.name,
-            url: node.species.url
+            url: node.species.url,
+            sprites: {
+                other: {
+                    'official-artwork': {
+                        front_default: id
+                            ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
+                            : ''
+                    }
+                }
+            }
         },
         evolutionDetails: Array.isArray(node.evolution_details)
             ? node.evolution_details.map(mapEvolutionDetail)
