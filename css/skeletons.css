@@ -1,0 +1,109 @@
+/* ========================================
+   PRODUCT POLISH — POKÉDEX SKELETONS
+======================================== */
+
+.pokedex-skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+    grid-column: 1 / -1;
+}
+
+.pokemon-skeleton {
+    min-width: 0;
+    height: 337px;
+    overflow: hidden;
+    border: 1px solid #292929;
+    border-radius: 26px;
+    background: #101010;
+    box-shadow: 0 14px 34px rgba(0,0,0,.2);
+}
+
+.pokemon-skeleton-image,
+.pokemon-skeleton-line,
+.pokemon-skeleton-chip {
+    position: relative;
+    overflow: hidden;
+    background: #191919;
+}
+
+.pokemon-skeleton-image::after,
+.pokemon-skeleton-line::after,
+.pokemon-skeleton-chip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.pokemon-skeleton-image {
+    height: 245px;
+    background: radial-gradient(circle at 50% 54%, #1b1b1b, #101010 60%);
+}
+
+.pokemon-skeleton-number {
+    width: 42px;
+    height: 12px;
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    border-radius: 999px;
+    background: #242424;
+}
+
+.pokemon-skeleton-content {
+    padding: 17px 20px 20px;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.pokemon-skeleton-line {
+    height: 21px;
+    width: 58%;
+    margin-bottom: 12px;
+    border-radius: 7px;
+}
+
+.pokemon-skeleton-line.short {
+    width: 32%;
+    height: 10px;
+    margin-bottom: 0;
+}
+
+.pokemon-skeleton-chips {
+    display: flex;
+    gap: 6px;
+}
+
+.pokemon-skeleton-chip {
+    width: 55px;
+    height: 22px;
+    border-radius: 999px;
+}
+
+@keyframes skeleton-shimmer {
+    to { transform: translateX(100%); }
+}
+
+@media (max-width: 1050px) {
+    .pokedex-skeleton-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+    .pokedex-skeleton-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .pokemon-skeleton { height: 300px; border-radius: 22px; }
+    .pokemon-skeleton-image { height: 205px; }
+    .pokemon-skeleton-content { padding: 14px 15px 16px; }
+}
+
+@media (max-width: 480px) {
+    .pokedex-skeleton-grid { grid-template-columns: 1fr; }
+    .pokemon-skeleton { height: 300px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pokemon-skeleton-image::after,
+    .pokemon-skeleton-line::after,
+    .pokemon-skeleton-chip::after { animation: none; }
+}
