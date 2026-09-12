@@ -32,7 +32,7 @@ function installStyles() {
             opacity: 1 !important;
             visibility: visible !important;
             animation: none !important;
-            transform: translate(var(--capture-target-x), var(--capture-target-y)) scale(.9) !important;
+            transform: translate(var(--capture-target-x),var(--capture-target-y)) scale(.9) !important;
         }
         .gamedex-artwork.is-capture-persisted .gamedex-capture-stars {
             opacity: 0;
@@ -53,15 +53,7 @@ function syncCapturedVisual() {
     const captured = isPokemonCaptured(pokemon.id);
     artwork.classList.toggle('is-capture-persisted', captured);
 
-    if (!captured) {
-        image.style.opacity = '';
-        image.style.visibility = '';
-        image.style.pointerEvents = '';
-        image.classList.remove('is-capture-target', 'is-capture-absorbing', 'is-capture-escape');
-        ball.classList.remove('is-success', 'is-failed', 'is-at-target', 'is-opening', 'is-absorbing');
-        ball.style.transform = '';
-        return;
-    }
+    if (!captured) return;
 
     const artworkRect = artwork.getBoundingClientRect();
     const imageRect = image.getBoundingClientRect();
