@@ -170,7 +170,7 @@ export function navigateBack() {
         return;
     }
     if (view === 'captured') {
-        showHome('pokedex', { pushHistory: false, scrollTarget: 'hero' });
+        showHome('pokedex', { pushHistory: false });
         window.history.replaceState({ view: 'pokedex' }, '', '#pokedex');
         return;
     }
@@ -245,11 +245,7 @@ function restoreRoute(route) {
         return;
     }
     if (view === 'captured') { showCaptured({ pushHistory: false }); return; }
-    showHome(view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex', {
-        pushHistory: false,
-        context: route.state?.context || null,
-        scrollTarget: 'hero'
-    });
+    showHome(view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex', { pushHistory: false, context: route.state?.context || null });
 }
 
 function readRoute() {
@@ -291,14 +287,21 @@ function handleNavigationClick(event) {
         return;
     }
 
+    const logo = event.target.closest('.site-header .logo');
+    if (logo) {
+        event.preventDefault();
+        showHome('pokedex', { scrollTarget: 'hero' });
+        return;
+    }
+
     const link = event.target.closest('.main-nav a');
     if (link) {
         const hash = link.getAttribute('href');
         if (hash === '#captured') { event.preventDefault(); showCaptured(); return; }
         if (hash === '#types' || hash === '#regions' || hash === '#generations') { event.preventDefault(); showHome(hash.slice(1)); return; }
-        if (hash === '#pokedex') { event.preventDefault(); showHome('pokedex', { scrollTarget: 'hero' }); return; }
+        if (hash === '#pokedex') { event.preventDefault(); showHome('pokedex'); return; }
     }
-    if (event.target.closest('[data-open-pokedex]')) { event.preventDefault(); showHome('pokedex', { scrollTarget: 'hero' }); }
+    if (event.target.closest('[data-open-pokedex]')) { event.preventDefault(); showHome('pokedex'); }
 }
 
 function getRouteId(route) { const id = Number(route.split('/')[1]); return Number.isInteger(id) ? id : null; }
