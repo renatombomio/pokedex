@@ -1,5 +1,5 @@
 import { getDetailsState } from './details.js';
-import { getCapturedPokemon, isPokemonCaptured, saveCapturedPokemon } from './captured.js';
+import { getCapturedPokemon, isPokemonCaptured, releaseCapturedPokemon, saveCapturedPokemon } from './captured.js';
 import './gamedex-capture-persistence.js';
 
 const CAPTURE_BUTTON_SELECTOR = '[data-gamedex-capture]';
@@ -26,12 +26,12 @@ function ensureCaptureControls() {
     if (!pokemon) return;
 
     const captured = isPokemonCaptured(pokemon.id);
-    button.disabled = captured;
+    button.disabled = false;
     button.setAttribute('aria-pressed', String(captured));
     button.setAttribute('aria-label', captured
-        ? `${displayPokemonName(pokemon)} ya está capturado`
+        ? `Liberar ${displayPokemonName(pokemon)}`
         : `Capturar ${displayPokemonName(pokemon)}`);
-    button.title = captured ? 'Pokémon capturado' : 'Lanzar Poké Ball';
+    button.title = captured ? 'Liberar Pokémon' : 'Lanzar Poké Ball';
     button.classList.toggle('is-captured', captured);
 
     if (!artwork.querySelector('.gamedex-capture-layer')) {
@@ -56,7 +56,7 @@ function ensureCaptureControls() {
 
 async function handleCaptureClick(event) {
     const button = event.target.closest(CAPTURE_BUTTON_SELECTOR);
-    if (!button || button.disabled) return;
+    if (!button) return;
 
     const state = getDetailsState();
     const pokemon = state.pokemon;
@@ -64,7 +64,14 @@ async function handleCaptureClick(event) {
     const artwork = detailContent?.querySelector('.gamedex-artwork');
     const image = artwork?.querySelector('img');
     const ball = artwork?.querySelector('.gamedex-capture-ball');
-    if (!pokemon || !species || !artwork || !image || !ball) return;
+    if (!pokemon || !artwork || !image || !ball) return;
+
+    if (isPokemonCaptured(pokemon.id)) {
+        releasePokemon({ pokemon, artwork, button, image, ball });
+        return;
+    }
+
+    if (!species) return;
 
     const requestId = ++captureRequestId;
     button.disabled = true;
@@ -83,15 +90,41 @@ async function handleCaptureClick(event) {
     if (result.captured) {
         saveCapturedPokemon(pokemon.id);
         button.setAttribute('aria-pressed', 'true');
-        button.setAttribute('aria-label', `${displayPokemonName(pokemon)} ya está capturado`);
-        button.title = 'Pokémon capturado';
+        button.setAttribute('aria-label', `Liberar ${displayPokemonName(pokemon)}`);
+        button.title = 'Liberar Pokémon';
         button.classList.add('is-captured');
+        button.disabled = false;
         document.dispatchEvent(new CustomEvent('captured:changed', { detail: { id: pokemon.id } }));
         showCaptureMessage(artwork, '¡Pokémon capturado!', true);
     } else {
         button.disabled = false;
         showCaptureMessage(artwork, '¡Se ha escapado!', false);
     }
+}
+
+function releasePokemon({ pokemon, artwork, button, image, ball }) {
+    ++captureRequestId;
+    releaseCapturedPokemon(pokemon.id);
+
+    artwork.classList.remove('is-captured', 'is-capturing', 'is-impact', 'is-escaped');
+    image.classList.remove('is-capture-target');
+    image.style.opacity = '';
+    image.style.visibility = '';
+    image.style.pointerEvents = '';
+    ball.classList.remove('is-throwing', 'is-shaking', 'is-success', 'is-failed', 'is-at-target');
+
+    button.disabled = true;
+    button.setAttribute('aria-pressed', 'false');
+    button.setAttribute('aria-label', `Capturar ${displayPokemonName(pokemon)}`);
+    button.title = 'Lanzar Poké Ball';
+    button.classList.remove('is-captured');
+
+    document.dispatchEvent(new CustomEvent('captured:changed', { detail: { id: pokemon.id, released: true } }));
+    showCaptureMessage(artwork, 'Pokémon liberado', false);
+
+    window.setTimeout(() => {
+        if (getDetailsState().pokemon?.id === pokemon.id) button.disabled = false;
+    }, 250);
 }
 
 function getBaseHp(pokemon) {
@@ -200,7 +233,7 @@ async function playCaptureAnimation({ artwork, image, ball, result, requestId })
         image.classList.remove('is-capture-target');
     }
 
-    await wait(result.captured ? 520 : 520);
+    await wait(520);
 }
 
 function showCaptureMessage(artwork, text, success) {
