@@ -58,7 +58,7 @@ document.addEventListener('click', (event) => {
 
     event.preventDefault();
 
-    const id = Number(button.dataset.pokemonId);
+    const id = Number(button.dataset.evolutionPokemonId);
 
     if (!Number.isInteger(id)) {
         return;
