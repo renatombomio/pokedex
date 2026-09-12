@@ -18,7 +18,17 @@ function ensureEmptyStateStyles() {
     document.head.appendChild(stylesheet);
 }
 
+function ensureSkeletonStyles() {
+    if (document.querySelector('link[data-skeleton-styles]')) return;
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'css/skeletons.css';
+    stylesheet.dataset.skeletonStyles = 'true';
+    document.head.appendChild(stylesheet);
+}
+
 ensureEmptyStateStyles();
+ensureSkeletonStyles();
 
 export function renderPokemon(pokemon) {
     hideAllStates();
@@ -46,9 +56,9 @@ export function renderPokemon(pokemon) {
 }
 
 export function showLoading() {
-    elements.grid.replaceChildren();
+    elements.loading.classList.add('hidden');
     hideAllStates();
-    elements.loading.classList.remove('hidden');
+    renderSkeletons();
 }
 
 export function showError() {
@@ -59,6 +69,36 @@ export function showError() {
 
 export function getRetryButton() {
     return elements.retry;
+}
+
+function renderSkeletons() {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'pokedex-skeleton-grid';
+    wrapper.setAttribute('aria-hidden', 'true');
+
+    for (let index = 0; index < 8; index += 1) {
+        wrapper.appendChild(createSkeletonCard());
+    }
+
+    elements.grid.replaceChildren(wrapper);
+}
+
+function createSkeletonCard() {
+    const card = document.createElement('div');
+    card.className = 'pokemon-skeleton';
+    card.innerHTML = `
+        <div class="pokemon-skeleton-image">
+            <span class="pokemon-skeleton-number"></span>
+        </div>
+        <div class="pokemon-skeleton-content">
+            <div class="pokemon-skeleton-line"></div>
+            <div class="pokemon-skeleton-chips">
+                <span class="pokemon-skeleton-chip"></span>
+                <span class="pokemon-skeleton-chip"></span>
+            </div>
+        </div>
+    `;
+    return card;
 }
 
 function createPokemonCard(pokemon) {
