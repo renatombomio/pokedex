@@ -150,9 +150,13 @@ export async function searchPokemon(query) {
     try {
         const results = await searchPokemonList(searchQuery);
         if (currentRequest !== searchRequestId) return getState();
-        state.filteredPokemon = [...results];
-        setState({ loading: false, error: null, hasMore: false });
-        return getState();
+
+        setState({ loading: false, error: null });
+
+        return {
+            ...getState(),
+            filteredPokemon: [...results]
+        };
     } catch (error) {
         if (currentRequest !== searchRequestId) return getState();
         console.error('Failed to search Pokémon:', error);
