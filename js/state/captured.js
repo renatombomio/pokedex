@@ -37,3 +37,21 @@ export function saveCapturedPokemon(id) {
 
     return updated;
 }
+
+export function releaseCapturedPokemon(id) {
+    const numericId = Number(id);
+    if (!Number.isInteger(numericId)) return getCapturedPokemon();
+
+    const captured = getCapturedPokemon();
+    if (!captured.includes(numericId)) return captured;
+
+    const updated = captured.filter((capturedId) => capturedId !== numericId);
+
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    } catch (error) {
+        console.warn('Could not update captured Pokémon in localStorage:', error);
+    }
+
+    return updated;
+}
