@@ -9,6 +9,17 @@ const elements = {
     retry: document.querySelector('#retry-button')
 };
 
+function ensureEmptyStateStyles() {
+    if (document.querySelector('link[data-empty-state-styles]')) return;
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'css/empty-states.css';
+    stylesheet.dataset.emptyStateStyles = 'true';
+    document.head.appendChild(stylesheet);
+}
+
+ensureEmptyStateStyles();
+
 export function renderPokemon(pokemon) {
     hideAllStates();
     elements.count.textContent = pokemon.length;
