@@ -21,6 +21,10 @@ function syncCapturedState() {
 
     if (!artwork || !image || !pokemon) return;
 
+    // Once a successful capture has completed in this card, keep the Pokémon
+    // hidden inside the Poké Ball until the user leaves the detail card.
+    if (artwork.classList.contains('is-captured')) return;
+
     // Capture status is persistent logically, but the in-artwork Poké Ball is
     // intentionally transient. A reopened detail card must show the Pokémon normally.
     const captured = isPokemonCaptured(pokemon.id);
