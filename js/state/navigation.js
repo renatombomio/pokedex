@@ -170,7 +170,7 @@ export function navigateBack() {
         return;
     }
     if (view === 'captured') {
-        showHome('pokedex', { pushHistory: false });
+        showHome('pokedex', { pushHistory: false, scrollTarget: 'hero' });
         window.history.replaceState({ view: 'pokedex' }, '', '#pokedex');
         return;
     }
@@ -245,7 +245,11 @@ function restoreRoute(route) {
         return;
     }
     if (view === 'captured') { showCaptured({ pushHistory: false }); return; }
-    showHome(view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex', { pushHistory: false, context: route.state?.context || null });
+    showHome(view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex', {
+        pushHistory: false,
+        context: route.state?.context || null,
+        scrollTarget: 'hero'
+    });
 }
 
 function readRoute() {
@@ -294,7 +298,7 @@ function handleNavigationClick(event) {
         if (hash === '#types' || hash === '#regions' || hash === '#generations') { event.preventDefault(); showHome(hash.slice(1)); return; }
         if (hash === '#pokedex') { event.preventDefault(); showHome('pokedex', { scrollTarget: 'hero' }); return; }
     }
-    if (event.target.closest('[data-open-pokedex]')) { event.preventDefault(); showHome('pokedex'); }
+    if (event.target.closest('[data-open-pokedex]')) { event.preventDefault(); showHome('pokedex', { scrollTarget: 'hero' }); }
 }
 
 function getRouteId(route) { const id = Number(route.split('/')[1]); return Number.isInteger(id) ? id : null; }
