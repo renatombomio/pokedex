@@ -27,8 +27,18 @@ function ensureSkeletonStyles() {
     document.head.appendChild(stylesheet);
 }
 
+function ensureMicrointeractionStyles() {
+    if (document.querySelector('link[data-microinteraction-styles]')) return;
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'css/microinteractions.css';
+    stylesheet.dataset.microinteractionStyles = 'true';
+    document.head.appendChild(stylesheet);
+}
+
 ensureEmptyStateStyles();
 ensureSkeletonStyles();
+ensureMicrointeractionStyles();
 
 export function renderPokemon(pokemon) {
     hideAllStates();
