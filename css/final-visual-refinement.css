@@ -1,0 +1,281 @@
+/* ========================================
+   FINAL VISUAL REFINEMENT — LIGHT PRODUCT UI
+   Visual-only pass. No interaction or data logic.
+======================================== */
+
+:root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f7f7f7;
+    --white: #171717;
+    --muted: #686868;
+    --line: #e3e3e3;
+}
+
+html,
+body {
+    background: #ffffff;
+    color: #171717;
+}
+
+/* Shared page surfaces */
+.hero,
+.pokedex-section,
+.regions-section,
+.types-section,
+.generations-section,
+.captured-section,
+.generation-detail,
+.region-detail,
+.type-detail,
+.pokemon-detail {
+    background: #ffffff !important;
+    color: #171717;
+}
+
+.pokedex-section:before,
+.regions-section::before,
+.types-section::before,
+.types-section::after {
+    opacity: .55;
+}
+
+/* Header: active navigation remains black with the red indicator visible. */
+.site-header {
+    background: rgba(255,255,255,.96) !important;
+    border-bottom: 1px solid #e5e5e5 !important;
+    box-shadow: 0 1px 0 rgba(0,0,0,.02);
+}
+
+.pokedex-wordmark,
+.main-nav a,
+.main-nav a:hover,
+.main-nav a.is-active,
+.main-nav a[aria-current="page"] {
+    color: #171717 !important;
+}
+
+.main-nav a:after {
+    background: #ef3f22 !important;
+}
+
+.main-nav a.is-active:after,
+.main-nav a[aria-current="page"]:after {
+    width: 100%;
+}
+
+.logo-divider { background: #d9d9d9 !important; }
+
+/* Compact floating shadows — no long blurred section shadows. */
+.region-card-button,
+.generation-card-button,
+.type-card,
+.pokemon-card-button,
+.captured-pokemon-card,
+.generation-starter-panel,
+.generation-starter-card,
+.generation-pokedex-cta,
+.type-detail-card,
+.region-detail-card {
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.14),
+        0 2px 5px rgba(0,0,0,.08) !important;
+}
+
+.region-card-button:hover,
+.generation-card-button:hover,
+.type-card:hover,
+.pokemon-card-button:hover {
+    box-shadow:
+        0 12px 24px rgba(0,0,0,.18),
+        0 3px 7px rgba(0,0,0,.08) !important;
+}
+
+/* Keep section backgrounds clean and remove the impression of a hard shadow boundary. */
+.regions-section,
+.types-section,
+.generations-section,
+.pokedex-section {
+    border-color: #eeeeee !important;
+}
+
+.regions-section,
+.types-section,
+.generations-section {
+    background-image: none !important;
+}
+
+/* ========================================
+   DESKTOP GAMEDEX — COMPACT TWO-COLUMN DETAIL
+======================================== */
+
+@media (min-width: 761px) {
+    #detail-content {
+        display: grid !important;
+        grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+        grid-template-rows: auto auto;
+        align-items: start;
+        column-gap: 28px;
+        row-gap: 24px;
+    }
+
+    #detail-content > .gamedex-card {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        min-height: 0;
+        padding: 24px 26px 22px;
+        border-radius: 24px;
+        box-shadow:
+            0 10px 24px rgba(0,0,0,.16),
+            0 2px 6px rgba(0,0,0,.08),
+            inset 0 1px rgba(255,255,255,.08) !important;
+    }
+
+    #detail-content > .gamedex-card .gamedex-header {
+        gap: 12px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-title h1 {
+        font-size: clamp(42px, 4.2vw, 64px);
+    }
+
+    #detail-content > .gamedex-card .gamedex-artwork {
+        height: 260px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-artwork img {
+        width: min(245px, 70%);
+        height: 245px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-orbit-back {
+        width: 210px;
+        height: 210px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-orbit-front {
+        width: 172px;
+        height: 172px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-meta {
+        margin-bottom: 18px;
+        padding: 13px 0 15px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-meta-item span {
+        margin-bottom: 5px;
+        font-size: 8px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-meta-item strong {
+        font-size: 13px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-stats {
+        gap: 10px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-stat-top {
+        margin-bottom: 5px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-stat-top span {
+        font-size: 7px;
+    }
+
+    #detail-content > .gamedex-card .gamedex-stat-top strong {
+        font-size: 10px;
+    }
+
+    #detail-content > .pokemon-about {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: start;
+        margin: 0;
+        min-height: 0;
+        padding: 28px 30px;
+        border: 1px solid #e5e5e5;
+        border-radius: 24px;
+        background: #ffffff;
+        color: #171717;
+        box-shadow:
+            0 8px 18px rgba(0,0,0,.12),
+            0 2px 5px rgba(0,0,0,.06);
+    }
+
+    #detail-content > .pokemon-about .pokemon-about-header span,
+    #detail-content > .pokemon-about h2 {
+        color: #171717;
+    }
+
+    #detail-content > .pokemon-about .pokemon-about-header span {
+        color: #ef3f22;
+    }
+
+    #detail-content > .pokemon-about p {
+        max-width: 620px;
+        color: #5f5f5f;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    #detail-content > .gamedex-species {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: end;
+        margin-top: 210px;
+        padding: 22px 26px;
+        border: 1px solid #e5e5e5;
+        border-radius: 22px;
+        background: #fafafa;
+        color: #171717;
+        box-shadow:
+            0 7px 16px rgba(0,0,0,.10),
+            0 2px 5px rgba(0,0,0,.05);
+    }
+
+    #detail-content > .gamedex-species .gamedex-species-header span,
+    #detail-content > .gamedex-species .gamedex-species-header h2,
+    #detail-content > .gamedex-species .gamedex-species-item span,
+    #detail-content > .gamedex-species .gamedex-species-item strong,
+    #detail-content > .gamedex-species .gamedex-forms-title {
+        color: #171717;
+    }
+
+    #detail-content > .gamedex-species .gamedex-species-header span {
+        color: #777;
+    }
+
+    #detail-content > .evolution-section {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        margin: 0;
+        padding: 24px 26px 28px;
+        border: 1px solid #e5e5e5;
+        border-radius: 24px;
+        background: #ffffff;
+        color: #171717;
+        box-shadow:
+            0 8px 18px rgba(0,0,0,.11),
+            0 2px 5px rgba(0,0,0,.05);
+    }
+
+    #detail-content > .evolution-section .panel-eyebrow,
+    #detail-content > .evolution-section h2 {
+        color: #171717;
+    }
+
+    #detail-content > .evolution-section .panel-eyebrow {
+        color: #ef3f22;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .region-card-button,
+    .generation-card-button,
+    .type-card,
+    .pokemon-card-button { transition: none !important; }
+}
