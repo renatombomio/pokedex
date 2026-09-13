@@ -1,81 +1,111 @@
 /* ========================================
-   LIGHT PAGE THEME + HORIZONTAL EXPLORERS
+   LIGHT PAGE THEME — FINAL VISUAL PASS
+   White page + compact floating surfaces
 ======================================== */
 
 :root {
     --bg: #ffffff;
     --surface: #ffffff;
-    --surface-2: #f5f5f5;
+    --surface-2: #f7f7f7;
     --white: #171717;
     --muted: #686868;
-    --line: #e4e4e4;
+    --line: #e5e5e5;
 }
 
+html,
 body {
     background: #ffffff;
     color: #171717;
 }
 
 .site-header {
-    background: rgba(255,255,255,.88);
-    border-bottom-color: rgba(20,20,20,.08);
+    background: rgba(255,255,255,.96);
+    border-bottom-color: #e5e5e5;
 }
 
-.pokedex-wordmark {
-    color: #171717;
-}
-
-.logo-divider {
-    background: #d8d8d8;
-}
-
-.main-nav {
-    color: #666;
-}
-
-.main-nav a:hover {
-    color: #171717;
-}
+.pokedex-wordmark { color: #171717; }
+.logo-divider { background: #d8d8d8; }
+.main-nav { color: #171717; }
+.main-nav a,
+.main-nav a:visited { color: #171717; }
+.main-nav a:hover,
+.main-nav a.active,
+.main-nav a[aria-current="page"] { color: #171717; }
+.main-nav a.active::after,
+.main-nav a[aria-current="page"]::after { background: #ef3f22; }
 
 .menu-toggle {
     border-color: #d9d9d9;
     background: #fff;
 }
+.menu-toggle span { background: #171717; }
 
-.menu-toggle span {
-    background: #171717;
-}
-
-.pokedex-section,
+.hero,
+.regions-section,
+.generations-section,
 .types-section,
-.favorites-section {
-    background: #fff;
+.pokedex-section,
+.captured-section,
+.generation-detail,
+.region-detail {
+    background: #fff !important;
     color: #171717;
+    border-color: #e8e8e8;
 }
 
-.pokedex-section:before {
-    background: linear-gradient(90deg, transparent, #e2e2e2, transparent);
+/* Keep section backgrounds clean; visual depth comes from floating cards. */
+.regions-section::before,
+.types-section::before,
+.types-section::after {
+    opacity: 0 !important;
 }
 
+.regions-header h2,
+.generations-header h2,
+.types-header h2,
 .section-header h2,
-.favorites-section h2,
-.types-header h2 {
+.captured-header h2,
+.generation-detail-header h2,
+.region-detail-header h2 {
     color: #171717;
 }
 
-.pokemon-count strong {
-    color: #171717;
-}
-
+.regions-intro,
+.generations-intro,
 .types-intro,
 .pokemon-count,
-.favorites-count {
+.captured-count,
+.generation-detail-header p:not(.eyebrow),
+.region-detail-header p:not(.eyebrow) {
     color: #707070;
 }
 
-/* Keep Pokémon cards as dark collectible surfaces for strong contrast. */
+/* Compact shadows: close to each surface, with a clean white page around it. */
+.region-card-button,
+.generation-card-button,
+.type-card,
+.pokemon-card,
+.generation-starter-panel,
+.generation-pokedex-cta,
+.region-detail-card,
+.captured-pokemon-card {
+    box-shadow:
+        0 8px 16px rgba(0,0,0,.12),
+        0 2px 5px rgba(0,0,0,.08),
+        inset 0 1px rgba(255,255,255,.08);
+}
 
-/* Horizontal explorer rails */
+.region-card-button:hover,
+.generation-card-button:hover,
+.type-card:hover,
+.pokemon-card:hover {
+    box-shadow:
+        0 11px 20px rgba(0,0,0,.16),
+        0 3px 7px rgba(0,0,0,.09),
+        inset 0 1px rgba(255,255,255,.1);
+}
+
+/* Rails float over the page; the rail itself has no visible grey block. */
 .regions-grid,
 .generations-grid {
     display: flex;
@@ -83,83 +113,57 @@ body {
     gap: 18px;
     overflow-x: auto;
     overflow-y: visible;
-    padding: 4px 4px 22px;
+    padding: 4px 4px 18px;
     scroll-snap-type: x proximity;
     scrollbar-width: thin;
-    scrollbar-color: #c9c9c9 transparent;
+    scrollbar-color: #cfcfcf transparent;
 }
 
 .regions-grid::-webkit-scrollbar,
-.generations-grid::-webkit-scrollbar {
-    height: 7px;
-}
-
+.generations-grid::-webkit-scrollbar { height: 5px; }
 .regions-grid::-webkit-scrollbar-track,
-.generations-grid::-webkit-scrollbar-track {
-    background: transparent;
-}
-
+.generations-grid::-webkit-scrollbar-track { background: transparent; }
 .regions-grid::-webkit-scrollbar-thumb,
 .generations-grid::-webkit-scrollbar-thumb {
-    background: #c9c9c9;
+    background: #cfcfcf;
     border-radius: 999px;
 }
 
 .region-card,
-.generation-card-button {
-    flex: 0 0 360px;
-    scroll-snap-align: start;
+.generation-card-button { flex: 0 0 360px; scroll-snap-align: start; }
+
+/* Type cards remain expressive surfaces, while their surrounding section stays white. */
+.type-card {
+    box-shadow:
+        0 8px 16px rgba(0,0,0,.12),
+        0 2px 5px rgba(0,0,0,.08),
+        inset 0 1px rgba(255,255,255,.1);
 }
 
-/* Region cards remain visually rich, but sit cleanly on the white page. */
-.regions-section {
-    background:
-        radial-gradient(circle at 18% 20%, rgba(239,63,34,.055), transparent 28%),
-        #fff;
-    border-bottom-color: #e7e7e7;
-}
+/* Generation/region detail surfaces should not become full-width dark sections. */
+.generation-detail-inner,
+.region-detail-inner { position: relative; }
 
-.regions-section::before {
-    background-image:
-        linear-gradient(rgba(20,20,20,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(20,20,20,.035) 1px, transparent 1px);
-}
-
-.regions-header h2,
-.generations-header h2 {
+.generation-back,
+.region-detail-back {
     color: #171717;
 }
+.generation-back:hover,
+.region-detail-back:hover { color: #ef3f22; }
 
-.regions-intro,
-.generations-intro {
-    color: #707070;
-}
-
-/* Generation cards */
-.generations-section {
+.generation-detail-meta span,
+.region-detail-meta span {
+    border-color: #dedede;
     background: #fff;
-    border-top-color: #e7e7e7;
-    border-bottom-color: #e7e7e7;
+    color: #555;
 }
 
-.generation-number {
-    color: #171717;
-}
-
-.generation-region {
-    color: #777;
-}
-
-/* Light surfaces for the sections that are not intentionally collectible cards. */
-.filters {
-    scrollbar-color: #c9c9c9 transparent;
-}
-
+/* Existing light filter treatment. */
+.filters { scrollbar-color: #c9c9c9 transparent; }
 .filter-button {
     --type-bg: #f2f2f2;
     --type-text: #333;
 }
-
 .filter-button[data-type="all"] { --type-bg: #fff0ec; --type-text: #b82f18; }
 .filter-button[data-type="normal"] { --type-bg: #f0f0f0; --type-text: #444; }
 .filter-button[data-type="fire"] { --type-bg: #fff0eb; --type-text: #b83a20; }
@@ -184,11 +188,15 @@ body {
     .regions-grid,
     .generations-grid {
         gap: 14px;
-        padding-bottom: 18px;
+        padding-bottom: 16px;
     }
-
     .region-card,
-    .generation-card-button {
-        flex-basis: min(84vw, 330px);
-    }
+    .generation-card-button { flex-basis: min(84vw, 330px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .region-card-button,
+    .generation-card-button,
+    .type-card,
+    .pokemon-card { box-shadow: 0 4px 9px rgba(0,0,0,.1); }
 }
