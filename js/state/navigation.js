@@ -60,8 +60,7 @@ export async function showCaptured(options = {}) {
     elements.types?.classList.add('hidden');
     elements.generations?.classList.add('hidden');
     elements.pokedex?.classList.add('hidden');
-    elements.detail?.classList.add('hidden');
-    elements.detail?.setAttribute('aria-hidden', 'true');
+    hideDetailAccessibly();
     elements.captured?.classList.remove('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
@@ -80,7 +79,7 @@ export function showTypeDetail(typeId, options = {}) {
     setActiveNav('types');
     hideHomeViews();
     elements.pokedex?.classList.add('hidden');
-    elements.detail?.classList.add('hidden');
+    hideDetailAccessibly();
     elements.captured?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
@@ -98,8 +97,7 @@ export async function showRegionDetailView(regionId, options = {}) {
     setActiveNav('regions');
     hideHomeViews();
     elements.pokedex?.classList.add('hidden');
-    elements.detail?.classList.add('hidden');
-    elements.detail?.setAttribute('aria-hidden', 'true');
+    hideDetailAccessibly();
     elements.captured?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getGenerationDetailElement()?.classList.add('hidden');
@@ -117,8 +115,7 @@ export async function showGenerationDetailView(generationId, options = {}) {
     setActiveNav('generations');
     hideHomeViews();
     elements.pokedex?.classList.add('hidden');
-    elements.detail?.classList.add('hidden');
-    elements.detail?.setAttribute('aria-hidden', 'true');
+    hideDetailAccessibly();
     elements.captured?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
@@ -197,8 +194,7 @@ function showHomeElements() {
     elements.types?.classList.remove('hidden');
     elements.generations?.classList.remove('hidden');
     elements.pokedex?.classList.remove('hidden');
-    elements.detail?.classList.add('hidden');
-    elements.detail?.setAttribute('aria-hidden', 'true');
+    hideDetailAccessibly();
     elements.captured?.classList.add('hidden');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
@@ -210,6 +206,19 @@ function hideHomeViews() {
     elements.regions?.classList.add('hidden');
     elements.types?.classList.add('hidden');
     elements.generations?.classList.add('hidden');
+}
+
+function hideDetailAccessibly() {
+    const detail = elements.detail;
+    if (!detail) return;
+
+    if (detail.contains(document.activeElement)) {
+        const activeNav = elements.navLinks.find((link) => link.classList.contains('is-active'));
+        activeNav?.focus({ preventScroll: true });
+    }
+
+    detail.classList.add('hidden');
+    detail.setAttribute('aria-hidden', 'true');
 }
 
 function setPokemonGridContext(context) {
@@ -245,6 +254,10 @@ function restoreRoute(route) {
         return;
     }
     if (view === 'captured') { showCaptured({ pushHistory: false }); return; }
+    if (view === 'home') {
+        showHome('pokedex', { pushHistory: false, scrollTarget: 'hero' });
+        return;
+    }
     showHome(view === 'types' || view === 'regions' || view === 'generations' ? view : 'pokedex', { pushHistory: false, context: route.state?.context || null });
 }
 
@@ -253,6 +266,7 @@ function readRoute() {
     const [route, query = ''] = hash.split('?');
     const params = new URLSearchParams(query);
     const form = params.get('form') || null;
+    if (!route) return { state: { view: 'home' }, url: window.location.pathname + window.location.search };
     if (route === 'captured') return { state: { view: 'captured' }, url: '#captured' };
     if (route === 'types') return { state: { view: 'types' }, url: '#types' };
     if (route === 'regions') return { state: { view: 'regions' }, url: '#regions' };
