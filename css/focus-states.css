@@ -1,0 +1,38 @@
+/* ========================================
+   PRODUCT POLISH — FOCUS STATES
+======================================== */
+
+/* Keyboard focus stays visible without changing the pointer experience. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid #ef3f22;
+    outline-offset: 4px;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Keep the existing card silhouette while making keyboard focus unmistakable. */
+.pokemon-card-button:focus-visible {
+    outline: 2px solid #ef3f22;
+    outline-offset: 5px;
+}
+
+/* Form controls need a stronger boundary against the dark UI. */
+.search-form input:focus-visible,
+.search-form button:focus-visible,
+.filter-button:focus-visible,
+#load-more-button:focus-visible,
+#retry-button:focus-visible,
+.detail-back:focus-visible,
+.menu-toggle:focus-visible,
+.captured-explore:focus-visible {
+    border-color: #ef3f22;
+    box-shadow: 0 0 0 3px rgba(239, 63, 34, .16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where(a, button, input, select, textarea, [tabindex]) {
+        scroll-behavior: auto;
+    }
+}
