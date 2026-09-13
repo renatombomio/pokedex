@@ -30,6 +30,22 @@
     animation: collection-view-in .42s var(--ease) both;
 }
 
+.pokemon-card-entering {
+    animation: pokemon-card-enter .42s var(--ease) both;
+}
+
+.pokemon-card-entering:nth-child(2n) {
+    animation-delay: .035s;
+}
+
+.pokemon-card-entering:nth-child(3n) {
+    animation-delay: .07s;
+}
+
+.pokemon-card-entering:nth-child(4n) {
+    animation-delay: .105s;
+}
+
 @keyframes view-back-in {
     from {
         opacity: 0;
@@ -74,12 +90,24 @@
     }
 }
 
+@keyframes pokemon-card-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .pokemon-detail:not(.hidden) .detail-back,
     .pokemon-detail:not(.hidden) .detail-hero,
     .pokemon-detail:not(.hidden) .detail-grid > .detail-panel,
     .pokemon-detail:not(.hidden) .evolution-section,
-    .pokedex-section:not(.hidden) .pokemon-grid {
+    .pokedex-section:not(.hidden) .pokemon-grid,
+    .pokemon-card-entering {
         animation: none;
     }
 }
