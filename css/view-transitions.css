@@ -46,6 +46,26 @@
     animation-delay: .105s;
 }
 
+/* Hidden views must never keep transition state or consume compositor work. */
+.pokemon-detail.hidden,
+.captured-section.hidden,
+.regions-section.hidden,
+.generations-section.hidden,
+.types-section.hidden,
+.pokedex-section.hidden,
+.hero.hidden {
+    animation: none !important;
+    transition: none !important;
+    will-change: auto !important;
+}
+
+/* Only promote views while they are actively transitioning. */
+.pokemon-detail:not(.hidden),
+.pokedex-section:not(.hidden),
+.captured-section:not(.hidden) {
+    will-change: opacity, transform;
+}
+
 @keyframes view-back-in {
     from {
         opacity: 0;
@@ -107,7 +127,12 @@
     .pokemon-detail:not(.hidden) .detail-grid > .detail-panel,
     .pokemon-detail:not(.hidden) .evolution-section,
     .pokedex-section:not(.hidden) .pokemon-grid,
-    .pokemon-card-entering {
+    .pokemon-card-entering,
+    .pokemon-detail:not(.hidden),
+    .pokedex-section:not(.hidden),
+    .captured-section:not(.hidden) {
         animation: none;
+        transition: none;
+        will-change: auto;
     }
 }
