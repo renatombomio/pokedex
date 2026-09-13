@@ -36,9 +36,19 @@ function ensureMicrointeractionStyles() {
     document.head.appendChild(stylesheet);
 }
 
+function ensureFocusStyles() {
+    if (document.querySelector('link[data-focus-styles]')) return;
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'css/focus-states.css';
+    stylesheet.dataset.focusStyles = 'true';
+    document.head.appendChild(stylesheet);
+}
+
 ensureEmptyStateStyles();
 ensureSkeletonStyles();
 ensureMicrointeractionStyles();
+ensureFocusStyles();
 
 export function renderPokemon(pokemon) {
     hideAllStates();
