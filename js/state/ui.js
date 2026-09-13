@@ -69,7 +69,8 @@ export function renderPokemon(pokemon) {
 
     pokemon.forEach((entry) => {
         const key = String(entry.id);
-        fragment.appendChild(existingCards.get(key) ?? createPokemonCard(entry));
+        const existingCard = existingCards.get(key);
+        fragment.appendChild(existingCard ?? createPokemonCard(entry, true));
     });
 
     elements.grid.replaceChildren(fragment);
@@ -121,9 +122,9 @@ function createSkeletonCard() {
     return card;
 }
 
-function createPokemonCard(pokemon) {
+function createPokemonCard(pokemon, entering = false) {
     const article = document.createElement('article');
-    article.className = 'pokemon-card';
+    article.className = `pokemon-card${entering ? ' pokemon-card-entering' : ''}`;
     article.dataset.pokemonId = pokemon.id;
 
     const types = pokemon.types
