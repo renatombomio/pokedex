@@ -133,12 +133,27 @@ body {
 .region-card,
 .generation-card-button { flex: 0 0 360px; scroll-snap-align: start; }
 
-/* Region and generation cards become light floating surfaces instead of dark blocks. */
+/* Light floating surfaces. */
 .region-card-button,
 .generation-card-button {
-    border-color: #e2e2e2;
+    border: 1px solid #e2e2e2;
     background: #ffffff;
     color: #171717;
+}
+
+/* Region imagery is slightly larger and the card edge is neutral instead of dark. */
+.region-card-button {
+    border-color: #e0e0e0;
+}
+
+.region-starter img {
+    width: 168px;
+    height: 168px;
+}
+
+.region-starter:nth-child(2) img {
+    width: 192px;
+    height: 192px;
 }
 
 .region-card-footer,
@@ -275,6 +290,16 @@ body {
 
     .region-card,
     .generation-card-button { flex-basis: min(84vw, 330px); }
+
+    .region-starter img {
+        width: 140px;
+        height: 140px;
+    }
+
+    .region-starter:nth-child(2) img {
+        width: 158px;
+        height: 158px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
