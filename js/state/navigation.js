@@ -134,6 +134,7 @@ export function setDetailView(id = null, options = {}) {
     elements.pokedex?.classList.add('hidden');
     elements.captured?.classList.add('hidden');
     elements.detail?.classList.remove('hidden');
+    elements.detail?.removeAttribute('inert');
     elements.detail?.setAttribute('aria-hidden', 'false');
     getTypeDetailElement()?.classList.add('hidden');
     getRegionDetailElement()?.classList.add('hidden');
@@ -214,9 +215,11 @@ function hideDetailAccessibly() {
 
     if (detail.contains(document.activeElement)) {
         const activeNav = elements.navLinks.find((link) => link.classList.contains('is-active'));
+        document.activeElement?.blur();
         activeNav?.focus({ preventScroll: true });
     }
 
+    detail.setAttribute('inert', '');
     detail.classList.add('hidden');
     detail.setAttribute('aria-hidden', 'true');
 }
