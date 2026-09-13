@@ -30,8 +30,10 @@ body {
 .main-nav a:visited { color: #171717; }
 .main-nav a:hover,
 .main-nav a.active,
+.main-nav a.is-active,
 .main-nav a[aria-current="page"] { color: #171717; }
 .main-nav a.active::after,
+.main-nav a.is-active::after,
 .main-nav a[aria-current="page"]::after { background: #ef3f22; }
 
 .menu-toggle {
@@ -53,11 +55,10 @@ body {
     border-color: #e8e8e8;
 }
 
-/* Keep section backgrounds clean; visual depth comes from floating cards. */
 .regions-section::before,
 .types-section::before,
 .types-section::after {
-    opacity: 0 !important;
+    display: none !important;
 }
 
 .regions-header h2,
@@ -80,7 +81,7 @@ body {
     color: #707070;
 }
 
-/* Compact shadows: close to each surface, with a clean white page around it. */
+/* Compact, close shadows: cards float over the white page. */
 .region-card-button,
 .generation-card-button,
 .type-card,
@@ -132,24 +133,71 @@ body {
 .region-card,
 .generation-card-button { flex: 0 0 360px; scroll-snap-align: start; }
 
-/* Type cards remain expressive surfaces, while their surrounding section stays white. */
+/* Region and generation cards become light floating surfaces instead of dark blocks. */
+.region-card-button,
+.generation-card-button {
+    border-color: #e2e2e2;
+    background: #ffffff;
+    color: #171717;
+}
+
+.region-card-footer,
+.generation-card-bottom {
+    border-top-color: #e8e8e8;
+}
+
+.region-card-footer strong,
+.generation-card-bottom strong,
+.generation-number {
+    color: #171717;
+}
+
+.region-card-footer small,
+.generation-region,
+.generation-card-bottom small {
+    color: #777;
+}
+
+.region-arrow {
+    border-color: #dedede;
+    background: #f7f7f7;
+    color: #171717;
+}
+
+.generation-card-button:hover {
+    border-color: #d2d2d2;
+}
+
+.generation-starter-panel,
+.generation-pokedex-cta {
+    border-color: #e2e2e2;
+    background: #ffffff;
+    color: #171717;
+}
+
+.generation-starter-card {
+    border-color: #e4e4e4;
+    background: #fafafa;
+    color: #171717;
+}
+
+.generation-starter-card > span,
+.generation-pokedex-cta small {
+    color: #777;
+}
+
+.generation-explore,
+.generation-pokedex-cta > span:last-child {
+    color: #555;
+}
+
+/* Type cards retain their individual color identity while the section stays white. */
 .type-card {
     box-shadow:
         0 8px 16px rgba(0,0,0,.12),
         0 2px 5px rgba(0,0,0,.08),
         inset 0 1px rgba(255,255,255,.1);
 }
-
-/* Generation/region detail surfaces should not become full-width dark sections. */
-.generation-detail-inner,
-.region-detail-inner { position: relative; }
-
-.generation-back,
-.region-detail-back {
-    color: #171717;
-}
-.generation-back:hover,
-.region-detail-back:hover { color: #ef3f22; }
 
 .generation-detail-meta span,
 .region-detail-meta span {
@@ -158,7 +206,13 @@ body {
     color: #555;
 }
 
-/* Existing light filter treatment. */
+.generation-back,
+.region-detail-back {
+    color: #171717;
+}
+.generation-back:hover,
+.region-detail-back:hover { color: #ef3f22; }
+
 .filters { scrollbar-color: #c9c9c9 transparent; }
 .filter-button {
     --type-bg: #f2f2f2;
@@ -185,11 +239,40 @@ body {
 .filter-button[data-type="fairy"] { --type-bg: #fff0f6; --type-text: #974568; }
 
 @media (max-width: 768px) {
+    .main-nav {
+        background: #ffffff !important;
+        border-color: #dedede !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,.12) !important;
+        backdrop-filter: none;
+    }
+
+    .main-nav a,
+    .main-nav a:visited,
+    .main-nav a:hover,
+    .main-nav a.is-active {
+        color: #171717 !important;
+    }
+
+    .main-nav a:hover,
+    .main-nav a.is-active {
+        background: #f7f7f7;
+    }
+
+    .main-nav a.is-active:after {
+        background: #ef3f22;
+    }
+
+    .menu-toggle[aria-expanded="true"] {
+        border-color: rgba(239,63,34,.7);
+        background: #fff7f5;
+    }
+
     .regions-grid,
     .generations-grid {
         gap: 14px;
         padding-bottom: 16px;
     }
+
     .region-card,
     .generation-card-button { flex-basis: min(84vw, 330px); }
 }
