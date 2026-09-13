@@ -1,0 +1,59 @@
+/* ========================================
+   PRODUCT POLISH — MICROINTERACTIONS
+======================================== */
+
+/* Tactile feedback without changing hover behavior. */
+button,
+a,
+.pokemon-card-button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:active,
+.filter-button:active,
+.pokemon-card-button:active {
+    transform: scale(.975);
+}
+
+.search-form button:active {
+    transform: scale(.96);
+}
+
+.detail-back:active,
+#load-more-button:active,
+#retry-button:active,
+.captured-explore:active,
+.menu-toggle:active {
+    transform: scale(.96);
+}
+
+.logo:active .pokemon-logo {
+    transform: scale(.94) rotate(-4deg);
+}
+
+.filter-button,
+.search-form button,
+.detail-back,
+#load-more-button,
+#retry-button,
+.captured-explore,
+.menu-toggle,
+.pokemon-card-button,
+.logo .pokemon-logo {
+    transition-property: transform, border-color, background-color, box-shadow, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    button:active,
+    .filter-button:active,
+    .pokemon-card-button:active,
+    .search-form button:active,
+    .detail-back:active,
+    #load-more-button:active,
+    #retry-button:active,
+    .captured-explore:active,
+    .menu-toggle:active,
+    .logo:active .pokemon-logo {
+        transform: none;
+    }
+}
