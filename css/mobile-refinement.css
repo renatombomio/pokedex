@@ -1,0 +1,119 @@
+/* ========================================
+   PRODUCT POLISH — MOBILE REFINEMENT
+   Final responsive pass without changing
+   component behavior or interaction logic.
+======================================== */
+
+@media (max-width: 768px) {
+    html { overflow-x: hidden; }
+    body { overflow-x: hidden; }
+
+    .container { width: min(calc(100% - 24px), var(--container)); }
+
+    .site-header { z-index: 200; }
+    .header-content { min-height: 62px; }
+    .pokemon-logo { width: 42px; height: 42px; }
+    .menu-toggle { width: 40px; height: 40px; }
+
+    .hero,
+    .hero-content { min-height: 540px; }
+    .hero-content { padding: 36px 0 44px; }
+    .hero-copy { width: 100%; }
+    .hero .eyebrow { margin-bottom: 16px; font-size: 9px; letter-spacing: .18em; }
+    .hero-description { max-width: 500px; margin: 22px 0 28px; font-size: 14px; line-height: 1.55; }
+    .search-form { width: 100%; }
+
+    .regions-section,
+    .generations-section,
+    .types-section { overflow: hidden; }
+
+    .regions-section { padding: 64px 0 74px; }
+    .regions-header,
+    .generations-header,
+    .types-header { margin-bottom: 26px; }
+    .regions-header h2,
+    .generations-header h2,
+    .types-header h2 { font-size: clamp(36px, 11vw, 54px); }
+    .regions-intro,
+    .generations-intro,
+    .types-intro { font-size: 13px; line-height: 1.6; }
+
+    .region-card-button { min-height: 410px; }
+    .generation-card-button { min-height: 340px; }
+    .type-card { min-height: 174px; }
+
+    .pokedex-section { padding: 58px 0 76px; }
+    .pokedex-section .container { width: min(calc(100% - 24px), var(--container)); }
+    .section-header { margin-bottom: 18px; }
+    .section-header h2 { font-size: 30px; }
+    .pokemon-count { font-size: 11px; }
+
+    .filters { margin-bottom: 20px; }
+    .filter-button { min-height: 34px; }
+
+    .pokemon-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .pokemon-card-button { min-width: 0; }
+
+    .load-more { margin-top: 28px; }
+    .load-more button { min-height: 42px; padding: 11px 18px; }
+
+    .search-modal { padding: 10px; }
+    .search-modal-panel { max-height: calc(100vh - 20px); border-radius: 20px; }
+    .search-modal-header { padding: 18px; }
+    .search-modal-header h2 { font-size: 25px; }
+    .search-modal-results { padding: 16px 18px 20px; }
+
+    .captured-section { padding: 52px 0 74px; }
+    .captured-header { gap: 12px; }
+    .captured-count { font-size: 11px; }
+
+    .gamedex-music-player { max-width: calc(100vw - 20px); }
+}
+
+@media (max-width: 560px) {
+    .hero,
+    .hero-content { min-height: 520px; }
+    .hero-content { padding: 28px 0 38px; }
+    .hero h1 { font-size: clamp(48px, 14vw, 64px); }
+    .hero-description { font-size: 13px; }
+
+    .regions-section { padding-top: 58px; }
+    .region-card-button { min-height: 395px; }
+
+    .generations-section,
+    .types-section { padding-top: 64px; padding-bottom: 72px; }
+
+    .empty-state { min-height: 240px; }
+}
+
+@media (max-width: 380px) {
+    .container,
+    .pokedex-section .container { width: min(calc(100% - 20px), var(--container)); }
+
+    .header-content { min-height: 60px; }
+    .pokemon-logo { width: 39px; height: 39px; }
+    .menu-toggle { width: 38px; height: 38px; }
+
+    .hero,
+    .hero-content { min-height: 505px; }
+    .hero h1 { font-size: 48px; }
+    .hero-description { margin: 19px 0 24px; }
+
+    .pokemon-grid { gap: 6px; }
+    .pokemon-card-image { height: 96px; }
+    .pokemon-card-image img { width: 88px; height: 88px; }
+
+    .search-form button { padding-inline: 13px; }
+    .search-form input { min-width: 0; }
+
+    .region-card-button { min-height: 380px; }
+    .generation-card-button { min-height: 320px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero,
+    .pokemon-card,
+    .region-card-button,
+    .generation-card-button,
+    .type-card { scroll-behavior: auto; }
+}
