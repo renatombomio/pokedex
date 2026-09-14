@@ -415,3 +415,59 @@ body {
     .pokemon-card-button { transition: none !important; }
     .generation-card-cover { transition: none; }
 }
+
+/* Generation cards — restore the original responsive sizing. */
+.generations-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    overflow: visible;
+    padding: 0;
+}
+
+.generation-card-button {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex: initial !important;
+    min-height: 390px;
+    padding: 22px;
+}
+
+.generation-card-top {
+    min-height: 0;
+    padding: 0;
+}
+
+.generation-card-visual {
+    min-height: 225px;
+}
+
+.generation-card-bottom {
+    min-height: 0;
+    padding: 16px 0 0;
+}
+
+.generation-explore {
+    display: block !important;
+}
+
+@media (max-width: 1000px) {
+    .generations-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 680px) {
+    .generations-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .generation-card-button {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        min-height: 350px;
+    }
+}
