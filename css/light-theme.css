@@ -141,6 +141,62 @@ body {
     color: #171717;
 }
 
+/* Generation covers: the artwork is a real card background, with a light readability veil. */
+.generation-card-button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.generation-card-cover {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: var(--generation-cover);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: .9;
+    transform: scale(1.01);
+    transition: transform .35s ease, opacity .35s ease;
+}
+
+.generation-card-button::after {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    content: '';
+    pointer-events: none;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,.12) 0%,
+            rgba(255,255,255,.08) 34%,
+            rgba(255,255,255,.45) 62%,
+            rgba(255,255,255,.96) 83%,
+            #ffffff 100%
+        );
+}
+
+.generation-card-button:hover .generation-card-cover {
+    transform: scale(1.045);
+    opacity: .96;
+}
+
+.generation-card-top,
+.generation-card-bottom {
+    position: relative;
+    z-index: 2;
+}
+
+.generation-card-top {
+    text-shadow: 0 1px 2px rgba(255,255,255,.55);
+}
+
+.generation-card-bottom {
+    text-shadow: 0 1px 2px rgba(255,255,255,.7);
+}
+
 /* Region imagery is slightly larger and the card edge is neutral instead of dark. */
 .region-card-button {
     border-color: #e0e0e0;
@@ -214,7 +270,7 @@ body {
         inset 0 1px rgba(255,255,255,.1);
 }
 
-.generation-detail-meta span,
+generation-detail-meta span,
 .region-detail-meta span {
     border-color: #dedede;
     background: #fff;
