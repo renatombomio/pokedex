@@ -101,23 +101,36 @@ body {
     background-image: none !important;
 }
 
-/* Generation cards — strong editorial hierarchy */
+/* Region cards — image-led, no dark edge */
+.region-card-button {
+    border: none !important;
+    background: #ffffff !important;
+}
+
+.region-starters {
+    transform: scale(1.005);
+    transform-origin: center bottom;
+}
+
+/* Generation cards — full-cover editorial cards */
 .generation-card-button {
     isolation: isolate;
     min-height: 430px;
     padding: 0;
-    border: 1px solid #dedede;
+    overflow: hidden;
+    border: none !important;
+    border-radius: 22px;
     background: #ffffff !important;
-    color: #171717;
+    color: #ffffff;
     box-shadow:
         0 9px 18px rgba(0,0,0,.13),
         0 2px 5px rgba(0,0,0,.07) !important;
-    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    transition: transform .25s ease, box-shadow .25s ease;
 }
 
 .generation-card-button:hover {
     transform: translateY(-5px);
-    border-color: #d2d2d2;
+    border: none !important;
     box-shadow:
         0 15px 28px rgba(0,0,0,.17),
         0 3px 8px rgba(0,0,0,.08) !important;
@@ -126,14 +139,14 @@ body {
 .generation-card-cover {
     position: absolute;
     z-index: 0;
-    inset: 62px 0 118px;
+    inset: 0;
     background-image: var(--generation-cover);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    opacity: .96;
-    transform: scale(1.01);
-    transition: opacity .25s ease, transform .35s ease;
+    opacity: 1;
+    transform: scale(1.005);
+    transition: transform .35s ease;
 }
 
 .generation-card-cover::after {
@@ -141,21 +154,26 @@ body {
     inset: 0;
     background: linear-gradient(
         to bottom,
-        rgba(255,255,255,.04) 0%,
-        rgba(255,255,255,0) 42%,
-        rgba(255,255,255,.08) 100%
+        rgba(0,0,0,.52) 0%,
+        rgba(0,0,0,.08) 30%,
+        rgba(0,0,0,0) 52%,
+        rgba(0,0,0,.68) 100%
     );
     content: '';
 }
 
 .generation-card-button:hover .generation-card-cover {
-    opacity: 1;
     transform: scale(1.025);
 }
 
-.generation-card-top {
+.generation-card-top,
+.generation-card-bottom,
+.generation-card-visual {
     position: relative;
     z-index: 3;
+}
+
+.generation-card-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -163,13 +181,11 @@ body {
     width: 100%;
     min-height: 62px;
     padding: 0 20px;
-    background: rgba(255,255,255,.96);
-    border-bottom: 1px solid rgba(0,0,0,.08);
+    background: transparent !important;
+    border-bottom: none !important;
 }
 
 .generation-card-visual {
-    position: relative;
-    z-index: 2;
     flex: 1;
     min-height: 250px;
     width: 100%;
@@ -181,24 +197,31 @@ body {
     display: none !important;
 }
 
+.generation-number,
+.generation-region,
+.generation-card-bottom strong,
+.generation-card-bottom small,
+.generation-explore {
+    color: #ffffff !important;
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.95),
+        0 0 12px rgba(0,0,0,.65);
+}
+
 .generation-number {
-    color: #171717 !important;
-    font-size: 13px;
-    font-weight: 900;
+    font-size: 14px;
+    font-weight: 950;
     letter-spacing: .16em;
 }
 
 .generation-region {
-    color: #555 !important;
-    font-size: 10px;
-    font-weight: 900;
+    font-size: 11px;
+    font-weight: 950;
     letter-spacing: .12em;
     text-transform: uppercase;
 }
 
 .generation-card-bottom {
-    position: relative;
-    z-index: 3;
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: end;
@@ -206,23 +229,22 @@ body {
     min-height: 118px;
     width: 100%;
     padding: 18px 20px 20px;
-    border-top: 1px solid rgba(0,0,0,.10);
-    background: rgba(255,255,255,.97);
+    border-top: none !important;
+    background: transparent !important;
 }
 
 .generation-card-bottom strong {
-    color: #171717 !important;
-    font-size: 21px;
-    font-weight: 900;
+    color: #ffffff !important;
+    font-size: 25px;
+    font-weight: 950;
     line-height: 1.05;
     letter-spacing: -.045em;
-    text-shadow: none;
 }
 
 .generation-card-bottom small {
-    color: #686868 !important;
-    font-size: 10px;
-    font-weight: 800;
+    color: #ffffff !important;
+    font-size: 11px;
+    font-weight: 850;
     letter-spacing: .08em;
 }
 
@@ -230,14 +252,15 @@ body {
     grid-row: 1 / span 2;
     align-self: center;
     padding: 11px 13px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid rgba(255,255,255,.5);
     border-radius: 10px;
-    background: #f7f7f7;
-    color: #242424 !important;
+    background: rgba(0,0,0,.28);
+    color: #ffffff !important;
     font-size: 9px;
-    font-weight: 900;
+    font-weight: 950;
     letter-spacing: .1em;
     text-transform: uppercase;
+    backdrop-filter: blur(2px);
 }
 
 @media (max-width: 680px) {
@@ -251,7 +274,7 @@ body {
     }
 
     .generation-card-cover {
-        inset: 54px 0 108px;
+        inset: 0;
     }
 
     .generation-card-visual {
@@ -264,7 +287,7 @@ body {
     }
 
     .generation-card-bottom strong {
-        font-size: 19px;
+        font-size: 21px;
     }
 
     .generation-explore {
