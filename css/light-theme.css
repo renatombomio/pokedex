@@ -364,3 +364,173 @@ body {
     .type-card,
     .pokemon-card { box-shadow: 0 4px 9px rgba(0,0,0,.1); }
 }
+
+/* Region cards — compact square full-bleed carousel cards. */
+.region-card {
+    flex: 0 0 300px;
+    width: 300px;
+    min-width: 300px;
+    scroll-snap-align: start;
+}
+
+.region-card-button {
+    position: relative;
+    width: 300px;
+    min-width: 300px;
+    min-height: 300px;
+    height: 300px;
+    padding: 0;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    border: 0 !important;
+    border-radius: 24px;
+    background: #111 !important;
+    color: #fff;
+    isolation: isolate;
+}
+
+.region-card-atmosphere,
+.region-orbit,
+.region-visual::before {
+    display: none !important;
+}
+
+.region-visual {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.region-map-card {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 0;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    flex: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background-position: center;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+    transform: scale(1.005);
+    transform-origin: center;
+    transition: transform .35s ease;
+}
+
+.region-card-button::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: '';
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.28) 0%,
+        rgba(0,0,0,0) 38%,
+        rgba(0,0,0,.68) 100%
+    );
+}
+
+.region-card-header,
+.region-card-footer {
+    position: relative;
+    z-index: 2;
+}
+
+.region-card-header {
+    width: 100%;
+    padding: 18px 18px 0;
+    color: #fff;
+}
+
+.region-generation {
+    color: #fff !important;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .13em;
+    text-shadow: 0 2px 5px rgba(0,0,0,.9), 0 0 10px rgba(0,0,0,.65);
+}
+
+.region-arrow {
+    width: 34px;
+    height: 34px;
+    border-color: rgba(255,255,255,.55) !important;
+    background: rgba(0,0,0,.32) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+
+.region-card-footer {
+    align-items: end;
+    width: 100%;
+    margin-top: auto;
+    padding: 0 18px 18px;
+    border-top: 0 !important;
+    background: transparent;
+}
+
+.region-card-footer > span:first-child {
+    width: 100%;
+}
+
+.region-card-footer strong {
+    color: #fff !important;
+    font-size: 25px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -.045em;
+    text-shadow: 0 2px 5px rgba(0,0,0,.95), 0 0 14px rgba(0,0,0,.7);
+}
+
+.region-card-footer small {
+    display: -webkit-box;
+    max-width: 260px;
+    margin-top: 7px;
+    color: rgba(255,255,255,.9) !important;
+    font-size: 11px;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-shadow: 0 2px 5px rgba(0,0,0,.9);
+}
+
+.region-explore {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    z-index: 3;
+    color: #fff !important;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 5px rgba(0,0,0,.9);
+}
+
+.region-card-button:hover .region-map-card {
+    transform: scale(1.03);
+}
+
+@media (max-width: 768px) {
+    .region-card {
+        flex-basis: min(84vw, 300px);
+        width: min(84vw, 300px);
+        min-width: min(84vw, 300px);
+    }
+
+    .region-card-button {
+        width: min(84vw, 300px);
+        min-width: min(84vw, 300px);
+        height: min(84vw, 300px);
+        min-height: min(84vw, 300px);
+    }
+}
