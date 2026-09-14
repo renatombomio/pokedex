@@ -105,8 +105,13 @@ body {
 .generation-card-button {
     isolation: isolate;
     min-height: 430px;
+    width: 360px;
+    min-width: 360px;
+    max-width: 360px;
+    flex: 0 0 360px !important;
     padding: 0;
     border: 0;
+    border-radius: 26px;
     background: #ffffff !important;
     color: #ffffff;
     box-shadow:
@@ -214,6 +219,9 @@ body {
 }
 
 .generation-card-bottom strong {
+    display: block;
+    width: 100%;
+    grid-column: 1 / -1;
     color: #ffffff !important;
     font-size: 25px;
     font-weight: 900;
@@ -223,6 +231,9 @@ body {
 }
 
 .generation-card-bottom small {
+    display: block;
+    width: 100%;
+    grid-column: 1 / -1;
     color: #ffffff !important;
     font-size: 11px;
     font-weight: 900;
@@ -236,6 +247,10 @@ body {
 
 @media (max-width: 680px) {
     .generation-card-button {
+        width: min(84vw, 330px);
+        min-width: min(84vw, 330px);
+        max-width: min(84vw, 330px);
+        flex-basis: min(84vw, 330px) !important;
         min-height: 390px;
     }
 
