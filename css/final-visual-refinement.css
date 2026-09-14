@@ -1,6 +1,6 @@
 /* ========================================
    FINAL VISUAL REFINEMENT — LIGHT PRODUCT UI
-   Visual-only pass. No interaction or data logic.
+   White page + compact floating surfaces
 ======================================== */
 
 :root {
@@ -18,7 +18,6 @@ body {
     color: #171717;
 }
 
-/* Shared page surfaces */
 .hero,
 .pokedex-section,
 .regions-section,
@@ -40,7 +39,6 @@ body {
     opacity: .55;
 }
 
-/* Header: active navigation remains black with the red indicator visible. */
 .site-header {
     background: rgba(255,255,255,.96) !important;
     border-bottom: 1px solid #e5e5e5 !important;
@@ -66,7 +64,6 @@ body {
 
 .logo-divider { background: #d9d9d9 !important; }
 
-/* Compact floating shadows — no long blurred section shadows. */
 .region-card-button,
 .generation-card-button,
 .type-card,
@@ -91,7 +88,6 @@ body {
         0 3px 7px rgba(0,0,0,.08) !important;
 }
 
-/* Keep section backgrounds clean and remove the impression of a hard shadow boundary. */
 .regions-section,
 .types-section,
 .generations-section,
@@ -105,9 +101,68 @@ body {
     background-image: none !important;
 }
 
-/* ========================================
-   DESKTOP GAMEDEX — COMPACT TWO-COLUMN DETAIL
-======================================== */
+/* Generation covers */
+.generation-card-button {
+    isolation: isolate;
+    background: #ffffff !important;
+}
+
+.generation-card-cover {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background-image: var(--generation-cover);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: .3;
+    transform: scale(1.015);
+    transition: opacity .25s ease, transform .35s ease;
+}
+
+.generation-card-cover::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,.78) 0%, rgba(255,255,255,.42) 46%, rgba(255,255,255,.88) 100%);
+    content: '';
+}
+
+.generation-card-button:hover .generation-card-cover {
+    opacity: .42;
+    transform: scale(1.035);
+}
+
+.generation-card-top,
+.generation-card-visual,
+.generation-card-bottom {
+    position: relative;
+    z-index: 2;
+}
+
+.generation-card-visual {
+    min-height: 225px;
+}
+
+.generation-card-visual::before,
+.generation-orbit,
+.generation-starters {
+    display: none !important;
+}
+
+.generation-card-bottom {
+    border-top-color: rgba(0,0,0,.10);
+}
+
+.generation-number,
+.generation-card-bottom strong {
+    color: #171717 !important;
+}
+
+.generation-region,
+.generation-card-bottom small,
+.generation-explore {
+    color: #555 !important;
+}
 
 @media (min-width: 761px) {
     #detail-content {
@@ -132,62 +187,19 @@ body {
             inset 0 1px rgba(255,255,255,.08) !important;
     }
 
-    #detail-content > .gamedex-card .gamedex-header {
-        gap: 12px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-title h1 {
-        font-size: clamp(42px, 4.2vw, 64px);
-    }
-
-    #detail-content > .gamedex-card .gamedex-artwork {
-        height: 260px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-artwork img {
-        width: min(245px, 70%);
-        height: 245px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-orbit-back {
-        width: 210px;
-        height: 210px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-orbit-front {
-        width: 172px;
-        height: 172px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-meta {
-        margin-bottom: 18px;
-        padding: 13px 0 15px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-meta-item span {
-        margin-bottom: 5px;
-        font-size: 8px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-meta-item strong {
-        font-size: 13px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-stats {
-        gap: 10px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-stat-top {
-        margin-bottom: 5px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-stat-top span {
-        font-size: 7px;
-    }
-
-    #detail-content > .gamedex-card .gamedex-stat-top strong {
-        font-size: 10px;
-    }
+    #detail-content > .gamedex-card .gamedex-header { gap: 12px; }
+    #detail-content > .gamedex-card .gamedex-title h1 { font-size: clamp(42px, 4.2vw, 64px); }
+    #detail-content > .gamedex-card .gamedex-artwork { height: 260px; }
+    #detail-content > .gamedex-card .gamedex-artwork img { width: min(245px, 70%); height: 245px; }
+    #detail-content > .gamedex-card .gamedex-orbit-back { width: 210px; height: 210px; }
+    #detail-content > .gamedex-card .gamedex-orbit-front { width: 172px; height: 172px; }
+    #detail-content > .gamedex-card .gamedex-meta { margin-bottom: 18px; padding: 13px 0 15px; }
+    #detail-content > .gamedex-card .gamedex-meta-item span { margin-bottom: 5px; font-size: 8px; }
+    #detail-content > .gamedex-card .gamedex-meta-item strong { font-size: 13px; }
+    #detail-content > .gamedex-card .gamedex-stats { gap: 10px; }
+    #detail-content > .gamedex-card .gamedex-stat-top { margin-bottom: 5px; }
+    #detail-content > .gamedex-card .gamedex-stat-top span { font-size: 7px; }
+    #detail-content > .gamedex-card .gamedex-stat-top strong { font-size: 10px; }
 
     #detail-content > .pokemon-about {
         grid-column: 2;
@@ -200,26 +212,13 @@ body {
         border-radius: 24px;
         background: #ffffff;
         color: #171717;
-        box-shadow:
-            0 8px 18px rgba(0,0,0,.12),
-            0 2px 5px rgba(0,0,0,.06);
+        box-shadow: 0 8px 18px rgba(0,0,0,.12), 0 2px 5px rgba(0,0,0,.06);
     }
 
     #detail-content > .pokemon-about .pokemon-about-header span,
-    #detail-content > .pokemon-about h2 {
-        color: #171717;
-    }
-
-    #detail-content > .pokemon-about .pokemon-about-header span {
-        color: #ef3f22;
-    }
-
-    #detail-content > .pokemon-about p {
-        max-width: 620px;
-        color: #5f5f5f;
-        font-size: 14px;
-        line-height: 1.7;
-    }
+    #detail-content > .pokemon-about h2 { color: #171717; }
+    #detail-content > .pokemon-about .pokemon-about-header span { color: #ef3f22; }
+    #detail-content > .pokemon-about p { max-width: 620px; color: #5f5f5f; font-size: 14px; line-height: 1.7; }
 
     #detail-content > .gamedex-species {
         grid-column: 2;
@@ -231,22 +230,15 @@ body {
         border-radius: 22px;
         background: #fafafa;
         color: #171717;
-        box-shadow:
-            0 7px 16px rgba(0,0,0,.10),
-            0 2px 5px rgba(0,0,0,.05);
+        box-shadow: 0 7px 16px rgba(0,0,0,.10), 0 2px 5px rgba(0,0,0,.05);
     }
 
     #detail-content > .gamedex-species .gamedex-species-header span,
     #detail-content > .gamedex-species .gamedex-species-header h2,
     #detail-content > .gamedex-species .gamedex-species-item span,
     #detail-content > .gamedex-species .gamedex-species-item strong,
-    #detail-content > .gamedex-species .gamedex-forms-title {
-        color: #171717;
-    }
-
-    #detail-content > .gamedex-species .gamedex-species-header span {
-        color: #777;
-    }
+    #detail-content > .gamedex-species .gamedex-forms-title { color: #171717; }
+    #detail-content > .gamedex-species .gamedex-species-header span { color: #777; }
 
     #detail-content > .evolution-section {
         grid-column: 1 / -1;
@@ -258,19 +250,42 @@ body {
         border-radius: 24px;
         background: #ffffff;
         color: #171717;
-        box-shadow:
-            0 8px 18px rgba(0,0,0,.11),
-            0 2px 5px rgba(0,0,0,.05);
+        box-shadow: 0 8px 18px rgba(0,0,0,.11), 0 2px 5px rgba(0,0,0,.05);
     }
 
     #detail-content > .evolution-section .panel-eyebrow,
-    #detail-content > .evolution-section h2 {
-        color: #171717;
+    #detail-content > .evolution-section h2 { color: #171717; }
+    #detail-content > .evolution-section .panel-eyebrow { color: #ef3f22; }
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        background: #ffffff !important;
+        border-color: #dedede !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,.12) !important;
+        backdrop-filter: none;
     }
 
-    #detail-content > .evolution-section .panel-eyebrow {
-        color: #ef3f22;
+    .main-nav a,
+    .main-nav a:visited,
+    .main-nav a:hover,
+    .main-nav a.is-active { color: #171717 !important; }
+    .main-nav a:hover,
+    .main-nav a.is-active { background: #f7f7f7; }
+    .main-nav a.is-active:after { background: #ef3f22; }
+
+    .menu-toggle[aria-expanded="true"] {
+        border-color: rgba(239,63,34,.7);
+        background: #fff7f5;
     }
+
+    .regions-grid,
+    .generations-grid { gap: 14px; padding-bottom: 16px; }
+    .region-card,
+    .generation-card-button { flex-basis: min(84vw, 330px); }
+    .region-starter img { width: 140px; height: 140px; }
+    .region-starter:nth-child(2) img { width: 158px; height: 158px; }
+    .generation-card-visual { min-height: 190px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -278,4 +293,5 @@ body {
     .generation-card-button,
     .type-card,
     .pokemon-card-button { transition: none !important; }
+    .generation-card-cover { transition: none; }
 }
