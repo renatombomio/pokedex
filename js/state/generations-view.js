@@ -1,16 +1,12 @@
 import { GENERATIONS } from './generations.js';
-import { getPokemon } from '../api/pokemon.js';
 
 const section = document.querySelector('#generations');
 const grid = document.querySelector('#generations-grid');
-
-const hydratedGenerations = new Set();
 
 export function initializeGenerations() {
     if (!section || !grid) return;
 
     renderGenerationCards();
-    initializeStarterHydration();
 }
 
 function renderGenerationCards() {
@@ -21,17 +17,16 @@ function renderGenerationCards() {
         card.className = 'generation-card';
         card.dataset.generationId = generation.id;
 
+        const coverPath = `assets/generation-covers/generation-${generation.shortName.toLowerCase()}.png`;
+
         card.innerHTML = `
             <button class="generation-card-button" type="button" data-generation-id="${generation.id}" aria-label="Explorar ${generation.name}">
+                <span class="generation-card-cover" aria-hidden="true"></span>
                 <span class="generation-card-top">
                     <span class="generation-number">${generation.shortName}</span>
                     <span class="generation-region">${generation.region}</span>
                 </span>
-                <span class="generation-card-visual">
-                    <span class="generation-orbit generation-orbit-one" aria-hidden="true"></span>
-                    <span class="generation-orbit generation-orbit-two" aria-hidden="true"></span>
-                    <span class="generation-starters" data-generation-starters></span>
-                </span>
+                <span class="generation-card-visual" aria-hidden="true"></span>
                 <span class="generation-card-bottom">
                     <strong>${generation.name}</strong>
                     <small>#${generation.start} — #${generation.end}</small>
@@ -40,73 +35,12 @@ function renderGenerationCards() {
             </button>
         `;
 
+        card.querySelector('.generation-card-button')?.style.setProperty('--generation-cover', `url("${coverPath}")`);
         fragment.appendChild(card);
     });
 
     grid.replaceChildren(fragment);
     grid.onclick = handleGenerationClick;
-}
-
-function initializeStarterHydration() {
-    const cards = grid.querySelectorAll('.generation-card');
-
-    if (!('IntersectionObserver' in window)) {
-        cards.forEach((card) => {
-            hydrateGenerationStarters(Number(card.dataset.generationId));
-        });
-        return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-
-            const generationId = Number(entry.target.dataset.generationId);
-            hydrateGenerationStarters(generationId);
-            observer.unobserve(entry.target);
-        });
-    }, {
-        rootMargin: '240px 0px'
-    });
-
-    cards.forEach((card) => observer.observe(card));
-}
-
-async function hydrateGenerationStarters(generationId) {
-    if (hydratedGenerations.has(generationId)) return;
-
-    const generation = GENERATIONS.find((item) => item.id === generationId);
-    const container = grid.querySelector(
-        `[data-generation-id="${generationId}"] [data-generation-starters]`
-    );
-
-    if (!generation || !container) return;
-
-    hydratedGenerations.add(generationId);
-
-    try {
-        const starters = await Promise.all(
-            generation.starters.map((starter) => getPokemon(starter))
-        );
-
-        const fragment = document.createDocumentFragment();
-
-        starters.forEach((pokemon) => {
-            const image = document.createElement('img');
-            image.src = pokemon.sprites?.other?.['official-artwork']?.front_default
-                || pokemon.sprites?.front_default
-                || '';
-            image.alt = pokemon.name;
-            image.loading = 'lazy';
-            image.decoding = 'async';
-            fragment.appendChild(image);
-        });
-
-        container.replaceChildren(fragment);
-    } catch (error) {
-        hydratedGenerations.delete(generationId);
-        throw error;
-    }
 }
 
 function handleGenerationClick(event) {
