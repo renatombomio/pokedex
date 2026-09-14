@@ -71,6 +71,56 @@ body {
     background: transparent !important;
 }
 
+/* Hero typography — stronger separation from the colorful artwork. */
+.hero .eyebrow {
+    margin-bottom: 24px;
+    color: #fff8f3;
+    font-size: 13px;
+    font-weight: 950;
+    letter-spacing: .24em;
+    line-height: 1;
+    text-shadow:
+        0 2px 4px rgba(30,25,35,.85),
+        0 0 10px rgba(30,25,35,.55);
+}
+
+.hero h1 {
+    max-width: 980px;
+    color: #fffaf6;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(54px, 7.5vw, 104px);
+    font-weight: 950;
+    line-height: .9;
+    letter-spacing: -.065em;
+    text-shadow:
+        0 4px 0 rgba(35,30,42,.32),
+        0 6px 14px rgba(35,30,42,.72),
+        0 0 24px rgba(35,30,42,.45);
+}
+
+.hero h1 span {
+    display: block;
+    margin-top: 6px;
+    color: #f45b4b;
+    text-shadow:
+        0 3px 0 rgba(83,37,42,.42),
+        0 6px 14px rgba(35,30,42,.78),
+        0 0 22px rgba(35,30,42,.48);
+}
+
+.hero-description {
+    max-width: 700px;
+    margin: 34px 0 42px;
+    color: #fffaf7;
+    font-size: 20px;
+    font-weight: 650;
+    line-height: 1.55;
+    letter-spacing: -.01em;
+    text-shadow:
+        0 2px 4px rgba(30,25,35,.9),
+        0 0 12px rgba(30,25,35,.62);
+}
+
 .regions-header h2,
 .generations-header h2,
 .types-header h2,
@@ -374,6 +424,23 @@ body {
     .region-starter:nth-child(2) img {
         width: 158px;
         height: 158px;
+    }
+
+    .hero .eyebrow {
+        font-size: 11px;
+        letter-spacing: .18em;
+    }
+
+    .hero h1 {
+        font-size: clamp(46px, 13vw, 76px);
+        line-height: .92;
+    }
+
+    .hero-description {
+        max-width: 90%;
+        margin: 26px 0 32px;
+        font-size: 16px;
+        line-height: 1.55;
     }
 }
 
