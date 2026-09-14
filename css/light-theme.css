@@ -270,7 +270,7 @@ body {
         inset 0 1px rgba(255,255,255,.1);
 }
 
-generation-detail-meta span,
+.generation-detail-meta span,
 .region-detail-meta span {
     border-color: #dedede;
     background: #fff;
