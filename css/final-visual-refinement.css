@@ -101,25 +101,12 @@ body {
     background-image: none !important;
 }
 
-/* Region cards — image-led, no dark edge */
-.region-card-button {
-    border: none !important;
-    background: #ffffff !important;
-}
-
-.region-starters {
-    transform: scale(1.005);
-    transform-origin: center bottom;
-}
-
-/* Generation cards — full-cover editorial cards */
+/* Generation cards — full-cover editorial layout */
 .generation-card-button {
     isolation: isolate;
     min-height: 430px;
     padding: 0;
-    overflow: hidden;
-    border: none !important;
-    border-radius: 22px;
+    border: 0;
     background: #ffffff !important;
     color: #ffffff;
     box-shadow:
@@ -130,7 +117,6 @@ body {
 
 .generation-card-button:hover {
     transform: translateY(-5px);
-    border: none !important;
     box-shadow:
         0 15px 28px rgba(0,0,0,.17),
         0 3px 8px rgba(0,0,0,.08) !important;
@@ -145,7 +131,7 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 1;
-    transform: scale(1.005);
+    transform: scale(1.01);
     transition: transform .35s ease;
 }
 
@@ -154,10 +140,10 @@ body {
     inset: 0;
     background: linear-gradient(
         to bottom,
-        rgba(0,0,0,.52) 0%,
-        rgba(0,0,0,.08) 30%,
-        rgba(0,0,0,0) 52%,
-        rgba(0,0,0,.68) 100%
+        rgba(0,0,0,.38) 0%,
+        rgba(0,0,0,0) 34%,
+        rgba(0,0,0,0) 57%,
+        rgba(0,0,0,.62) 100%
     );
     content: '';
 }
@@ -167,10 +153,11 @@ body {
 }
 
 .generation-card-top,
-.generation-card-bottom,
-.generation-card-visual {
+.generation-card-bottom {
     position: relative;
     z-index: 3;
+    color: #ffffff !important;
+    text-shadow: 0 2px 5px rgba(0,0,0,.9), 0 0 12px rgba(0,0,0,.65);
 }
 
 .generation-card-top {
@@ -181,11 +168,13 @@ body {
     width: 100%;
     min-height: 62px;
     padding: 0 20px;
-    background: transparent !important;
-    border-bottom: none !important;
+    background: transparent;
+    border: 0;
 }
 
 .generation-card-visual {
+    position: relative;
+    z-index: 2;
     flex: 1;
     min-height: 250px;
     width: 100%;
@@ -197,70 +186,52 @@ body {
     display: none !important;
 }
 
-.generation-number,
-.generation-region,
-.generation-card-bottom strong,
-.generation-card-bottom small,
-.generation-explore {
-    color: #ffffff !important;
-    text-shadow:
-        0 2px 5px rgba(0,0,0,.95),
-        0 0 12px rgba(0,0,0,.65);
-}
-
 .generation-number {
-    font-size: 14px;
-    font-weight: 950;
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: 900;
     letter-spacing: .16em;
 }
 
 .generation-region {
+    color: #ffffff !important;
     font-size: 11px;
-    font-weight: 950;
+    font-weight: 900;
     letter-spacing: .12em;
     text-transform: uppercase;
 }
 
 .generation-card-bottom {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
     align-items: end;
-    gap: 5px 16px;
+    gap: 5px;
     min-height: 118px;
     width: 100%;
     padding: 18px 20px 20px;
-    border-top: none !important;
-    background: transparent !important;
+    border: 0;
+    background: transparent;
 }
 
 .generation-card-bottom strong {
     color: #ffffff !important;
     font-size: 25px;
-    font-weight: 950;
+    font-weight: 900;
     line-height: 1.05;
     letter-spacing: -.045em;
+    text-shadow: 0 2px 5px rgba(0,0,0,.95), 0 0 14px rgba(0,0,0,.75);
 }
 
 .generation-card-bottom small {
     color: #ffffff !important;
     font-size: 11px;
-    font-weight: 850;
+    font-weight: 900;
     letter-spacing: .08em;
+    text-shadow: 0 2px 5px rgba(0,0,0,.95), 0 0 10px rgba(0,0,0,.7);
 }
 
 .generation-explore {
-    grid-row: 1 / span 2;
-    align-self: center;
-    padding: 11px 13px;
-    border: 1px solid rgba(255,255,255,.5);
-    border-radius: 10px;
-    background: rgba(0,0,0,.28);
-    color: #ffffff !important;
-    font-size: 9px;
-    font-weight: 950;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    backdrop-filter: blur(2px);
+    display: none !important;
 }
 
 @media (max-width: 680px) {
@@ -271,10 +242,6 @@ body {
     .generation-card-top {
         min-height: 54px;
         padding: 0 16px;
-    }
-
-    .generation-card-cover {
-        inset: 0;
     }
 
     .generation-card-visual {
@@ -288,11 +255,6 @@ body {
 
     .generation-card-bottom strong {
         font-size: 21px;
-    }
-
-    .generation-explore {
-        padding: 9px 10px;
-        font-size: 8px;
     }
 }
 
