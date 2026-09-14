@@ -74,7 +74,7 @@
 .generation-card-button:hover .generation-starters img:nth-child(2) { transform:translateY(-10px); }
 .generation-card-button:hover .generation-starters img:nth-child(3) { transform:translateY(-5px) rotate(3deg); }
 
-generation-card-bottom { display:grid; grid-template-columns:1fr auto; align-items:end; gap:4px 14px; padding-top:16px; border-top:1px solid rgba(255,255,255,.07); }
+.generation-card-bottom { display:grid; grid-template-columns:1fr auto; align-items:end; gap:4px 14px; padding-top:16px; border-top:1px solid rgba(255,255,255,.07); }
 .generation-card-bottom strong { font-size:20px; letter-spacing:-.04em; }
 .generation-card-bottom small { color:#666; font-size:10px; font-weight:800; letter-spacing:.08em; }
 .generation-explore { grid-row:1 / span 2; color:#aaa; font-size:10px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
