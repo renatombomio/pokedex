@@ -17,7 +17,7 @@ function renderGenerationCards() {
         card.className = 'generation-card';
         card.dataset.generationId = generation.id;
 
-        const coverPath = `assets/generation-covers/generation-${generation.shortName.toLowerCase()}.png`;
+        const coverPath = `/assets/generation-covers/generation-${generation.shortName.toLowerCase()}.png`;
 
         card.innerHTML = `
             <button class="generation-card-button" type="button" data-generation-id="${generation.id}" aria-label="Explorar ${generation.name}">
