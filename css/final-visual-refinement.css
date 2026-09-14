@@ -208,9 +208,9 @@ body {
 
 .generation-card-bottom {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr auto;
     align-items: end;
-    gap: 5px;
+    gap: 5px 16px;
     min-height: 118px;
     width: 100%;
     padding: 18px 20px 20px;
@@ -219,9 +219,6 @@ body {
 }
 
 .generation-card-bottom strong {
-    display: block;
-    width: 100%;
-    grid-column: 1 / -1;
     color: #ffffff !important;
     font-size: 25px;
     font-weight: 900;
@@ -231,9 +228,6 @@ body {
 }
 
 .generation-card-bottom small {
-    display: block;
-    width: 100%;
-    grid-column: 1 / -1;
     color: #ffffff !important;
     font-size: 11px;
     font-weight: 900;
@@ -242,7 +236,19 @@ body {
 }
 
 .generation-explore {
-    display: none !important;
+    grid-row: 1 / span 2;
+    align-self: center;
+    display: block;
+    padding: 11px 13px;
+    border: 1px solid rgba(255,255,255,.55);
+    border-radius: 10px;
+    background: rgba(0,0,0,.32);
+    color: #ffffff !important;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 3px rgba(0,0,0,.9);
 }
 
 @media (max-width: 680px) {
@@ -270,6 +276,11 @@ body {
 
     .generation-card-bottom strong {
         font-size: 21px;
+    }
+
+    .generation-explore {
+        padding: 9px 10px;
+        font-size: 8px;
     }
 }
 
