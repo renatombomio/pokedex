@@ -201,6 +201,15 @@ document.addEventListener('click', (event) => {
     }
 }, true);
 
+function escapeAttributeValue(value) {
+    const stringValue = String(value ?? '');
+    if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
+        return CSS.escape(stringValue);
+    }
+
+    return stringValue.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
 document.addEventListener('change', (event) => {
     const select = event.target.closest('[data-gamedex-form]');
     if (!select) return;
@@ -208,7 +217,7 @@ document.addEventListener('change', (event) => {
     queueMicrotask(syncHistoryState);
 
     const chip = document.querySelector(
-        `[data-gamedex-form-chip="${CSS.escape(select.value)}"]`
+        `[data-gamedex-form-chip="${escapeAttributeValue(select.value)}"]`
     );
 
     chip?.click();
