@@ -220,13 +220,15 @@ document.addEventListener('click', (event) => {
     queueMicrotask(syncHistoryState);
 });
 
+// The Gamedex replaces #detail-content in one operation. Observe only direct child changes and debounce work outside the animation frame.
 const observer = new MutationObserver(() => {
-    window.requestAnimationFrame(() => {
+    window.clearTimeout(observer.syncTimer);
+    observer.syncTimer = window.setTimeout(() => {
         restoreDesiredShiny();
         syncMediaButtons();
-    });
+    }, 0);
 });
 
 if (detailContent) {
-    observer.observe(detailContent, { childList: true, subtree: true });
+    observer.observe(detailContent, { childList: true });
 }
