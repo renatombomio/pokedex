@@ -89,7 +89,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// The search modal is created dynamically, so watch only DOM insertions instead of every class change.
+// Move focus into the dialog when it is created, without observing every class change on the whole document.
 const searchModalObserver = new MutationObserver(() => {
     const modal = document.querySelector('.search-modal');
     if (!modal) return;
@@ -108,3 +108,18 @@ if (document.body) {
         subtree: true
     });
 }
+
+// Restore focus after the search dialog closes.
+document.addEventListener('click', (event) => {
+    if (!event.target.closest('.search-modal-close')) return;
+    window.setTimeout(() => {
+        if (modalTrigger && document.contains(modalTrigger)) modalTrigger.focus();
+    }, 0);
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !document.querySelector('.search-modal.is-open')) return;
+    window.setTimeout(() => {
+        if (modalTrigger && document.contains(modalTrigger)) modalTrigger.focus();
+    }, 0);
+});
