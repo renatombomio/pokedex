@@ -67,6 +67,18 @@ function createGroup(title, eyebrow, entries, modifierClass, emptyText) {
     `;
 }
 
+function renderLoading(detailContent) {
+    const existing = detailContent.querySelector('[data-gamedex-effectiveness]');
+    if (existing) return existing;
+
+    const loading = document.createElement('section');
+    loading.className = 'gamedex-effectiveness gamedex-effectiveness-loading';
+    loading.dataset.gamedexEffectiveness = '';
+    loading.innerHTML = '<span>Inteligencia de combate</span><h2>Analizando afinidades...</h2>';
+    detailContent.appendChild(loading);
+    return loading;
+}
+
 async function renderTypeEffectiveness() {
     const detailContent = document.querySelector('#detail-content');
     if (!detailContent || !detailContent.querySelector('.gamedex-card')) return;
@@ -75,14 +87,7 @@ async function renderTypeEffectiveness() {
     if (!types.length) return;
 
     const token = ++renderToken;
-    const existing = detailContent.querySelector('[data-gamedex-effectiveness]');
-    if (existing) existing.remove();
-
-    const loading = document.createElement('section');
-    loading.className = 'gamedex-effectiveness gamedex-effectiveness-loading';
-    loading.dataset.gamedexEffectiveness = '';
-    loading.innerHTML = '<span>Inteligencia de combate</span><h2>Analizando afinidades...</h2>';
-    detailContent.appendChild(loading);
+    const loading = renderLoading(detailContent);
 
     try {
         const typeData = await Promise.all(types.map((type) => getType(type)));
@@ -123,7 +128,7 @@ async function renderTypeEffectiveness() {
 
 const observer = new MutationObserver(() => {
     const detailContent = document.querySelector('#detail-content');
-    if (!detailContent?.querySelector('.gamedex-card') || detailContent.querySelector('[data-gamedex-effectiveness]')) return;
+    if (!detailContent?.querySelector('.gamedex-card')) return;
     window.clearTimeout(observer.renderTimer);
     observer.renderTimer = window.setTimeout(renderTypeEffectiveness, 40);
 });
@@ -133,6 +138,7 @@ function init() {
     if (!detailContent) return;
     observer.observe(detailContent, { childList: true, subtree: true });
     renderTypeEffectiveness();
+    document.addEventListener('gamedex:rendered', renderTypeEffectiveness);
 }
 
 if (document.readyState === 'loading') {
