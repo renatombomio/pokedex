@@ -224,7 +224,9 @@ function init() {
     restoreAudioState();
     updatePlayer();
 
-    if (getStoredBoolean(MUSIC_ENABLED_KEY, false)) {
+    // Respect the user's previous pause/play choice. A fresh visitor starts
+    // with ambient music enabled; browsers may still require a user gesture.
+    if (getStoredBoolean(MUSIC_ENABLED_KEY, true)) {
         startPlayback();
     }
 
