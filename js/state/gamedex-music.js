@@ -9,7 +9,7 @@ const MUSIC_ENABLED_KEY = 'pokedex-gamedex-music-enabled';
 const MUSIC_MUTED_KEY = 'pokedex-gamedex-music-muted';
 const MUSIC_TRACK_KEY = 'pokedex-gamedex-music-track';
 const MUSIC_POSITION_KEY = 'pokedex-gamedex-music-position';
-const MUSIC_VOLUME = 0.35;
+const MUSIC_VOLUME = 0.15;
 const FADE_DURATION = 900;
 
 let currentTrackIndex = 0;
