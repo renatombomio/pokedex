@@ -182,6 +182,18 @@
 
 .gamedex-advanced-panel button:focus-visible { outline: 2px solid rgba(255,255,255,.7); outline-offset: 2px; }
 
+@media (min-width: 901px) {
+    #detail-content { display: block !important; }
+    #detail-content > .gamedex-advanced-panel,
+    #detail-content > .gamedex-effectiveness {
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        grid-column: 1 / -1;
+    }
+}
+
 @media (max-width: 900px) {
     .gamedex-moves-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
     .gamedex-related-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
