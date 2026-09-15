@@ -89,23 +89,25 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Move focus into the dialog when it is created, without observing every class change on the whole document.
-const searchModalObserver = new MutationObserver(() => {
-    const modal = document.querySelector('.search-modal');
-    if (!modal) return;
+// The search modal is created by main.js before this module executes, so observe the modal itself.
+const searchModal = document.querySelector('.search-modal');
 
-    const isOpen = modal.classList.contains('is-open');
-    const wasOpen = modal.dataset.a11yOpen === 'true';
-    if (isOpen && !wasOpen) {
-        modal.dataset.a11yOpen = 'true';
-        window.setTimeout(() => modal.querySelector('.search-modal-close')?.focus(), 0);
-    }
-});
+if (searchModal) {
+    const searchModalObserver = new MutationObserver(() => {
+        const isOpen = searchModal.classList.contains('is-open');
+        const wasOpen = searchModal.dataset.a11yOpen === 'true';
+        if (isOpen && !wasOpen) {
+            searchModal.dataset.a11yOpen = 'true';
+            window.setTimeout(() => searchModal.querySelector('.search-modal-close')?.focus(), 0);
+        }
+        if (!isOpen && wasOpen) {
+            searchModal.dataset.a11yOpen = 'false';
+        }
+    });
 
-if (document.body) {
-    searchModalObserver.observe(document.body, {
-        childList: true,
-        subtree: true
+    searchModalObserver.observe(searchModal, {
+        attributes: true,
+        attributeFilter: ['class']
     });
 }
 
