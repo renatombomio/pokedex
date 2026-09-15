@@ -16,10 +16,9 @@ let currentTrackIndex = 0;
 let audio = null;
 let fadeTimer = null;
 let player = null;
+let toggleButton = null;
 let playButton = null;
 let nextButton = null;
-let muteButton = null;
-let trackLabel = null;
 
 function getStoredBoolean(key, fallback) {
     try {
@@ -61,27 +60,24 @@ function createPlayer() {
     player = document.createElement('aside');
     player.className = 'gamedex-music-player';
     player.dataset.gamedexMusicPlayer = '';
-    player.setAttribute('aria-label', 'Reproductor de música');
+    player.setAttribute('aria-label', 'Controles de música GameDex');
     player.innerHTML = `
-        <button class="gamedex-music-button" type="button" data-music-play aria-label="Reproducir música" title="Reproducir música">▶</button>
-        <button class="gamedex-music-button" type="button" data-music-next aria-label="Siguiente canción" title="Siguiente canción">⏭</button>
-        <div class="gamedex-music-info" aria-live="polite">
-            <span>Música GameDex</span>
-            <strong data-music-track>Track 1</strong>
+        <button class="gamedex-music-toggle" type="button" data-music-toggle aria-expanded="false" aria-label="Abrir controles de música" title="Abrir controles de música">♪</button>
+        <div class="gamedex-music-controls" data-music-controls>
+            <button class="gamedex-music-button" type="button" data-music-play aria-label="Reproducir música" title="Reproducir música">▶</button>
+            <button class="gamedex-music-button" type="button" data-music-next aria-label="Siguiente canción" title="Siguiente canción">⏭</button>
         </div>
-        <button class="gamedex-music-button gamedex-music-mute" type="button" data-music-mute aria-label="Silenciar música" title="Silenciar música">🔊</button>
     `;
 
     document.body.appendChild(player);
 
+    toggleButton = player.querySelector('[data-music-toggle]');
     playButton = player.querySelector('[data-music-play]');
     nextButton = player.querySelector('[data-music-next]');
-    muteButton = player.querySelector('[data-music-mute]');
-    trackLabel = player.querySelector('[data-music-track]');
 
+    toggleButton.addEventListener('click', toggleControls);
     playButton.addEventListener('click', togglePlayback);
     nextButton.addEventListener('click', skipToNextTrack);
-    muteButton.addEventListener('click', toggleMute);
 }
 
 function createAudio() {
@@ -109,12 +105,15 @@ function updatePlayer() {
     playButton.setAttribute('aria-label', isPlaying ? 'Pausar música' : 'Reproducir música');
     playButton.title = isPlaying ? 'Pausar música' : 'Reproducir música';
 
-    const muted = audio.muted;
-    muteButton.textContent = muted ? '🔇' : '🔊';
-    muteButton.setAttribute('aria-label', muted ? 'Activar música' : 'Silenciar música');
-    muteButton.title = muted ? 'Activar música' : 'Silenciar música';
+    toggleButton.classList.toggle('is-playing', isPlaying && !audio.muted);
+    toggleButton.textContent = '♪';
+}
 
-    trackLabel.textContent = `Track ${currentTrackIndex + 1}`;
+function toggleControls() {
+    const isOpen = player.classList.toggle('is-open');
+    toggleButton.setAttribute('aria-expanded', String(isOpen));
+    toggleButton.setAttribute('aria-label', isOpen ? 'Cerrar controles de música' : 'Abrir controles de música');
+    toggleButton.title = isOpen ? 'Cerrar controles de música' : 'Abrir controles de música';
 }
 
 function fadeTo(target, duration = FADE_DURATION, onComplete) {
@@ -166,13 +165,6 @@ function togglePlayback() {
     } else {
         pausePlayback();
     }
-}
-
-function toggleMute() {
-    if (!audio) createAudio();
-    audio.muted = !audio.muted;
-    setStoredBoolean(MUSIC_MUTED_KEY, audio.muted);
-    updatePlayer();
 }
 
 function switchTrack(nextIndex, shouldPlay) {
