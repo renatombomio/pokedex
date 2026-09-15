@@ -160,12 +160,18 @@ function createPreviewCard(pokemon) {
     const image = pokemon.sprites?.other?.['official-artwork']?.front_default
         || pokemon.sprites?.front_default
         || '';
+    const types = pokemon.types ?? [];
 
     return `
-        <button class="type-preview-card type-${pokemon.types?.[0]?.type.name ?? 'normal'}" type="button" data-pokemon-id="${pokemon.id}">
+        <button class="type-preview-card type-${types[0]?.type.name ?? 'normal'}" type="button" data-pokemon-id="${pokemon.id}">
             <span class="type-preview-number">#${String(pokemon.id).padStart(3, '0')}</span>
             <img src="${image}" alt="${capitalize(pokemon.name)}" loading="lazy">
-            <span>${capitalize(pokemon.name)}</span>
+            <span class="type-preview-card-name">${capitalize(pokemon.name)}</span>
+            <span class="type-preview-types">
+                ${types.map(({ type }) => `
+                    <span class="type-preview-type type-${type.name}">${translateType(type.name)}</span>
+                `).join('')}
+            </span>
         </button>
     `;
 }
@@ -232,6 +238,18 @@ async function handleTypeDetailClick(event) {
 
 function sectionType() {
     return getPokemonType(document.querySelector('#type-detail')?.dataset.type);
+}
+
+function translateType(type) {
+    const translations = {
+        normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico',
+        grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno',
+        ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho',
+        rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro',
+        steel: 'Acero', fairy: 'Hada'
+    };
+
+    return translations[type] ?? capitalize(type);
 }
 
 function capitalize(value) {
