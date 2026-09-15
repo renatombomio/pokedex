@@ -1,6 +1,6 @@
 import { getPokemonByType, getPokemon } from '../api/pokemon.js';
 import { getPokemonType } from './types.js';
-import { renderPokemon, showLoading, showError } from './ui.js';
+import { showTypeDetail } from './navigation.js';
 import { mountWorldBreadcrumb } from './world-navigation.js';
 
 const main = document.querySelector('#main-content');
@@ -13,8 +13,7 @@ document.addEventListener('type:open-detail', (event) => {
     const typeId = event.detail?.type;
     if (!typeId) return;
 
-    const navigation = window.__gamedexNavigation;
-    navigation?.showTypeDetail?.(typeId, {
+    showTypeDetail(typeId, {
         pushHistory: !event.detail?.fromHistory
     });
 
