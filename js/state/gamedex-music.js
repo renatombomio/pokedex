@@ -5,11 +5,11 @@ const MUSIC_TRACKS = [
     'assets/audio/gamedex-battle.mp3'
 ];
 
-const MUSIC_VOLUME_KEY = 'pokedex-gamedex-music-volume';
 const MUSIC_ENABLED_KEY = 'pokedex-gamedex-music-enabled';
 const MUSIC_MUTED_KEY = 'pokedex-gamedex-music-muted';
 const MUSIC_TRACK_KEY = 'pokedex-gamedex-music-track';
 const MUSIC_POSITION_KEY = 'pokedex-gamedex-music-position';
+const MUSIC_VOLUME = 0.35;
 const FADE_DURATION = 900;
 
 let currentTrackIndex = 0;
@@ -19,7 +19,6 @@ let player = null;
 let playButton = null;
 let nextButton = null;
 let muteButton = null;
-let volumeInput = null;
 let trackLabel = null;
 
 function getStoredBoolean(key, fallback) {
@@ -31,24 +30,20 @@ function getStoredBoolean(key, fallback) {
     }
 }
 
+function setStoredBoolean(key, value) {
+    try {
+        localStorage.setItem(key, String(value));
+    } catch {
+        // Ignore storage failures; audio should still work for this session.
+    }
+}
+
 function getStoredNumber(key, fallback) {
     try {
         const value = Number(localStorage.getItem(key));
         return Number.isFinite(value) ? value : fallback;
     } catch {
         return fallback;
-    }
-}
-
-function getStoredVolume() {
-    return Math.min(Math.max(getStoredNumber(MUSIC_VOLUME_KEY, 0.25), 0), 1);
-}
-
-function setStoredBoolean(key, value) {
-    try {
-        localStorage.setItem(key, String(value));
-    } catch {
-        // Ignore storage failures; audio should still work for this session.
     }
 }
 
@@ -75,10 +70,6 @@ function createPlayer() {
             <strong data-music-track>Track 1</strong>
         </div>
         <button class="gamedex-music-button gamedex-music-mute" type="button" data-music-mute aria-label="Silenciar música" title="Silenciar música">🔊</button>
-        <label class="gamedex-music-volume-label" aria-label="Volumen de música">
-            <span class="sr-only">Volumen</span>
-            <input data-music-volume type="range" min="0" max="1" step="0.01" value="0.25">
-        </label>
     `;
 
     document.body.appendChild(player);
@@ -86,15 +77,11 @@ function createPlayer() {
     playButton = player.querySelector('[data-music-play]');
     nextButton = player.querySelector('[data-music-next]');
     muteButton = player.querySelector('[data-music-mute]');
-    volumeInput = player.querySelector('[data-music-volume]');
     trackLabel = player.querySelector('[data-music-track]');
-
-    volumeInput.value = String(getStoredVolume());
 
     playButton.addEventListener('click', togglePlayback);
     nextButton.addEventListener('click', skipToNextTrack);
     muteButton.addEventListener('click', toggleMute);
-    volumeInput.addEventListener('input', handleVolumeChange);
 }
 
 function createAudio() {
@@ -122,16 +109,12 @@ function updatePlayer() {
     playButton.setAttribute('aria-label', isPlaying ? 'Pausar música' : 'Reproducir música');
     playButton.title = isPlaying ? 'Pausar música' : 'Reproducir música';
 
-    const muted = audio.muted || Number(volumeInput.value) === 0;
+    const muted = audio.muted;
     muteButton.textContent = muted ? '🔇' : '🔊';
     muteButton.setAttribute('aria-label', muted ? 'Activar música' : 'Silenciar música');
     muteButton.title = muted ? 'Activar música' : 'Silenciar música';
 
     trackLabel.textContent = `Track ${currentTrackIndex + 1}`;
-}
-
-function getTargetVolume() {
-    return Number(volumeInput?.value ?? getStoredVolume());
 }
 
 function fadeTo(target, duration = FADE_DURATION, onComplete) {
@@ -158,7 +141,7 @@ async function startPlayback() {
 
     try {
         await audio.play();
-        fadeTo(getTargetVolume());
+        fadeTo(MUSIC_VOLUME);
         setStoredBoolean(MUSIC_ENABLED_KEY, true);
         updatePlayer();
     } catch {
@@ -189,18 +172,6 @@ function toggleMute() {
     if (!audio) createAudio();
     audio.muted = !audio.muted;
     setStoredBoolean(MUSIC_MUTED_KEY, audio.muted);
-    updatePlayer();
-}
-
-function handleVolumeChange(event) {
-    const value = Number(event.target.value);
-    setStoredNumber(MUSIC_VOLUME_KEY, value);
-    if (!audio) createAudio();
-    if (value > 0 && audio.muted) {
-        audio.muted = false;
-        setStoredBoolean(MUSIC_MUTED_KEY, false);
-    }
-    audio.volume = value;
     updatePlayer();
 }
 
