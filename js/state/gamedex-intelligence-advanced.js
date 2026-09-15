@@ -1,6 +1,5 @@
-import { getPokemon } from '../api/pokemon.js';
 import { getAbility } from '../api/ability.js';
-import { getMove } from '../api/move.js';
+import { getDetailsState } from './details.js';
 
 const TYPE_NAMES = {
     normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta',
@@ -9,9 +8,7 @@ const TYPE_NAMES = {
     dark: 'Siniestro', steel: 'Acero', fairy: 'Hada'
 };
 
-const TYPE_COLORS = new Set(Object.keys(TYPE_NAMES));
 let renderToken = 0;
-let currentPokemonId = null;
 
 function escapeHtml(value) {
     return String(value ?? '')
@@ -37,12 +34,6 @@ function localizedEffect(resource, field = 'effect_entries') {
         || 'No hay descripción disponible.';
 }
 
-function getPokemonId() {
-    const number = document.querySelector('.gamedex-number')?.textContent?.replace(/\D/g, '');
-    const id = Number(number);
-    return Number.isInteger(id) && id > 0 ? id : null;
-}
-
 function createPanel(className, eyebrow, title, content) {
     return `
         <section class="gamedex-advanced-panel ${className}" data-gamedex-advanced>
@@ -52,6 +43,11 @@ function createPanel(className, eyebrow, title, content) {
             ${content}
         </section>
     `;
+}
+
+function getCurrentPokemon() {
+    const pokemon = getDetailsState().pokemon;
+    return pokemon?.id ? pokemon : null;
 }
 
 function renderLoading(detailContent) {
@@ -68,33 +64,55 @@ function renderLoading(detailContent) {
 async function renderAdvancedIntelligence() {
     const detailContent = document.querySelector('#detail-content');
     const card = detailContent?.querySelector('.gamedex-card');
-    const id = getPokemonId();
-    if (!detailContent || !card || !id) return;
+    const pokemon = getCurrentPokemon();
+    if (!detailContent || !card || !pokemon) return;
 
     const token = ++renderToken;
-    currentPokemonId = id;
     const loading = renderLoading(detailContent);
+    const abilityEntry = pokemon.abilities?.find(({ is_hidden }) => !is_hidden) || pokemon.abilities?.[0] || null;
+    const moveEntries = (pokemon.moves ?? [])
+        .slice()
+        .sort((a, b) => localName(a.move).localeCompare(localName(b.move), 'es'));
+
+    loading.outerHTML = `
+        ${renderAbilityLoadingPanel(abilityEntry)}
+        ${renderMovesPanel(moveEntries)}
+    `;
+
+    if (!abilityEntry?.ability?.name) return;
 
     try {
-        const pokemon = await getPokemon(id);
-        if (token !== renderToken || !detailContent.contains(loading)) return;
+        const ability = await getAbility(abilityEntry.ability.name);
+        const current = getCurrentPokemon();
+        if (token !== renderToken || current?.id !== pokemon.id) return;
 
-        const abilityEntry = pokemon.abilities?.find(({ is_hidden }) => !is_hidden) || pokemon.abilities?.[0];
-        const ability = abilityEntry?.ability ? await getAbility(abilityEntry.ability.name) : null;
-        const moveEntries = (pokemon.moves ?? [])
-            .slice()
-            .sort((a, b) => localName(a.move).localeCompare(localName(b.move), 'es'));
-
-        loading.outerHTML = `
-            ${ability ? renderAbilityPanel(ability, abilityEntry.is_hidden) : ''}
-            ${renderMovesPanel(moveEntries)}
-        `;
+        const abilityPanel = detailContent.querySelector('.gamedex-ability-panel[data-gamedex-advanced]');
+        if (!abilityPanel) return;
+        abilityPanel.outerHTML = renderAbilityPanel(ability, abilityEntry.is_hidden);
         bindAdvancedEvents();
-    } catch (error) {
-        if (token !== renderToken || !detailContent.contains(loading)) return;
-        loading.className = 'gamedex-advanced-panel gamedex-advanced-error';
-        loading.innerHTML = '<span>Inteligencia de combate</span><h2>No pudimos cargar habilidades y movimientos.</h2><p>Inténtalo de nuevo al abrir la ficha.</p>';
+    } catch {
+        if (token !== renderToken || getCurrentPokemon()?.id !== pokemon.id) return;
+        const abilityPanel = detailContent.querySelector('.gamedex-ability-panel[data-gamedex-advanced]');
+        if (!abilityPanel) return;
+        abilityPanel.outerHTML = createPanel(
+            'gamedex-ability-panel gamedex-advanced-error',
+            'Habilidad',
+            'Información no disponible',
+            '<p>No pudimos cargar la descripción de esta habilidad.</p>'
+        );
     }
+}
+
+function renderAbilityLoadingPanel(abilityEntry) {
+    const title = abilityEntry?.ability?.name
+        ? capitalize(abilityEntry.ability.name.replaceAll('-', ' '))
+        : 'Habilidad';
+    return createPanel(
+        'gamedex-ability-panel gamedex-ability-loading',
+        'Habilidad',
+        title,
+        '<div class="gamedex-ability-detail"><p>Cargando descripción...</p></div>'
+    );
 }
 
 function renderAbilityPanel(ability, isHidden = false) {
@@ -148,31 +166,17 @@ async function openAbilityDetail(name) {
     }
 }
 
-async function openMoveDetail(name) {
-    const modal = openModal('Cargando movimiento...');
-    try {
-        const move = await getMove(name);
-        const damageClass = { physical: 'Físico', special: 'Especial', status: 'Estado' }[move.damage_class?.name] || '—';
-        const type = TYPE_NAMES[move.type?.name] || capitalize(move.type?.name);
-        const accuracy = move.accuracy == null ? '—' : `${move.accuracy}%`;
-        const power = move.power == null ? '—' : move.power;
-        const effect = localizedEffect(move, 'effect_entries');
-        const related = (move.learned_by_pokemon ?? []).slice().sort((a, b) => a.name.localeCompare(b.name, 'es'));
-        modal.innerHTML = `
-            ${renderModalHeader('Movimiento', localName(move), effect)}
-            <div class="gamedex-move-stats">
-                <div><span>Tipo</span><strong class="pokemon-type type-${escapeHtml(move.type?.name)}">${escapeHtml(type)}</strong></div>
-                <div><span>Clase</span><strong>${damageClass}</strong></div>
-                <div><span>Potencia</span><strong>${power}</strong></div>
-                <div><span>Precisión</span><strong>${accuracy}</strong></div>
-                <div><span>PP</span><strong>${move.pp ?? '—'}</strong></div>
-            </div>
-            ${renderRelatedPokemon('Pokémon que pueden aprenderlo', related)}
-        `;
-        bindModalEvents(modal);
-    } catch {
-        modal.innerHTML = renderModalHeader('Movimiento', 'No disponible', 'No pudimos cargar este movimiento.');
-    }
+function openModal(content) {
+    document.querySelector('[data-gamedex-modal]')?.remove();
+    const modal = document.createElement('div');
+    modal.className = 'gamedex-modal-backdrop';
+    modal.dataset.gamedexModal = '';
+    modal.innerHTML = `<div class="gamedex-modal" role="dialog" aria-modal="true">${content}</div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) modal.remove();
+    });
+    return modal.querySelector('.gamedex-modal');
 }
 
 function renderModalHeader(eyebrow, title, description) {
@@ -204,24 +208,10 @@ function getRelatedId(entry) {
     return match?.[1] || '';
 }
 
-function openModal(content) {
-    document.querySelector('[data-gamedex-modal]')?.remove();
-    const modal = document.createElement('div');
-    modal.className = 'gamedex-modal-backdrop';
-    modal.dataset.gamedexModal = '';
-    modal.innerHTML = `<div class="gamedex-modal" role="dialog" aria-modal="true">${content}</div>`;
-    document.body.appendChild(modal);
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) modal.remove();
-    });
-    return modal.querySelector('.gamedex-modal');
-}
-
 function bindModalEvents(modal) {
     modal.querySelector('[data-gamedex-close]')?.addEventListener('click', () => modal.closest('[data-gamedex-modal]')?.remove());
     modal.querySelectorAll('[data-gamedex-related-pokemon]').forEach((button) => {
         button.addEventListener('click', () => {
-            const id = button.dataset.gamedexRelatedPokemon;
             document.dispatchEvent(new CustomEvent('pokemon:open-detail', { detail: { id: findPokemonId(button) } }));
             modal.closest('[data-gamedex-modal]')?.remove();
         });
@@ -237,16 +227,13 @@ function bindAdvancedEvents() {
     document.querySelectorAll('[data-gamedex-ability]').forEach((button) => {
         button.addEventListener('click', () => openAbilityDetail(button.dataset.gamedexAbility));
     });
-    document.querySelectorAll('[data-gamedex-move]').forEach((button) => {
-        button.addEventListener('click', () => openMoveDetail(button.dataset.gamedexMove));
-    });
 }
 
 const observer = new MutationObserver(() => {
     const detailContent = document.querySelector('#detail-content');
     if (!detailContent?.querySelector('.gamedex-card') || detailContent.querySelector('[data-gamedex-advanced]')) return;
     window.clearTimeout(observer.renderTimer);
-    observer.renderTimer = window.setTimeout(renderAdvancedIntelligence, 70);
+    observer.renderTimer = window.setTimeout(renderAdvancedIntelligence, 40);
 });
 
 function init() {
