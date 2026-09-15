@@ -1,27 +1,3 @@
-const observer = new MutationObserver(() => {
-    const modal = document.querySelector(
-        '.search-modal'
-    );
-
-    if (!modal) {
-        return;
-    }
-
-    if (
-        modal.dataset.carouselInitialized ===
-        'true'
-    ) {
-        return;
-    }
-
-    initializeSearchCarousel(modal);
-});
-
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-});
-
 const existingModal = document.querySelector(
     '.search-modal'
 );
