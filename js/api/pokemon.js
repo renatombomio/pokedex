@@ -32,17 +32,16 @@ async function fetchJson(url) {
             );
             error.status = response.status;
 
-            if (!isRetryableStatus(response.status) || attempt === MAX_RETRIES) {
-                throw error;
-            }
+            if (!isRetryableStatus(response.status)) throw error;
 
             lastError = error;
+            if (attempt === MAX_RETRIES) throw error;
         } catch (error) {
-            if (error.name === 'AbortError') {
-                lastError = createTimeoutError();
-            } else {
-                lastError = error;
-            }
+            if (error.status && !isRetryableStatus(error.status)) throw error;
+
+            lastError = error.name === 'AbortError'
+                ? createTimeoutError()
+                : error;
 
             if (attempt === MAX_RETRIES) throw lastError;
         } finally {
