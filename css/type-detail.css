@@ -82,29 +82,113 @@
 .type-detail-preview h2 { margin:0; color:#171717; font-size:clamp(24px,4vw,38px); letter-spacing:-.055em; }
 .type-detail-preview-count { color:#666; font-size:11px; font-weight:800; }
 .type-detail-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; }
+
 .type-preview-card {
     position:relative;
     min-width:0;
-    padding:14px 10px 12px;
+    padding:0;
     overflow:hidden;
-    border:1px solid color-mix(in srgb, var(--preview-type, #999) 38%, #e3e3e3);
+    border:1px solid var(--preview-type,#999);
     border-radius:20px;
-    background:linear-gradient(145deg, color-mix(in srgb, var(--preview-type, #999) 7%, #fff), #fff 72%);
-    color:#171717;
-    text-align:center;
-    box-shadow:0 5px 12px rgba(0,0,0,.06);
-    transition:transform .22s ease,border-color .22s ease,background .22s ease,box-shadow .22s ease;
+    background:var(--preview-bg,#242424);
+    color:#fff;
+    text-align:left;
+    box-shadow:0 8px 18px rgba(0,0,0,.16),inset 0 0 34px var(--preview-glow,rgba(255,255,255,.08));
+    transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
 }
 .type-preview-card:hover,.type-preview-card:focus-visible {
     transform:translateY(-5px);
     border-color:var(--preview-type,#777);
-    background:linear-gradient(145deg, color-mix(in srgb, var(--preview-type, #999) 11%, #fff), #fff 72%);
-    box-shadow:0 9px 18px rgba(0,0,0,.1);
+    box-shadow:0 14px 26px rgba(0,0,0,.2),0 0 22px var(--preview-glow,rgba(255,255,255,.1));
 }
 .type-preview-card:focus-visible { outline:2px solid #ef3f22; outline-offset:3px; }
-.type-preview-card img { display:block; width:100%; aspect-ratio:1; object-fit:contain; margin:8px auto 10px; filter:drop-shadow(0 12px 10px rgba(0,0,0,.2)); }
-.type-preview-card > span:last-child { display:block; overflow:hidden; color:#171717; font-size:11px; font-weight:850; text-overflow:ellipsis; white-space:nowrap; }
-.type-preview-number { position:absolute; top:9px; left:10px; color:#777; font-size:8px; font-weight:900; }
+.type-preview-card img {
+    display:block;
+    width:100%;
+    aspect-ratio:1;
+    object-fit:contain;
+    margin:0;
+    padding:10px 8px 0;
+    filter:drop-shadow(0 16px 14px rgba(0,0,0,.35));
+    transition:transform .3s var(--ease);
+}
+.type-preview-card:hover img { transform:scale(1.06) translateY(-2px); }
+.type-preview-number {
+    position:absolute;
+    z-index:2;
+    top:10px;
+    left:11px;
+    color:rgba(255,255,255,.46);
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.08em;
+}
+.type-preview-card-name {
+    display:block;
+    overflow:hidden;
+    padding:10px 12px 0;
+    color:#fff;
+    font-size:13px;
+    font-weight:900;
+    line-height:1.15;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.type-preview-types {
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    padding:7px 12px 12px;
+}
+.type-preview-type {
+    display:inline-flex;
+    align-items:center;
+    min-height:20px;
+    padding:4px 7px;
+    border-radius:999px;
+    font-size:8px;
+    font-weight:900;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+}
+
+.type-preview-card.type-normal { --preview-type:#aaa; --preview-bg:#242424; --preview-glow:rgba(255,255,255,.10); }
+.type-preview-card.type-fire { --preview-type:#ff5b32; --preview-bg:#351714; --preview-glow:rgba(255,78,38,.25); }
+.type-preview-card.type-water { --preview-type:#55a8ff; --preview-bg:#12263d; --preview-glow:rgba(69,157,255,.25); }
+.type-preview-card.type-grass { --preview-type:#69cf73; --preview-bg:#142c1b; --preview-glow:rgba(72,205,91,.22); }
+.type-preview-card.type-electric { --preview-type:#f1cf35; --preview-bg:#302a0a; --preview-glow:rgba(241,207,53,.22); }
+.type-preview-card.type-ice { --preview-type:#55d2df; --preview-bg:#102b30; --preview-glow:rgba(73,207,222,.22); }
+.type-preview-card.type-fighting { --preview-type:#e96a4e; --preview-bg:#321b17; --preview-glow:rgba(232,92,67,.22); }
+.type-preview-card.type-poison { --preview-type:#bc70df; --preview-bg:#281632; --preview-glow:rgba(180,91,220,.22); }
+.type-preview-card.type-ground { --preview-type:#d49a55; --preview-bg:#302316; --preview-glow:rgba(212,154,85,.22); }
+.type-preview-card.type-flying { --preview-type:#8e91ed; --preview-bg:#1d1d38; --preview-glow:rgba(125,129,226,.22); }
+.type-preview-card.type-psychic { --preview-type:#ec71a6; --preview-bg:#321725; --preview-glow:rgba(231,100,155,.22); }
+.type-preview-card.type-bug { --preview-type:#9ecb4c; --preview-bg:#26300e; --preview-glow:rgba(150,196,63,.22); }
+.type-preview-card.type-rock { --preview-type:#b89565; --preview-bg:#292016; --preview-glow:rgba(174,137,87,.22); }
+.type-preview-card.type-ghost { --preview-type:#a37ad7; --preview-bg:#21182e; --preview-glow:rgba(145,105,205,.22); }
+.type-preview-card.type-dragon { --preview-type:#747be0; --preview-bg:#17182f; --preview-glow:rgba(95,103,218,.22); }
+.type-preview-card.type-dark { --preview-type:#888; --preview-bg:#202020; --preview-glow:rgba(255,255,255,.08); }
+.type-preview-card.type-steel { --preview-type:#93a5b1; --preview-bg:#20272c; --preview-glow:rgba(145,166,178,.18); }
+.type-preview-card.type-fairy { --preview-type:#e58bb4; --preview-bg:#301827; --preview-glow:rgba(221,116,164,.22); }
+
+.type-preview-type.type-normal { background:#3b3b3b; color:#eee; }
+.type-preview-type.type-fire { background:#8d2c19; color:#ffd3c7; }
+.type-preview-type.type-water { background:#174c84; color:#c9e5ff; }
+.type-preview-type.type-grass { background:#24682d; color:#cff4d1; }
+.type-preview-type.type-electric { background:#806d0c; color:#fff2a8; }
+.type-preview-type.type-ice { background:#166774; color:#c9f7fb; }
+.type-preview-type.type-fighting { background:#82321f; color:#ffd4c8; }
+.type-preview-type.type-poison { background:#66317d; color:#f0d6fb; }
+.type-preview-type.type-ground { background:#75491e; color:#ffe1b7; }
+.type-preview-type.type-flying { background:#44488b; color:#d9dcff; }
+.type-preview-type.type-psychic { background:#7d3157; color:#ffd4e5; }
+.type-preview-type.type-bug { background:#4d691e; color:#e2f2b7; }
+.type-preview-type.type-rock { background:#685235; color:#f2ddb5; }
+.type-preview-type.type-ghost { background:#56387a; color:#e9ddfa; }
+.type-preview-type.type-dragon { background:#354080; color:#dbe0ff; }
+.type-preview-type.type-dark { background:#3b3b3b; color:#eee; }
+.type-preview-type.type-steel { background:#435760; color:#e4edf1; }
+.type-preview-type.type-fairy { background:#71334f; color:#ffe0ed; }
 
 .type-detail-actions { display:flex; justify-content:center; }
 .type-detail-primary { min-height:52px; padding:0 24px; border:1px solid #d7d7d7; border-radius:999px; background:#171717; color:#fff; font-size:12px; font-weight:900; transition:transform .22s ease,box-shadow .22s ease,background .22s ease; }
@@ -116,44 +200,6 @@
 .type-detail-error strong { font-size:20px; }
 .type-detail-error span { color:#666; font-size:13px; }
 .type-detail-error button { margin-top:8px; padding:11px 16px; border-radius:999px; border:1px solid #ddd; background:#171717; color:#fff; font-size:11px; font-weight:900; }
-
-.type-detail-hero.type-normal { --detail-type:#777; }
-.type-detail-hero.type-fire { --detail-type:#e34b2e; }
-.type-detail-hero.type-water { --detail-type:#3d86c7; }
-.type-detail-hero.type-electric { --detail-type:#b49400; }
-.type-detail-hero.type-grass { --detail-type:#4b9d55; }
-.type-detail-hero.type-ice { --detail-type:#369aa5; }
-.type-detail-hero.type-fighting { --detail-type:#b94b37; }
-.type-detail-hero.type-poison { --detail-type:#9954b8; }
-.type-detail-hero.type-ground { --detail-type:#a87335; }
-.type-detail-hero.type-flying { --detail-type:#6870bb; }
-.type-detail-hero.type-psychic { --detail-type:#c15484; }
-.type-detail-hero.type-bug { --detail-type:#718f2e; }
-.type-detail-hero.type-rock { --detail-type:#8b6f45; }
-.type-detail-hero.type-ghost { --detail-type:#7955a8; }
-.type-detail-hero.type-dragon { --detail-type:#5d66b5; }
-.type-detail-hero.type-dark { --detail-type:#555; }
-.type-detail-hero.type-steel { --detail-type:#667983; }
-.type-detail-hero.type-fairy { --detail-type:#b85d86; }
-
-.type-preview-card.type-fire { --preview-type:#e34b2e; }
-.type-preview-card.type-water { --preview-type:#3d86c7; }
-.type-preview-card.type-grass { --preview-type:#4b9d55; }
-.type-preview-card.type-electric { --preview-type:#b49400; }
-.type-preview-card.type-ice { --preview-type:#369aa5; }
-.type-preview-card.type-fighting { --preview-type:#b94b37; }
-.type-preview-card.type-poison { --preview-type:#9954b8; }
-.type-preview-card.type-ground { --preview-type:#a87335; }
-.type-preview-card.type-flying { --preview-type:#6870bb; }
-.type-preview-card.type-psychic { --preview-type:#c15484; }
-.type-preview-card.type-bug { --preview-type:#718f2e; }
-.type-preview-card.type-rock { --preview-type:#8b6f45; }
-.type-preview-card.type-ghost { --preview-type:#7955a8; }
-.type-preview-card.type-dragon { --preview-type:#5d66b5; }
-.type-preview-card.type-dark { --preview-type:#555; }
-.type-preview-card.type-steel { --preview-type:#667983; }
-.type-preview-card.type-fairy { --preview-type:#b85d86; }
-.type-preview-card.type-normal { --preview-type:#777; }
 
 @keyframes type-detail-shimmer { from { background-position:200% 0; } to { background-position:-200% 0; } }
 
@@ -173,9 +219,14 @@
     .type-detail-preview > header { align-items:flex-start; flex-direction:column; }
     .type-detail-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .type-detail-loading { grid-template-columns:1fr; }
+    .type-preview-card { border-radius:16px; }
+    .type-preview-card-name { font-size:12px; padding-inline:10px; }
+    .type-preview-types { padding:6px 10px 10px; gap:4px; }
+    .type-preview-type { min-height:18px; padding:3px 6px; font-size:7px; }
 }
 
 @media (prefers-reduced-motion:reduce) {
     .type-detail-back,.type-preview-card,.type-detail-primary { transition:none; }
     .type-detail-loading span { animation:none; }
+    .type-preview-card img { transition:none; }
 }
