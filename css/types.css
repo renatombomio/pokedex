@@ -27,24 +27,66 @@
 .type-card:hover .type-card-cta { transform:translateX(2px); background:rgba(0,0,0,.4); }
 .types-filter-row,.types-section > .container > .filter-button { display:none !important; }
 
-.type-card[data-type="normal"] { --type:#a8a8a8; --type-bg:#363636; }
-.type-card[data-type="fire"] { --type:#ff5b35; --type-bg:#6b2418; }
-.type-card[data-type="water"] { --type:#4da5ff; --type-bg:#123e67; }
-.type-card[data-type="electric"] { --type:#e9c52f; --type-bg:#665611; }
-.type-card[data-type="grass"] { --type:#62c86b; --type-bg:#174b27; }
-.type-card[data-type="ice"] { --type:#58cedb; --type-bg:#14505a; }
-.type-card[data-type="fighting"] { --type:#e7654a; --type-bg:#63231c; }
-.type-card[data-type="poison"] { --type:#bb70df; --type-bg:#49215a; }
-.type-card[data-type="ground"] { --type:#d49a55; --type-bg:#5a3e21; }
-.type-card[data-type="flying"] { --type:#8b91eb; --type-bg:#283267; }
-.type-card[data-type="psychic"] { --type:#ec6fa5; --type-bg:#65204a; }
-.type-card[data-type="bug"] { --type:#9fc94b; --type-bg:#40571a; }
-.type-card[data-type="rock"] { --type:#b89565; --type-bg:#51402a; }
-.type-card[data-type="ghost"] { --type:#a47bd8; --type-bg:#402459; }
-.type-card[data-type="dragon"] { --type:#727be0; --type-bg:#203b6d; }
-.type-card[data-type="dark"] { --type:#c0c0c0; --type-bg:#303030; }
-.type-card[data-type="steel"] { --type:#91a5b1; --type-bg:#30434d; }
-.type-card[data-type="fairy"] { --type:#e78bb6; --type-bg:#662846; }
+.type-card[data-type="normal"] { --type:#777; --type-bg:#f1f1f1; }
+.type-card[data-type="fire"] { --type:#e34b2e; --type-bg:#fff0eb; }
+.type-card[data-type="water"] { --type:#3d86c7; --type-bg:#edf6ff; }
+.type-card[data-type="electric"] { --type:#b49400; --type-bg:#fffbe3; }
+.type-card[data-type="grass"] { --type:#4b9d55; --type-bg:#edf9ee; }
+.type-card[data-type="ice"] { --type:#369aa5; --type-bg:#ebfbfc; }
+.type-card[data-type="fighting"] { --type:#b94b37; --type-bg:#fff0ec; }
+.type-card[data-type="poison"] { --type:#9954b8; --type-bg:#f8effb; }
+.type-card[data-type="ground"] { --type:#a87335; --type-bg:#fbf2e7; }
+.type-card[data-type="flying"] { --type:#6870bb; --type-bg:#f1f2ff; }
+.type-card[data-type="psychic"] { --type:#c15484; --type-bg:#fff0f6; }
+.type-card[data-type="bug"] { --type:#718f2e; --type-bg:#f5f9e9; }
+.type-card[data-type="rock"] { --type:#8b6f45; --type-bg:#f5f0e7; }
+.type-card[data-type="ghost"] { --type:#7955a8; --type-bg:#f4effa; }
+.type-card[data-type="dragon"] { --type:#5d66b5; --type-bg:#eff0ff; }
+.type-card[data-type="dark"] { --type:#555; --type-bg:#f0f0f0; }
+.type-card[data-type="steel"] { --type:#667983; --type-bg:#eef2f4; }
+.type-card[data-type="fairy"] { --type:#b85d86; --type-bg:#fff0f6; }
+
+/* LIGHT PRODUCT REFINEMENT — preserve the existing component, change only its visual surface. */
+.types-section { background:#fff; border-top-color:#eee; border-bottom-color:#eee; }
+.types-section::before,
+.types-section::after { display:none; }
+.types-header h2 { color:#171717; }
+.types-intro { color:#626262; }
+.type-card {
+    color:#171717;
+    border-color:color-mix(in srgb,var(--type) 34%,#e3e3e3);
+    background:var(--type-bg);
+    box-shadow:0 8px 18px rgba(0,0,0,.09),0 2px 5px rgba(0,0,0,.04);
+}
+.type-card:hover {
+    border-color:color-mix(in srgb,var(--type) 60%,#d5d5d5);
+    box-shadow:0 12px 24px rgba(0,0,0,.13),0 3px 7px rgba(0,0,0,.05);
+}
+.type-card-index { color:var(--type); text-shadow:none; }
+.type-card-arrow {
+    border-color:color-mix(in srgb,var(--type) 38%,#ddd);
+    background:rgba(255,255,255,.78);
+    color:#171717;
+    box-shadow:0 4px 10px rgba(0,0,0,.06);
+}
+.type-card:hover .type-card-arrow { background:#fff; }
+.type-card-symbol {
+    border-color:color-mix(in srgb,var(--type) 55%,#ddd);
+    background:rgba(255,255,255,.7);
+    color:var(--type);
+    box-shadow:0 0 20px color-mix(in srgb,var(--type) 16%,transparent),inset 0 1px rgba(255,255,255,.8);
+}
+.type-card-symbol::before { border-color:color-mix(in srgb,var(--type) 28%,#fff); }
+.type-card-name { color:#171717; text-shadow:none; }
+.type-card-count { color:#626262; text-shadow:none; }
+.type-card-cta {
+    border-color:color-mix(in srgb,var(--type) 38%,#ddd);
+    background:rgba(255,255,255,.78);
+    color:#171717;
+    box-shadow:0 4px 10px rgba(0,0,0,.06);
+}
+.type-card:hover .type-card-cta { background:#fff; }
+
 @keyframes type-card-in { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 @media (max-width:1100px) { .types-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 @media (max-width:900px) { .types-section { padding:82px 0 90px; } .types-header { align-items:flex-start; flex-direction:column; } .types-intro { max-width:520px; text-align:left; } .types-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; } .type-card { min-height:190px; padding:17px; } .type-card-pokemon { right:-10%; width:72%; height:128%; } .type-card-name { font-size:20px; } }
