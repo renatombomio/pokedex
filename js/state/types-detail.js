@@ -1,8 +1,6 @@
 import { getPokemonByType, getPokemon } from '../api/pokemon.js';
 import { getPokemonType } from './types.js';
-import { filterByType } from './app.js';
 import { renderPokemon, showLoading, showError } from './ui.js';
-import { showHome, showTypeDetail } from './navigation.js';
 import { mountWorldBreadcrumb } from './world-navigation.js';
 
 const main = document.querySelector('#main-content');
@@ -15,7 +13,8 @@ document.addEventListener('type:open-detail', (event) => {
     const typeId = event.detail?.type;
     if (!typeId) return;
 
-    showTypeDetail(typeId, {
+    const navigation = window.__gamedexNavigation;
+    navigation?.showTypeDetail?.(typeId, {
         pushHistory: !event.detail?.fromHistory
     });
 
@@ -71,9 +70,7 @@ async function loadTypeDetail(typeId) {
         const response = await getPokemonByType(type.id);
         const entries = response.pokemon ?? [];
         const previewEntries = entries.slice(0, 6);
-        const pokemon = await Promise.all(
-            previewEntries.map(({ pokemon }) => getPokemon(pokemon.name))
-        );
+        const pokemon = await loadPokemonEntries(previewEntries);
 
         if (currentRequest !== requestId) return;
 
@@ -95,6 +92,21 @@ async function loadTypeDetail(typeId) {
             </div>
         `;
     }
+}
+
+async function loadPokemonEntries(entries) {
+    const results = [];
+    const batchSize = 12;
+
+    for (let index = 0; index < entries.length; index += batchSize) {
+        const batch = entries.slice(index, index + batchSize);
+        const loaded = await Promise.all(
+            batch.map(({ pokemon }) => getPokemon(pokemon.url ?? pokemon.name))
+        );
+        results.push(...loaded);
+    }
+
+    return results;
 }
 
 function createLoadingMarkup(type) {
@@ -175,18 +187,31 @@ async function handleTypeDetailClick(event) {
     const explore = event.target.closest('[data-explore-type]');
     if (explore) {
         const typeId = explore.dataset.exploreType;
-        document.dispatchEvent(new CustomEvent('type:filter-changed', {
-            detail: { type: typeId }
-        }));
-        showLoading();
+        const type = getPokemonType(typeId);
+        const section = document.querySelector('#type-detail');
+        const content = section?.querySelector('[data-type-detail-content]');
+        if (!type || !section || !content) return;
+
+        const currentRequest = ++requestId;
+        explore.disabled = true;
+        explore.textContent = `Cargando Pokémon de tipo ${type.name}…`;
 
         try {
-            const state = await filterByType(typeId);
-            renderPokemon(state.filteredPokemon);
-            showHome('pokedex');
+            const response = await getPokemonByType(typeId);
+            const entries = response.pokemon ?? [];
+            const pokemon = await loadPokemonEntries(entries);
+
+            if (currentRequest !== requestId) return;
+
+            const grid = content.querySelector('.type-detail-grid');
+            const count = content.querySelector('.type-detail-preview-count');
+            if (grid) grid.innerHTML = pokemon.map(createPreviewCard).join('');
+            if (count) count.textContent = `${pokemon.length} registrados`;
+            explore.hidden = true;
         } catch (error) {
-            console.error(`Could not explore type ${typeId}:`, error);
-            showError();
+            console.error(`Could not load all Pokémon for type ${typeId}:`, error);
+            explore.disabled = false;
+            explore.textContent = `Reintentar: ver todos los Pokémon de tipo ${type.name}`;
         }
         return;
     }
