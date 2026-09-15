@@ -173,10 +173,10 @@
 
 @media (max-width:680px) {
     .generations-grid .generation-card-button {
-        width: min(84vw, 330px) !important;
-        min-width: min(84vw, 330px) !important;
-        max-width: min(84vw, 330px) !important;
-        flex-basis: min(84vw, 330px) !important;
+        width: 280px !important;
+        min-width: 280px !important;
+        max-width: 280px !important;
+        flex-basis: 280px !important;
         height: 390px;
         min-height: 390px !important;
         max-height: 390px;
