@@ -344,3 +344,156 @@
 .region-card-button:hover .region-map-card {
     transform: scale(1.18);
 }
+
+/* ========================================
+   VISUAL REFINEMENT — REGION CARDS
+   Keep the existing component; change only
+   its visual treatment to match Generations.
+======================================== */
+
+.region-card-button {
+    aspect-ratio: 1 / 1;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    border-radius: 22px !important;
+    background: #101010 !important;
+    isolation: isolate;
+}
+
+.region-card-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 48%,
+        rgba(0,0,0,.05) 58%,
+        rgba(0,0,0,.38) 73%,
+        rgba(0,0,0,.78) 100%
+    );
+}
+
+.region-card-atmosphere,
+.region-visual::before,
+.region-orbit,
+.region-orbit-two {
+    display: none !important;
+}
+
+.region-card-header {
+    position: absolute !important;
+    inset: 0 0 auto;
+    z-index: 4 !important;
+    padding: 14px;
+}
+
+.region-generation {
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(0,0,0,.65);
+}
+
+.region-arrow {
+    border-color: rgba(255,255,255,.55) !important;
+    background: rgba(20,20,20,.28) !important;
+    color: #fff !important;
+    backdrop-filter: blur(6px);
+}
+
+.region-visual {
+    position: absolute !important;
+    inset: 0;
+    z-index: 1 !important;
+    min-height: 0 !important;
+    display: block !important;
+    overflow: hidden;
+}
+
+.region-map-card {
+    position: absolute !important;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    transform: none !important;
+    filter: none !important;
+    border-radius: 0 !important;
+}
+
+.region-card-footer {
+    position: absolute !important;
+    inset: auto 0 0;
+    z-index: 4 !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 10px;
+    padding: 44px 16px 15px !important;
+    border-top: 0 !important;
+}
+
+.region-card-footer > span:first-child {
+    min-width: 0;
+}
+
+.region-card-footer strong {
+    margin-bottom: 5px;
+    color: #fff !important;
+    font-size: 24px;
+    line-height: 1;
+    text-shadow: 0 2px 8px rgba(0,0,0,.8);
+}
+
+.region-card-footer small {
+    max-width: 260px;
+    color: rgba(255,255,255,.88) !important;
+    font-size: 11px;
+    line-height: 1.4;
+    text-shadow: 0 2px 7px rgba(0,0,0,.85);
+}
+
+.region-explore {
+    color: #fff !important;
+    text-shadow: 0 2px 7px rgba(0,0,0,.85);
+}
+
+.region-card-button:hover .region-map-card {
+    transform: scale(1.045) !important;
+    transition: transform .35s var(--ease);
+}
+
+.region-card-button:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,.3) !important;
+    box-shadow: 0 14px 28px rgba(0,0,0,.14) !important;
+}
+
+@media (max-width: 768px) {
+    .region-card-button {
+        aspect-ratio: 1 / 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .region-card-button {
+        border-radius: 20px !important;
+    }
+
+    .region-card-header {
+        padding: 12px;
+    }
+
+    .region-card-footer {
+        padding: 40px 13px 13px !important;
+    }
+
+    .region-card-footer strong {
+        font-size: 21px;
+    }
+}
