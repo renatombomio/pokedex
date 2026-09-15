@@ -1,4 +1,5 @@
 import { getAbility } from '../api/ability.js';
+import { getMove } from '../api/move.js';
 import { getDetailsState } from './details.js';
 
 const TYPE_NAMES = {
@@ -78,6 +79,8 @@ async function renderAdvancedIntelligence() {
         ${renderAbilityLoadingPanel(abilityEntry)}
         ${renderMovesPanel(moveEntries)}
     `;
+
+    bindAdvancedEvents();
 
     if (!abilityEntry?.ability?.name) return;
 
@@ -166,17 +169,31 @@ async function openAbilityDetail(name) {
     }
 }
 
-function openModal(content) {
-    document.querySelector('[data-gamedex-modal]')?.remove();
-    const modal = document.createElement('div');
-    modal.className = 'gamedex-modal-backdrop';
-    modal.dataset.gamedexModal = '';
-    modal.innerHTML = `<div class="gamedex-modal" role="dialog" aria-modal="true">${content}</div>`;
-    document.body.appendChild(modal);
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) modal.remove();
-    });
-    return modal.querySelector('.gamedex-modal');
+async function openMoveDetail(name) {
+    const modal = openModal('Cargando movimiento...');
+    try {
+        const move = await getMove(name);
+        const damageClass = { physical: 'Físico', special: 'Especial', status: 'Estado' }[move.damage_class?.name] || '—';
+        const type = TYPE_NAMES[move.type?.name] || capitalize(move.type?.name);
+        const accuracy = move.accuracy == null ? '—' : `${move.accuracy}%`;
+        const power = move.power == null ? '—' : move.power;
+        const effect = localizedEffect(move, 'effect_entries');
+        const related = (move.learned_by_pokemon ?? []).slice().sort((a, b) => a.name.localeCompare(b.name, 'es'));
+        modal.innerHTML = `
+            ${renderModalHeader('Movimiento', localName(move), effect)}
+            <div class="gamedex-move-stats">
+                <div><span>Tipo</span><strong class="pokemon-type type-${escapeHtml(move.type?.name)}">${escapeHtml(type)}</strong></div>
+                <div><span>Clase</span><strong>${damageClass}</strong></div>
+                <div><span>Potencia</span><strong>${power}</strong></div>
+                <div><span>Precisión</span><strong>${accuracy}</strong></div>
+                <div><span>PP</span><strong>${move.pp ?? '—'}</strong></div>
+            </div>
+            ${renderRelatedPokemon('Pokémon que pueden aprenderlo', related)}
+        `;
+        bindModalEvents(modal);
+    } catch {
+        modal.innerHTML = renderModalHeader('Movimiento', 'No disponible', 'No pudimos cargar este movimiento.');
+    }
 }
 
 function renderModalHeader(eyebrow, title, description) {
@@ -208,6 +225,19 @@ function getRelatedId(entry) {
     return match?.[1] || '';
 }
 
+function openModal(content) {
+    document.querySelector('[data-gamedex-modal]')?.remove();
+    const modal = document.createElement('div');
+    modal.className = 'gamedex-modal-backdrop';
+    modal.dataset.gamedexModal = '';
+    modal.innerHTML = `<div class="gamedex-modal" role="dialog" aria-modal="true">${content}</div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) modal.remove();
+    });
+    return modal.querySelector('.gamedex-modal');
+}
+
 function bindModalEvents(modal) {
     modal.querySelector('[data-gamedex-close]')?.addEventListener('click', () => modal.closest('[data-gamedex-modal]')?.remove());
     modal.querySelectorAll('[data-gamedex-related-pokemon]').forEach((button) => {
@@ -225,7 +255,14 @@ function findPokemonId(button) {
 
 function bindAdvancedEvents() {
     document.querySelectorAll('[data-gamedex-ability]').forEach((button) => {
+        if (button.dataset.gamedexBound) return;
+        button.dataset.gamedexBound = 'true';
         button.addEventListener('click', () => openAbilityDetail(button.dataset.gamedexAbility));
+    });
+    document.querySelectorAll('[data-gamedex-move]').forEach((button) => {
+        if (button.dataset.gamedexBound) return;
+        button.dataset.gamedexBound = 'true';
+        button.addEventListener('click', () => openMoveDetail(button.dataset.gamedexMove));
     });
 }
 
