@@ -7,6 +7,7 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 22px;
     grid-column: 1 / -1;
+    animation: skeleton-grid-in .22s ease-out both;
 }
 
 .pokemon-skeleton {
@@ -86,6 +87,11 @@
     to { transform: translateX(100%); }
 }
 
+@keyframes skeleton-grid-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 @media (max-width: 1050px) {
     .pokedex-skeleton-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
@@ -103,6 +109,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .pokedex-skeleton-grid,
     .pokemon-skeleton-image::after,
     .pokemon-skeleton-line::after,
     .pokemon-skeleton-chip::after { animation: none; }
