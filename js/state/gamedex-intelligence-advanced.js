@@ -278,6 +278,7 @@ function init() {
     if (!detailContent) return;
     observer.observe(detailContent, { childList: true, subtree: true });
     renderAdvancedIntelligence();
+    document.addEventListener('gamedex:rendered', renderAdvancedIntelligence);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
