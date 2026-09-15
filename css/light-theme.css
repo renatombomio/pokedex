@@ -8,7 +8,7 @@
     --surface: #ffffff;
     --surface-2: #f7f7f7;
     --white: #171717;
-    --muted: #686868;
+    --muted: #626262;
     --line: #e5e5e5;
 }
 
@@ -21,6 +21,7 @@ body {
 .site-header {
     background: rgba(255,255,255,.96);
     border-bottom-color: #e5e5e5;
+    box-shadow: 0 1px 0 rgba(0,0,0,.025);
 }
 
 .pokedex-wordmark { color: #171717; }
@@ -138,7 +139,7 @@ body {
 .captured-count,
 .generation-detail-header p:not(.eyebrow),
 .region-detail-header p:not(.eyebrow) {
-    color: #707070;
+    color: #626262;
 }
 
 /* Compact, close shadows: cards float over the white page. */
@@ -151,8 +152,8 @@ body {
 .region-detail-card,
 .captured-pokemon-card {
     box-shadow:
-        0 8px 16px rgba(0,0,0,.12),
-        0 2px 5px rgba(0,0,0,.08),
+        0 8px 16px rgba(0,0,0,.10),
+        0 2px 5px rgba(0,0,0,.06),
         inset 0 1px rgba(255,255,255,.08);
 }
 
@@ -161,8 +162,8 @@ body {
 .type-card:hover,
 .pokemon-card:hover {
     box-shadow:
-        0 11px 20px rgba(0,0,0,.16),
-        0 3px 7px rgba(0,0,0,.09),
+        0 11px 22px rgba(0,0,0,.14),
+        0 3px 7px rgba(0,0,0,.07),
         inset 0 1px rgba(255,255,255,.1);
 }
 
@@ -191,7 +192,8 @@ body {
 }
 
 .region-card,
-.generation-card-button { flex: 0 0 360px; scroll-snap-align: start; }
+.generation-card-button { flex: 0 0 360px; }
+.region-card { scroll-snap-align: start; }
 
 /* Tighten the transition between Regions and Generations. */
 .regions-section {
@@ -210,7 +212,7 @@ body {
     color: #171717;
 }
 
-/* Generation covers: the artwork is a real card background, with a light readability veil. */
+/* Generation covers: keep the existing component and make its imagery read clearly. */
 .generation-card-button {
     position: relative;
     isolation: isolate;
@@ -266,7 +268,7 @@ body {
     text-shadow: 0 1px 2px rgba(255,255,255,.7);
 }
 
-/* Region imagery is slightly larger and the card edge is neutral instead of dark. */
+/* Region imagery keeps the existing starter/card composition intact. */
 .region-card-button {
     border-color: #e0e0e0;
 }
@@ -295,7 +297,7 @@ body {
 .region-card-footer small,
 .generation-region,
 .generation-card-bottom small {
-    color: #777;
+    color: #666;
 }
 
 .region-arrow {
@@ -323,7 +325,7 @@ body {
 
 .generation-starter-card > span,
 .generation-pokedex-cta small {
-    color: #777;
+    color: #666;
 }
 
 .generation-explore,
@@ -331,11 +333,11 @@ body {
     color: #555;
 }
 
-/* Type cards retain their individual color identity while the section stays white. */
+/* Type cards retain their individual color identity. */
 .type-card {
     box-shadow:
-        0 8px 16px rgba(0,0,0,.12),
-        0 2px 5px rgba(0,0,0,.08),
+        0 8px 16px rgba(0,0,0,.10),
+        0 2px 5px rgba(0,0,0,.06),
         inset 0 1px rgba(255,255,255,.1);
 }
 
@@ -377,6 +379,141 @@ body {
 .filter-button[data-type="dark"] { --type-bg: #f0f0f0; --type-text: #444; }
 .filter-button[data-type="steel"] { --type-bg: #eef2f4; --type-text: #53646e; }
 .filter-button[data-type="fairy"] { --type-bg: #fff0f6; --type-text: #974568; }
+
+/* Captured stays part of the light page; the Poké Ball remains the visual accent. */
+.captured-section {
+    background: #fff !important;
+}
+
+.captured-loading,
+.captured-empty {
+    border-color: #e5e5e5;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,.07);
+}
+
+.captured-empty h3 { color: #171717; }
+.captured-empty > p:not(.captured-empty-eyebrow) { color: #626262; }
+.captured-loading { color: #626262; }
+.captured-notice { color: #626262; }
+
+.captured-explore {
+    border-color: rgba(239,63,34,.38);
+    background: #fff4f1;
+    color: #a92f1b;
+}
+
+.captured-explore:hover {
+    background: #ffeae5;
+}
+
+.captured-pokemon-card .captured-ball-badge {
+    box-shadow: 0 5px 12px rgba(0,0,0,.14);
+}
+
+/* Region detail: retain the explorer component, but remove the legacy black page surfaces. */
+.region-detail {
+    background: #fff !important;
+    color: #171717;
+}
+
+.region-detail::before { opacity: .35; }
+
+.region-detail-hero {
+    border-color: #e3e3e3;
+    background:
+        radial-gradient(circle at 78% 48%, color-mix(in srgb, var(--region-accent) 8%, transparent), transparent 34%),
+        linear-gradient(145deg, #ffffff, #f7f7f7 72%);
+    box-shadow: 0 18px 45px rgba(0,0,0,.10), inset 0 1px rgba(255,255,255,.9);
+}
+
+.region-detail-heading h1,
+.region-panel-heading h2,
+.region-detail-meta strong,
+.region-starter-name {
+    color: #171717;
+}
+
+.region-detail-heading p,
+.region-location-count,
+.region-location-empty {
+    color: #626262;
+}
+
+.region-detail-back {
+    border-color: #dedede;
+    background: #fff;
+    color: #171717;
+}
+
+.region-detail-back:hover {
+    color: #ef3f22;
+}
+
+.region-detail-meta span {
+    background: #fafafa;
+    color: #555;
+}
+
+.region-map {
+    border-color: #e1e1e1;
+    background: #f5f5f5;
+    box-shadow: inset 0 0 80px rgba(0,0,0,.08);
+}
+
+.region-map-grid {
+    opacity: .4;
+    background-image:
+        linear-gradient(rgba(0,0,0,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,.035) 1px, transparent 1px);
+}
+
+.region-map-label,
+.region-map-compass {
+    color: #707070;
+}
+
+.region-map-compass {
+    border-color: #d8d8d8;
+}
+
+.region-explorer-panel,
+.region-locations {
+    border-color: #e5e5e5;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,.06);
+}
+
+.region-panel-heading h2 { color: #171717; }
+
+.region-pokedex-link {
+    background: color-mix(in srgb, var(--region-accent, #ef3f22) 6%, white);
+}
+
+.region-starter-card {
+    border-color: #e3e3e3;
+    background: #fafafa;
+    color: #171717;
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+}
+
+.region-starter-card:hover {
+    box-shadow: 0 14px 32px rgba(0,0,0,.10), 0 0 24px color-mix(in srgb, var(--region-accent) 8%, transparent);
+}
+
+.region-starter-number { color: #707070; }
+.region-location-list {
+    border-top-color: #e8e8e8;
+    border-left-color: #e8e8e8;
+}
+
+.region-location-item {
+    border-right-color: #e8e8e8;
+    border-bottom-color: #e8e8e8;
+}
+
+.region-location-item b { color: #707070; }
+.region-location-item span { color: #444; }
 
 @media (max-width: 768px) {
     .main-nav {
@@ -448,5 +585,5 @@ body {
     .region-card-button,
     .generation-card-button,
     .type-card,
-    .pokemon-card { box-shadow: 0 4px 9px rgba(0,0,0,.1); }
+    .pokemon-card { box-shadow: 0 4px 9px rgba(0,0,0,.08); }
 }
