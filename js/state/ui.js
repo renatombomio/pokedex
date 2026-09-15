@@ -202,6 +202,9 @@ export function renderPokemonDetails(details) {
     detailSection?.setAttribute('aria-hidden', 'false');
 
     renderGamedex(details);
+    document.dispatchEvent(new CustomEvent('gamedex:rendered', {
+        detail: { id: details.pokemon.id }
+    }));
     scrollToTop();
 }
 
